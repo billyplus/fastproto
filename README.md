@@ -42,7 +42,7 @@ Generate standard `.pb.go` with protoc-gen-go first, then generate an extra `_fa
 
 It works with grpc.
 
-Option one: Replace the default codec for `proto`
+Option 1. Replace the default codec for `proto`
 
 ``` golang
 import "google.golang.org/grpc/encoding"
@@ -51,6 +51,18 @@ func main() {
     // replace the default codec.
 	encoding.RegisterCodec(fastproto.ProtoCodec())
 }
+```
+
+Option 2. **Not recommended**. Use `grpc.ForceServerCodec` option or `grpc.CustomCodec` option to create grpc server. Notice: This API is may be changed or removed in a later release.
+
+``` golang
+    import "google.golang.org/grpc"
+    s := grpc.NewServer(grpc.CustomCodec(fastproto.ProtoCodec()))
+
+    // or
+
+    s := grpc.NewServer(grpc.ForceServerCodec(fastproto.ProtoCodec()))
+
 ```
 
 
