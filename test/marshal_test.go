@@ -29,9 +29,8 @@ func testMarshaler(t *testing.T, v fastproto.Message) {
 		t.Fatalf("unmarshal %T with google proto has error: %v", v, err)
 	}
 
-	fastproto.IgnoreMessageInfo = false
 	v3 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(fastproto.Message)
-	err = fastproto.Unmarshal(data, v3)
+	err = fastproto.UnmarshalOptions{IgnoreMessageInfo: false}.Unmarshal(data, v3)
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = false` has error: %v", v, err)
 	}
@@ -40,9 +39,8 @@ func testMarshaler(t *testing.T, v fastproto.Message) {
 		return
 	}
 
-	fastproto.IgnoreMessageInfo = true
 	v4 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(fastproto.Message)
-	err = fastproto.Unmarshal(data, v4)
+	err = fastproto.UnmarshalOptions{IgnoreMessageInfo: true}.Unmarshal(data, v4)
 
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = true` has error: %v", v, err)

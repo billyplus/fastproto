@@ -4,11 +4,6 @@ import (
 	"google.golang.org/protobuf/encoding/protowire"
 )
 
-var (
-	// sometimes we don't need message info. so we can ignore message info when we unmarshal message
-	IgnoreMessageInfo = true
-)
-
 type Unmarshaler interface {
 	Unmarshal(data []byte) error
 	Reset()
@@ -21,17 +16,20 @@ type UnmarshalOptions struct {
 	// The default behavior is to always reset the message before unmarshaling,
 	// unless Merge is specified.
 	Merge bool
+
+	// sometimes we don't need message info. so we can ignore message info when we unmarshal message
+	IgnoreMessageInfo bool
 }
 
 func (opt UnmarshalOptions) Unmarshal(b []byte, m Unmarshaler) error {
 	if !opt.Merge {
-		if IgnoreMessageInfo {
+		if opt.IgnoreMessageInfo {
 			m.XxxReset()
 		} else {
 			m.Reset()
 		}
 	} else {
-		if !IgnoreMessageInfo {
+		if !opt.IgnoreMessageInfo {
 			m.FillMessageInfo()
 		}
 	}
