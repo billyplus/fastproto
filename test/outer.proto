@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "github.com/billyplus/fastproto/test/pb";
+
+// message which is empty
+message OuterMsg {
+  //
+  int64 eid = 1;
+  //
+  string open_id = 2;
+  //
+  string name = 3;
+  // job
+  int32 job = 4;
+  // sex
+  int32 sex = 5;
+}
