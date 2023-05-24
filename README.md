@@ -38,4 +38,20 @@ Generate standard `.pb.go` with protoc-gen-go first, then generate an extra `_fa
     if err := fastproto.Unmarshal(data, &msg); err!=nil {}
 ```
 
+### GRPC
+
+It works with grpc.
+
+Option one: Replace the default codec for `proto`
+
+``` golang
+import "google.golang.org/grpc/encoding"
+
+func main() {
+    // replace the default codec.
+	encoding.RegisterCodec(fastproto.ProtoCodec())
+}
+```
+
+
 
