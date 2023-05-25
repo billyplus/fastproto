@@ -60,5 +60,5 @@ func ConsumeMessage(data []byte, msg Unmarshaler) (int, error) {
 // // if m does not implement unmarshaler interface, it will fallback to proto.Unmarshal
 func Unmarshal(b []byte, m Unmarshaler) error {
 	// proto.Reset(m)
-	return UnmarshalOptions{}.Unmarshal(b, m)
+	return UnmarshalOptions{IgnoreMessageInfo: true}.Unmarshal(b, m)
 }
