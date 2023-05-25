@@ -74,52 +74,40 @@ goos: linux
 goarch: amd64
 pkg: github.com/billyplus/fastproto/test
 cpu: AMD Ryzen 9 5950X 16-Core Processor
-
-BenchmarkFastMarshalStringSlice-6         	14644707	        81.75 ns/op	      80 B/op	       1 allocs/op
-BenchmarkGoogleMarshalStringSlice-6       	 8223910	       144.4 ns/op	      80 B/op	       1 allocs/op
-
-BenchmarkFastMarshalBytesSlice-6          	13065022	        93.40 ns/op	      80 B/op	       1 allocs/op
-BenchmarkGoogleMarshalBytesSlice-6        	10043254	       124.9 ns/op	      80 B/op	       1 allocs/op
-
-BenchmarkFastMarshalInt32Slice-6          	 5772819	       213.1 ns/op	     128 B/op	       1 allocs/op
-BenchmarkGoogleMarshalInt32Slice-6        	 5056791	       237.5 ns/op	     128 B/op	       1 allocs/op
-
-BenchmarkFastMarshalSint64Slice-6         	 4123633	       288.3 ns/op	     224 B/op	       1 allocs/op
-BenchmarkGoogleMarshalSint64Slice-6       	 3811389	       311.4 ns/op	     224 B/op	       1 allocs/op
-
-BenchmarkFastMarshalSfixed32Slice-6       	16257074	        73.97 ns/op	     112 B/op	       1 allocs/op
-BenchmarkGoogleMarshalSfixed32Slice-6     	12917850	        93.63 ns/op	     112 B/op	       1 allocs/op
-
-BenchmarkFastMarshalSfixed64Slice-6       	14003510	        89.69 ns/op	     208 B/op	       1 allocs/op
-BenchmarkGoogleMarshalSfixed64Slice-6     	11058189	       115.9 ns/op	     208 B/op	       1 allocs/op
-
-BenchmarkFastMarshalToMixedProto-6        	   74734	     15354 ns/op	       0 B/op	       0 allocs/op
-BenchmarkFastMarshalMixedProto-6          	   43844	     27804 ns/op	   18432 B/op	       1 allocs/op
-BenchmarkGoogleMarshalMixedProto-6        	   12552	     94428 ns/op	   37664 B/op	    1521 allocs/op
-
-BenchmarkFastSizeMixedProto-6             	  205432	      6061 ns/op	       0 B/op	       0 allocs/op
-BenchmarkGoogleSizeMixedProto-6           	   32412	     39230 ns/op	    9616 B/op	     760 allocs/op
-
-BenchmarkFastUnmarshalStringSlice-6       	 4322337	       291.3 ns/op	     314 B/op	       7 allocs/op
-BenchmarkGoogleUnmarshalStringSlice-6     	 3088686	       384.5 ns/op	     314 B/op	       7 allocs/op
-
-BenchmarkFastUnmarshalBytesSlice-6        	 3194150	       376.0 ns/op	     448 B/op	       8 allocs/op
-BenchmarkGoogleUnmarshalBytesSlice-6      	 2770154	       426.6 ns/op	     448 B/op	       8 allocs/op
-
-BenchmarkFastUnmarshalInt32Slice-6        	 6377149	       183.2 ns/op	     112 B/op	       1 allocs/op
-BenchmarkGoogleUnmarshalInt32Slice-6      	 3752682	       318.7 ns/op	     248 B/op	       5 allocs/op
-
-BenchmarkFastUnmarshalSint64Slice-6       	 4416526	       271.5 ns/op	     208 B/op	       1 allocs/op
-BenchmarkGoogleUnmarshalSint64Slice-6     	 2903524	       405.0 ns/op	     504 B/op	       6 allocs/op
-
-BenchmarkFastUnmarshalSfixed32Slice-6     	14313001	        85.07 ns/op	     112 B/op	       1 allocs/op
-BenchmarkGoogleUnmarshalSfixed32Slice-6   	 5353230	       224.2 ns/op	     248 B/op	       5 allocs/op
-
-BenchmarkFastUnmarshalSfixed64Slice-6     	12808696	       103.0 ns/op	     208 B/op	       1 allocs/op
-BenchmarkGoogleUnmarshalSfixed64Slice-6   	 3824290	       317.3 ns/op	     504 B/op	       6 allocs/op
-
-BenchmarkFastUnmarshalMixedProto-6        	   20580	     58110 ns/op	   46909 B/op	     606 allocs/op
-BenchmarkGoogleUnmarshalMixedProto-6      	    8949	    132525 ns/op	   60842 B/op	    1966 allocs/op
 ```
+  |                                  |          |              |            |                |
+  | -------------------------------- | -------- | ------------ | ---------- | -------------- |
+  | **FastMarshalStringSlice-6**     | 14644707 | 81.75 ns/op  | 80 B/op    | 1 allocs/op    |
+  | StandardMarshalStringSlice-6     | 8223910  | 144.4 ns/op  | 80 B/op    | 1 allocs/op    |
+  | **FastMarshalBytesSlice-6**      | 13065022 | 93.40 ns/op  | 80 B/op    | 1 allocs/op    |
+  | StandardMarshalBytesSlice-6      | 10043254 | 124.9 ns/op  | 80 B/op    | 1 allocs/op    |
+  | **FastMarshalInt32Slice-6**      | 5772819  | 213.1 ns/op  | 128 B/op   | 1 allocs/op    |
+  | StandardMarshalInt32Slice-6      | 5056791  | 237.5 ns/op  | 128 B/op   | 1 allocs/op    |
+  | **FastMarshalSint64Slice-6**     | 4123633  | 288.3 ns/op  | 224 B/op   | 1 allocs/op    |
+  | StandardMarshalSint64Slice-6     | 3811389  | 311.4 ns/op  | 224 B/op   | 1 allocs/op    |
+  | **FastMarshalSfixed32Slice-6**   | 16257074 | 73.97 ns/op  | 112 B/op   | 1 allocs/op    |
+  | StandardMarshalSfixed32Slice-6   | 12917850 | 93.63 ns/op  | 112 B/op   | 1 allocs/op    |
+  | **FastMarshalSfixed64Slice-6**   | 14003510 | 89.69 ns/op  | 208 B/op   | 1 allocs/op    |
+  | StandardMarshalSfixed64Slice-6   | 11058189 | 115.9 ns/op  | 208 B/op   | 1 allocs/op    |
+  | **FastMarshalToMixedProto-6**    | 74734    | 15354 ns/op  | 0 B/op     | 0 allocs/op    |
+  | **FastMarshalMixedProto-6**      | 43844    | 27804 ns/op  | 18432 B/op | 1 allocs/op    |
+  | StandardMarshalMixedProto-6      | 12552    | 94428 ns/op  | 37664 B/op | 1521 allocs/op |
+  | **FastSizeMixedProto-6**         | 205432   | 6061 ns/op   | 0 B/op     | 0 allocs/op    |
+  | StandardSizeMixedProto-6         | 32412    | 39230 ns/op  | 9616 B/op  | 760 allocs/op  |
+  | **FastUnmarshalStringSlice-6**   | 4322337  | 291.3 ns/op  | 314 B/op   | 7 allocs/op    |
+  | StandardUnmarshalStringSlice-6   | 3088686  | 384.5 ns/op  | 314 B/op   | 7 allocs/op    |
+  | **FastUnmarshalBytesSlice-6**    | 3194150  | 376.0 ns/op  | 448 B/op   | 8 allocs/op    |
+  | StandardUnmarshalBytesSlice-6    | 2770154  | 426.6 ns/op  | 448 B/op   | 8 allocs/op    |
+  | **FastUnmarshalInt32Slice-6**    | 6377149  | 183.2 ns/op  | 112 B/op   | 1 allocs/op    |
+  | StandardUnmarshalInt32Slice-6    | 3752682  | 318.7 ns/op  | 248 B/op   | 5 allocs/op    |
+  | **FastUnmarshalSint64Slice-6**   | 4416526  | 271.5 ns/op  | 208 B/op   | 1 allocs/op    |
+  | StandardUnmarshalSint64Slice-6   | 2903524  | 405.0 ns/op  | 504 B/op   | 6 allocs/op    |
+  | **FastUnmarshalSfixed32Slice-6** | 14313001 | 85.07 ns/op  | 112 B/op   | 1 allocs/op    |
+  | StandardUnmarshalSfixed32Slice-6 | 5353230  | 224.2 ns/op  | 248 B/op   | 5 allocs/op    |
+  | **FastUnmarshalSfixed64Slice-6** | 12808696 | 103.0 ns/op  | 208 B/op   | 1 allocs/op    |
+  | StandardUnmarshalSfixed64Slice-6 | 3824290  | 317.3 ns/op  | 504 B/op   | 6 allocs/op    |
+  | **FastUnmarshalMixedProto-6**    | 20580    | 58110 ns/op  | 46909 B/op | 606 allocs/op  |
+  | StandardUnmarshalMixedProto-6    | 8949     | 132525 ns/op | 60842 B/op | 1966 allocs/op |
+
 
 
