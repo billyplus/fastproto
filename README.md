@@ -10,7 +10,7 @@ Install the standard protocol buffer implementation from [https://github.com/pro
 
 Then install the `protoc-gen-go-fast` binary
 
-    go get github.com/billyplus/fastproto/cmd/protoc-gen-go-fast
+    go install github.com/billyplus/fastproto/cmd/protoc-gen-go-fast@latest
 
 ### How to use
 
