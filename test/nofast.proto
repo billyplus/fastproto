@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package pb;
 option go_package = "github.com/billyplus/fastproto/test/pb";
+import "google/protobuf/timestamp.proto";
 
-message OuterMsg {
+message NoFastMessage {
   //
   int64 eid = 1;
   //
@@ -14,4 +15,5 @@ message OuterMsg {
   int32 job = 4;
   // sex
   int32 sex = 5;
+  google.protobuf.Timestamp last_updated = 6;
 }

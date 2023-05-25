@@ -20,7 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// message which is empty
 type OuterMsg struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

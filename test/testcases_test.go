@@ -6,8 +6,9 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/billyplus/fastproto"
 	pb "github.com/billyplus/fastproto/test/pb"
+	"google.golang.org/protobuf/proto"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var (
@@ -21,8 +22,8 @@ var (
 	arrSfixed64Test = &Sfixed64S{Val: append(randArr(20, rand.Int63), []int64{0, 0, 0, math.MaxInt64, math.MinInt64}...)}
 )
 
-func getTestCases() []fastproto.Message {
-	testcase := []fastproto.Message{
+func getTestCases() []proto.Message {
+	testcase := []proto.Message{
 
 		&Float{Val: 3036602},
 		&Float{Val: 3036.32899602},
@@ -266,7 +267,7 @@ func getTestCases() []fastproto.Message {
 	testcase = append(testcase, &Mapstringsfixed32{Val: randMap(30, randStringN(16), rand.Int31)})
 	testcase = append(testcase, &Mapstringsfixed64{Val: randMap(30, randStringN(16), rand.Int63)})
 
-	// testcase = append(testcase, fullProtoMsg())
+	testcase = append(testcase, fullProtoMsg())
 
 	testcase = append(testcase, &FullProto{MapInt32Bool: randMap(20, rand.Int31, func() bool { return rand.Int31()%2 == 1 })})
 	testcase = append(testcase, &FullProto{MapInt32Int32: randMap(20, rand.Int31, rand.Int31)})
@@ -297,25 +298,46 @@ func getTestCases() []fastproto.Message {
 		Sex:    rand.Int31(),
 	}})
 
+	testcase = append(testcase, &WithStandardMessage{
+		Id: rand.Uint64(),
+		Nofast: &pb.NoFastMessage{
+			Eid:    rand.Int63(),
+			OpenId: randStringN(20)(),
+			Name:   randStringN(20)(),
+			Job:    rand.Int31(),
+			Sex:    rand.Int31(),
+		},
+		Nofasts: randArr(20, func() *pb.NoFastMessage {
+			return &pb.NoFastMessage{
+				Eid:    rand.Int63(),
+				OpenId: randStringN(20)(),
+				Name:   randStringN(20)(),
+				Job:    rand.Int31(),
+				Sex:    rand.Int31(),
+			}
+		}),
+		LastUpdated: &timestamppb.Timestamp{Seconds: int64(time.Now().Second()), Nanos: int32(time.Now().Nanosecond())},
+	})
+
 	return testcase
 }
 
 func fullProtoMsg() *FullProto {
 	m := &FullProto{}
 	m.VInt32 = rand.Int31()
-	m.VBool = true
-	m.VBytes = []byte("我是大赢家！@#\u0020\xe2\x8c\x98\b\u2318⌘\u65E5\u8A9E;ereriufk;lJIJHIj32323^%^^$^&%*^&" + randStringN(12)())
 	m.VInt64 = rand.Int63()
 	m.VUint32 = rand.Uint32()
 	m.VUint64 = rand.Uint64()
 	m.VString = "我是大赢家！@#\u0020\xe2\x8c\x98\b\u2318⌘\u65E5\u8A9E;ereriufk;lJIJHIj32323^%^^$^&%*^&" + randStringN(20)()
+	m.VBytes = []byte("我是大赢家！@#\u0020\xe2\x8c\x98\b\u2318⌘\u65E5\u8A9E;ereriufk;lJIJHIj32323^%^^$^&%*^&" + randStringN(12)())
+	m.VBool = true
 
 	m.SInt32 = rand.Int31()
 	m.SInt64 = rand.Int63()
-	m.Sfixed32 = rand.Int31()
-	m.Sfixed64 = rand.Int63()
 	m.Fixed32 = rand.Uint32()
 	m.Fixed64 = rand.Uint64()
+	m.Sfixed32 = rand.Int31()
+	m.Sfixed64 = rand.Int63()
 	m.ArrInt32 = randArr(20, rand.Int31)
 	m.ArrInt64 = randArr(20, rand.Int63)
 	m.ArrUint32 = randArr(20, rand.Uint32)
@@ -323,6 +345,33 @@ func fullProtoMsg() *FullProto {
 	m.ArrBool = randArr(20, func() bool { return rand.Int31()%2 == 1 })
 	m.ArrString = randArr(20, randStringN(32))
 	m.ArrBytes = randArr(20, func() []byte { return []byte(randStringN(32)()) })
+
+	m.MapInt32Bool = randMap(20, rand.Int31, func() bool { return rand.Int31()%2 == 1 })
+	m.MapInt32Int32 = randMap(20, rand.Int31, rand.Int31)
+	m.MapInt32String = randMap(20, rand.Int31, randStringN(24))
+	m.MapInt64Bool = randMap(20, rand.Int63, func() bool { return rand.Int31()%2 == 1 })
+	m.MapInt64Int64 = randMap(20, rand.Int63, rand.Int63)
+	m.MapInt64Bytes = randMap(20, rand.Int63, func() []byte { return []byte(randStringN(24)()) })
+	m.MapSint32Sint64 = randMap(20, rand.Int31, rand.Int63)
+	m.MapSint64Sint32 = randMap(20, rand.Int63, rand.Int31)
+	m.MapFixed32Sfixed64 = randMap(20, rand.Uint32, rand.Int63)
+	m.MapSfixed32Fixed64 = randMap(20, rand.Int31, rand.Uint64)
+	m.MapStringBool = randMap(20, randStringN(20), func() bool { return rand.Int31()%2 == 1 })
+	m.MapStringInt32 = randMap(20, randStringN(20), rand.Int31)
+	m.MapStringInt64 = randMap(20, randStringN(20), rand.Int63)
+	m.MapStringSint64 = randMap(20, randStringN(20), rand.Int63)
+	m.MapStringSfixed64 = randMap(20, randStringN(20), rand.Int63)
+	m.MapStringString = randMap(20, randStringN(20), randStringN(40))
+	m.MapStringEnum = randMap(20, randStringN(20), func() TestEnum { return TestEnum(rand.Int31() % int32(TestEnum_Test_Max+1)) })
+
+	m.MActor = &OtherMessage{
+		Eid:    rand.Int63(),
+		OpenId: randStringN(32)(),
+		Name:   randStringN(20)(),
+		Job:    rand.Int31(),
+		Sex:    rand.Int31(),
+	}
+
 	m.ArrActor = randArr(20, func() *OtherMessage {
 		return &OtherMessage{
 			Eid:    rand.Int63(),
@@ -332,13 +381,25 @@ func fullProtoMsg() *FullProto {
 			Sex:    rand.Int31(),
 		}
 	})
-	m.MapInt32Bool = randMap(20, rand.Int31, func() bool { return rand.Int31()%2 == 1 })
-	m.MapInt32Int32 = randMap(20, rand.Int31, rand.Int31)
-	m.MapInt32String = randMap(20, rand.Int31, randStringN(24))
-	m.MapSfixed32Fixed64 = randMap(20, rand.Int31, rand.Uint64)
-	m.MapStringSint64 = randMap(20, randStringN(20), rand.Int63)
-	m.MapStringSfixed64 = randMap(20, randStringN(20), rand.Int63)
 	m.MapStringActor = randMap(20, randStringN(20), func() *OtherMessage {
+		return &OtherMessage{
+			Eid:    rand.Int63(),
+			OpenId: "\u0020\xe2\x8c\x98\b\u2318⌘\u65E5\u8A9E",
+			Name:   randStringN(20)(),
+			Job:    rand.Int31(),
+			Sex:    rand.Int31(),
+		}
+	})
+	m.MapInt32Actor = randMap(20, rand.Int31, func() *OtherMessage {
+		return &OtherMessage{
+			Eid:    rand.Int63(),
+			OpenId: "\u0020\xe2\x8c\x98\b\u2318⌘\u65E5\u8A9E",
+			Name:   randStringN(20)(),
+			Job:    rand.Int31(),
+			Sex:    rand.Int31(),
+		}
+	})
+	m.MapInt64Actor = randMap(20, rand.Int63, func() *OtherMessage {
 		return &OtherMessage{
 			Eid:    rand.Int63(),
 			OpenId: "\u0020\xe2\x8c\x98\b\u2318⌘\u65E5\u8A9E",

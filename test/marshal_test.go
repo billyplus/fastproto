@@ -17,7 +17,7 @@ func TestMarshaler(t *testing.T) {
 
 }
 
-func testMarshaler(t *testing.T, v fastproto.Message) {
+func testMarshaler(t *testing.T, v proto.Message) {
 	data, err := fastproto.Marshal(v)
 	if err != nil {
 		t.Fatalf("marshal %T to []byte has error: %v", v, err)
@@ -29,7 +29,7 @@ func testMarshaler(t *testing.T, v fastproto.Message) {
 		t.Fatalf("unmarshal %T with google proto has error: %v", v, err)
 	}
 
-	v3 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(fastproto.Message)
+	v3 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(proto.Message)
 	err = fastproto.UnmarshalOptions{IgnoreMessageInfo: false}.Unmarshal(data, v3)
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = false` has error: %v", v, err)
@@ -39,14 +39,24 @@ func testMarshaler(t *testing.T, v fastproto.Message) {
 		return
 	}
 
-	v4 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(fastproto.Message)
+	v5 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(fastproto.Message)
+	err = v5.Unmarshal(data)
+	if err != nil {
+		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = false` has error: %v", v, err)
+	}
+	if !proto.Equal(v5, v2) {
+		t.Fatalf("message[%T] with messageinfo should be equal to message from proto.Unmarshal", v)
+		return
+	}
+
+	v4 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(proto.Message)
 	err = fastproto.UnmarshalOptions{IgnoreMessageInfo: true}.Unmarshal(data, v4)
 
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = true` has error: %v", v, err)
 	}
 	// ensure size is cached
-	v4.Size()
+	fastproto.Size(v4)
 
 	if !proto.Equal(v, v4) {
 		t.Fatalf("message[%T] without messageinfo should be equal to original message", v)
@@ -114,7 +124,7 @@ func BenchmarkGoogleMarshalMixedProto(b *testing.B) {
 	benchGoogleMarshal(b, fullProtoTest)
 }
 
-func benchFastMarshalTo(b *testing.B, v fastproto.Marshaler) {
+func benchFastMarshalTo(b *testing.B, v proto.Message) {
 	d := make([]byte, 0, v.(fastproto.Sizer).Size())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -122,7 +132,7 @@ func benchFastMarshalTo(b *testing.B, v fastproto.Marshaler) {
 	}
 }
 
-func benchFastMarshal(b *testing.B, v fastproto.Marshaler) {
+func benchFastMarshal(b *testing.B, v proto.Message) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = fastproto.Marshal(v)

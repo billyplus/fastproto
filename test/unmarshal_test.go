@@ -10,20 +10,20 @@ import (
 
 func TestUnmarshal(t *testing.T) {
 	for _, v := range allTests {
-		if testUnmarshal(t, v.(fastproto.Unmarshaler)) != nil {
+		if testUnmarshal(t, v) != nil {
 			return
 		}
 	}
 
 }
 
-func testUnmarshal(t *testing.T, v fastproto.Unmarshaler) error {
-	data, err := proto.Marshal(v.(proto.Message))
+func testUnmarshal(t *testing.T, v proto.Message) error {
+	data, err := proto.Marshal(v)
 	if err != nil {
 		t.Fatalf("marshal %T to []byte has error: %v", v, err)
 	}
 
-	v2 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(fastproto.Unmarshaler)
+	v2 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(proto.Message)
 	// err = protobuf.Unmarshal(data, v2)
 
 	err = fastproto.Unmarshal(data, v2)
@@ -100,15 +100,10 @@ func BenchmarkGoogleUnmarshalMixedProto(b *testing.B) {
 	benchGoogleUnmarshal(b, fullProtoTest)
 }
 
-type resetUnmarshaler interface {
-	fastproto.Unmarshaler
-	Reset()
-}
-
-func benchFastUnmarshal(b *testing.B, v fastproto.Unmarshaler) {
-	data, _ := proto.Marshal(v.(proto.Message))
+func benchFastUnmarshal(b *testing.B, v proto.Message) {
+	data, _ := proto.Marshal(v)
 	t := reflect.TypeOf(v).Elem()
-	v2 := reflect.New(t).Interface().(resetUnmarshaler)
+	v2 := reflect.New(t).Interface().(proto.Message)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		// b.StopTimer()
@@ -117,8 +112,8 @@ func benchFastUnmarshal(b *testing.B, v fastproto.Unmarshaler) {
 	}
 }
 
-func benchGoogleUnmarshal(b *testing.B, v fastproto.Unmarshaler) {
-	data, _ := proto.Marshal(v.(proto.Message))
+func benchGoogleUnmarshal(b *testing.B, v proto.Message) {
+	data, _ := proto.Marshal(v)
 	t := reflect.TypeOf(v).Elem()
 	v3 := reflect.New(t).Interface().(proto.Message)
 	b.ResetTimer()

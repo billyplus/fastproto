@@ -19,6 +19,7 @@ var (
 	sizeBytes       = protobuf.ProtoWirePackage.Ident("SizeBytes")
 	sizeVarintSlice = protobuf.FastProtoPackage.Ident("SizeVarintSlice")
 	sizeZigZagSlice = protobuf.FastProtoPackage.Ident("SizeZigZagSlice")
+	size            = protobuf.FastProtoPackage.Ident("Size")
 )
 
 func init() {
@@ -151,12 +152,12 @@ func (p *sizer) GenerateField(f *protogen.File, field *protogen.Field) {
 			p.P(`    }`)
 		} else if repeated {
 			p.P(`        for _, e := range x.`, fieldName, ` {`)
-			p.P(`        	n += `, keysize, ` + `, sizeBytes, `(e.Size())`)
+			p.P(`        	n += `, keysize, ` + `, sizeBytes, `(`, size, `(e))`)
 			p.P(`        }`)
 
 		} else {
 			p.P(`    if x.`, fieldName, `!=nil {`)
-			p.P(`    	n += `, keysize, ` + `, sizeBytes, `(x.`, fieldName, `.Size())`)
+			p.P(`    	n += `, keysize, ` + `, sizeBytes, `(`, size, `(x.`, fieldName, `))`)
 			p.P(`    }`)
 		}
 	}
@@ -172,7 +173,7 @@ func (p *sizer) sizerMap(field *protogen.Field) {
 	tmp := append([]interface{}{`            l = `}, keySizer[key.Kind()]...)
 
 	if value.Kind() == protoreflect.MessageKind {
-		p.P(`               sz := v.Size()`)
+		p.P(`               sz := `, size, `(v)`)
 		tmp = append(tmp, "+ sz + 1 + ", sizeVarint, `(uint64(sz))`)
 	} else {
 		tmp = append(tmp, " + ")

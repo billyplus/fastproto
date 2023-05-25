@@ -119,7 +119,7 @@ func (x *OuterMsg) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *OuterMsg) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package fastproto
 
 import (
 	"google.golang.org/protobuf/encoding/protowire"
+	"google.golang.org/protobuf/proto"
 )
 
 type Unmarshaler interface {
@@ -21,36 +22,34 @@ type UnmarshalOptions struct {
 	IgnoreMessageInfo bool
 }
 
-func (opt UnmarshalOptions) Unmarshal(b []byte, m Unmarshaler) error {
+func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
+	mm, ok := m.(Unmarshaler)
+	if !ok {
+		return proto.UnmarshalOptions{Merge: opt.Merge}.Unmarshal(b, m)
+	}
+
 	if !opt.Merge {
 		if opt.IgnoreMessageInfo {
-			m.XxxReset()
+			mm.XxxReset()
 		} else {
-			m.Reset()
+			mm.Reset()
 		}
 	} else {
 		if !opt.IgnoreMessageInfo {
-			m.FillMessageInfo()
+			mm.FillMessageInfo()
 		}
 	}
 
-	// if x != nil {
-	// 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	// 	if ms.LoadMessageInfo() == nil {
-	// 		mi := &file_test_msg_proto_msgTypes[2]
-	// 		ms.StoreMessageInfo(mi)
-	// 	}
-	// }
-	return m.Unmarshal(b)
+	return mm.Unmarshal(b)
 }
 
-func ConsumeMessage(data []byte, msg Unmarshaler) (int, error) {
+func ConsumeMessage(data []byte, msg proto.Message) (int, error) {
 	msglen, n := CalcListLength(data)
 	if n < 0 {
 		return 0, protowire.ParseError(n)
 	}
 	data = data[n:]
-	if err := msg.Unmarshal(data[:msglen]); err != nil {
+	if err := Unmarshal(data[:msglen], msg); err != nil {
 		return 0, err
 	}
 	return n + msglen, nil
@@ -58,7 +57,6 @@ func ConsumeMessage(data []byte, msg Unmarshaler) (int, error) {
 
 // // Unmarshal parses the wire-format message in b and places the result in m.
 // // if m does not implement unmarshaler interface, it will fallback to proto.Unmarshal
-func Unmarshal(b []byte, m Unmarshaler) error {
-	// proto.Reset(m)
+func Unmarshal(b []byte, m proto.Message) error {
 	return UnmarshalOptions{IgnoreMessageInfo: true}.Unmarshal(b, m)
 }

@@ -12,6 +12,7 @@ import (
 	pb "github.com/billyplus/fastproto/test/pb"
 	protowire "google.golang.org/protobuf/encoding/protowire"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	math "math"
 )
 
@@ -1462,7 +1463,7 @@ func (x *FullProto) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *FullProto) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -1788,10 +1789,10 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	}
 	if x.MActor != nil {
 		data = protowire.AppendVarint(data, 1850)
-		sz := uint64(x.MActor.Size())
+		sz := uint64(fastproto.Size(x.MActor))
 		data = protowire.AppendVarint(data, uint64(sz))
 		if sz > 0 {
-			data, err = x.MActor.AppendToSizedBuffer(data)
+			data, err = fastproto.AppendToSizedBuffer(data, x.MActor)
 			if err != nil {
 				return nil, err
 			}
@@ -1800,10 +1801,10 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.ArrActor) > 0 {
 		for _, v := range x.ArrActor {
 			data = protowire.AppendVarint(data, 1858)
-			sz := v.Size()
+			sz := fastproto.Size(v)
 			data = protowire.AppendVarint(data, uint64(sz))
 			if sz > 0 {
-				data, err = v.AppendToSizedBuffer(data)
+				data, err = fastproto.AppendToSizedBuffer(data, v)
 				if err != nil {
 					return nil, err
 				}
@@ -1814,16 +1815,16 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		for k, v := range x.MapStringActor {
 			data = protowire.AppendVarint(data, 1866)
 			_, _ = k, v
-			l := 1 + protowire.SizeBytes(len(k)) + 1 + protowire.SizeBytes(v.Size())
+			l := 1 + protowire.SizeBytes(len(k)) + 1 + protowire.SizeBytes(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(l))
 			data = protowire.AppendVarint(data, 10)
 			data = protowire.AppendVarint(data, uint64(len(k)))
 			data = append(data, k...)
 			data = protowire.AppendVarint(data, 18)
-			sz := uint64(v.Size())
+			sz := uint64(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(sz))
 			if sz > 0 {
-				data, err = v.AppendToSizedBuffer(data)
+				data, err = fastproto.AppendToSizedBuffer(data, v)
 				if err != nil {
 					return nil, err
 				}
@@ -1834,15 +1835,15 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		for k, v := range x.MapInt32Actor {
 			data = protowire.AppendVarint(data, 1874)
 			_, _ = k, v
-			l := 1 + protowire.SizeVarint(uint64(k)) + 1 + protowire.SizeBytes(v.Size())
+			l := 1 + protowire.SizeVarint(uint64(k)) + 1 + protowire.SizeBytes(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(l))
 			data = protowire.AppendVarint(data, 8)
 			data = protowire.AppendVarint(data, uint64(k))
 			data = protowire.AppendVarint(data, 18)
-			sz := uint64(v.Size())
+			sz := uint64(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(sz))
 			if sz > 0 {
-				data, err = v.AppendToSizedBuffer(data)
+				data, err = fastproto.AppendToSizedBuffer(data, v)
 				if err != nil {
 					return nil, err
 				}
@@ -1853,15 +1854,15 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		for k, v := range x.MapInt64Actor {
 			data = protowire.AppendVarint(data, 1882)
 			_, _ = k, v
-			l := 1 + protowire.SizeVarint(uint64(k)) + 1 + protowire.SizeBytes(v.Size())
+			l := 1 + protowire.SizeVarint(uint64(k)) + 1 + protowire.SizeBytes(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(l))
 			data = protowire.AppendVarint(data, 8)
 			data = protowire.AppendVarint(data, uint64(k))
 			data = protowire.AppendVarint(data, 18)
-			sz := uint64(v.Size())
+			sz := uint64(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(sz))
 			if sz > 0 {
-				data, err = v.AppendToSizedBuffer(data)
+				data, err = fastproto.AppendToSizedBuffer(data, v)
 				if err != nil {
 					return nil, err
 				}
@@ -1870,10 +1871,10 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	}
 	if x.Outer != nil {
 		data = protowire.AppendVarint(data, 2250)
-		sz := uint64(x.Outer.Size())
+		sz := uint64(fastproto.Size(x.Outer))
 		data = protowire.AppendVarint(data, uint64(sz))
 		if sz > 0 {
-			data, err = x.Outer.AppendToSizedBuffer(data)
+			data, err = fastproto.AppendToSizedBuffer(data, x.Outer)
 			if err != nil {
 				return nil, err
 			}
@@ -2074,15 +2075,15 @@ func (x *FullProto) Size() (n int) {
 		}
 	}
 	if x.MActor != nil {
-		n += 2 + protowire.SizeBytes(x.MActor.Size())
+		n += 2 + protowire.SizeBytes(fastproto.Size(x.MActor))
 	}
 	for _, e := range x.ArrActor {
-		n += 2 + protowire.SizeBytes(e.Size())
+		n += 2 + protowire.SizeBytes(fastproto.Size(e))
 	}
 	if len(x.MapStringActor) > 0 {
 		for k, v := range x.MapStringActor {
 			_, _ = k, v
-			sz := v.Size()
+			sz := fastproto.Size(v)
 			l = 1 + protowire.SizeBytes(len(k)) + sz + 1 + protowire.SizeVarint(uint64(sz))
 			n += 2 + l + protowire.SizeVarint(uint64(l))
 		}
@@ -2090,7 +2091,7 @@ func (x *FullProto) Size() (n int) {
 	if len(x.MapInt32Actor) > 0 {
 		for k, v := range x.MapInt32Actor {
 			_, _ = k, v
-			sz := v.Size()
+			sz := fastproto.Size(v)
 			l = 1 + protowire.SizeVarint(uint64(k)) + sz + 1 + protowire.SizeVarint(uint64(sz))
 			n += 2 + l + protowire.SizeVarint(uint64(l))
 		}
@@ -2098,13 +2099,13 @@ func (x *FullProto) Size() (n int) {
 	if len(x.MapInt64Actor) > 0 {
 		for k, v := range x.MapInt64Actor {
 			_, _ = k, v
-			sz := v.Size()
+			sz := fastproto.Size(v)
 			l = 1 + protowire.SizeVarint(uint64(k)) + sz + 1 + protowire.SizeVarint(uint64(sz))
 			n += 2 + l + protowire.SizeVarint(uint64(l))
 		}
 	}
 	if x.Outer != nil {
-		n += 2 + protowire.SizeBytes(x.Outer.Size())
+		n += 2 + protowire.SizeBytes(fastproto.Size(x.Outer))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -2210,7 +2211,7 @@ func (x *OtherMessage) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *OtherMessage) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2274,6 +2275,174 @@ func (x *OtherMessage) Size() (n int) {
 	return
 }
 
+func (x *WithStandardMessage) XxxReset() {
+	*x = WithStandardMessage{}
+}
+
+func (x *WithStandardMessage) FillMessageInfo() {
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			mi := &file_test_msg_proto_msgTypes[3]
+			ms.StoreMessageInfo(mi)
+		}
+	}
+}
+
+func (x *WithStandardMessage) Unmarshal(data []byte) error {
+	for len(data) > 0 {
+		num, wireType, n := protowire.ConsumeTag(data)
+		if n < 0 {
+			return protowire.ParseError(n)
+		}
+		if num <= 0 {
+			return fmt.Errorf("proto: WithStandardMessage: illegal tag %d (wire type %d)", num, wireType)
+		}
+		data = data[n:]
+		switch num {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			v, n := protowire.ConsumeVarint(data)
+			if n < 0 {
+				return protowire.ParseError(n)
+			}
+			data = data[n:]
+			x.Id = uint64(v)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nofast", wireType)
+			}
+			if x.Nofast == nil {
+				x.Nofast = &pb.NoFastMessage{}
+			}
+			if n, err := fastproto.ConsumeMessage(data, x.Nofast); err != nil {
+				return err
+			} else {
+				data = data[n:]
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nofasts", wireType)
+			}
+			v := &pb.NoFastMessage{}
+			if n, err := fastproto.ConsumeMessage(data, v); err != nil {
+				return err
+			} else {
+				data = data[n:]
+			}
+			x.Nofasts = append(x.Nofasts, v)
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastUpdated", wireType)
+			}
+			if x.LastUpdated == nil {
+				x.LastUpdated = &timestamppb.Timestamp{}
+			}
+			if n, err := fastproto.ConsumeMessage(data, x.LastUpdated); err != nil {
+				return err
+			} else {
+				data = data[n:]
+			}
+		default:
+			_, n = protowire.ConsumeBytes(data)
+			if n < 0 {
+				return protowire.ParseError(n)
+			}
+			x.unknownFields = append(x.unknownFields, data[:n]...)
+			data = data[n:]
+		}
+	}
+	return nil
+}
+
+func (x *WithStandardMessage) MarshalTo(data []byte) (n int, err error) {
+	maxN := cap(data)
+	data, err = x.AppendToSizedBuffer(data[:0])
+	if maxN < len(data) {
+		return 0, fmt.Errorf("Not enough space for message(WithStandardMessage)")
+	}
+	return len(data), nil
+}
+
+func (x *WithStandardMessage) Marshal() ([]byte, error) {
+	data := make([]byte, 0, fastproto.Size(x))
+	data, err := x.AppendToSizedBuffer(data)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (x *WithStandardMessage) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
+	if x.Id != 0 {
+		data = protowire.AppendVarint(data, 8)
+		data = protowire.AppendVarint(data, uint64(x.Id))
+	}
+	if x.Nofast != nil {
+		data = protowire.AppendVarint(data, 18)
+		sz := uint64(fastproto.Size(x.Nofast))
+		data = protowire.AppendVarint(data, uint64(sz))
+		if sz > 0 {
+			data, err = fastproto.AppendToSizedBuffer(data, x.Nofast)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	if len(x.Nofasts) > 0 {
+		for _, v := range x.Nofasts {
+			data = protowire.AppendVarint(data, 26)
+			sz := fastproto.Size(v)
+			data = protowire.AppendVarint(data, uint64(sz))
+			if sz > 0 {
+				data, err = fastproto.AppendToSizedBuffer(data, v)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+	}
+	if x.LastUpdated != nil {
+		data = protowire.AppendVarint(data, 34)
+		sz := uint64(fastproto.Size(x.LastUpdated))
+		data = protowire.AppendVarint(data, uint64(sz))
+		if sz > 0 {
+			data, err = fastproto.AppendToSizedBuffer(data, x.LastUpdated)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return data, nil
+}
+
+func (x *WithStandardMessage) Size() (n int) {
+	if x == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if x.Id != 0 {
+		n += 1 + protowire.SizeVarint(uint64(x.Id))
+	}
+	if x.Nofast != nil {
+		n += 1 + protowire.SizeBytes(fastproto.Size(x.Nofast))
+	}
+	for _, e := range x.Nofasts {
+		n += 1 + protowire.SizeBytes(fastproto.Size(e))
+	}
+	if x.LastUpdated != nil {
+		n += 1 + protowire.SizeBytes(fastproto.Size(x.LastUpdated))
+	}
+	if x.unknownFields != nil {
+		n += len(x.unknownFields)
+	}
+	x.sizeCache = int32(n)
+	return
+}
+
 func (x *Float) XxxReset() {
 	*x = Float{}
 }
@@ -2282,7 +2451,7 @@ func (x *Float) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[3]
+			mi := &file_test_msg_proto_msgTypes[4]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2331,7 +2500,7 @@ func (x *Float) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Float) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2371,7 +2540,7 @@ func (x *Double) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[4]
+			mi := &file_test_msg_proto_msgTypes[5]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2420,7 +2589,7 @@ func (x *Double) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Double) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2460,7 +2629,7 @@ func (x *Int32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[5]
+			mi := &file_test_msg_proto_msgTypes[6]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2509,7 +2678,7 @@ func (x *Int32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Int32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2549,7 +2718,7 @@ func (x *Int64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[6]
+			mi := &file_test_msg_proto_msgTypes[7]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2598,7 +2767,7 @@ func (x *Int64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Int64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2638,7 +2807,7 @@ func (x *Sint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[7]
+			mi := &file_test_msg_proto_msgTypes[8]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2687,7 +2856,7 @@ func (x *Sint32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sint32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2727,7 +2896,7 @@ func (x *Sint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[8]
+			mi := &file_test_msg_proto_msgTypes[9]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2776,7 +2945,7 @@ func (x *Sint64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sint64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2816,7 +2985,7 @@ func (x *Uint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[9]
+			mi := &file_test_msg_proto_msgTypes[10]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2865,7 +3034,7 @@ func (x *Uint32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Uint32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2905,7 +3074,7 @@ func (x *Uint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[10]
+			mi := &file_test_msg_proto_msgTypes[11]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2954,7 +3123,7 @@ func (x *Uint64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Uint64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -2994,7 +3163,7 @@ func (x *Fixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[11]
+			mi := &file_test_msg_proto_msgTypes[12]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3043,7 +3212,7 @@ func (x *Fixed32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Fixed32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3083,7 +3252,7 @@ func (x *Fixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[12]
+			mi := &file_test_msg_proto_msgTypes[13]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3132,7 +3301,7 @@ func (x *Fixed64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Fixed64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3172,7 +3341,7 @@ func (x *Sfixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[13]
+			mi := &file_test_msg_proto_msgTypes[14]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3221,7 +3390,7 @@ func (x *Sfixed32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sfixed32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3261,7 +3430,7 @@ func (x *Sfixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[14]
+			mi := &file_test_msg_proto_msgTypes[15]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3310,7 +3479,7 @@ func (x *Sfixed64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sfixed64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3350,7 +3519,7 @@ func (x *Bool) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[15]
+			mi := &file_test_msg_proto_msgTypes[16]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3399,7 +3568,7 @@ func (x *Bool) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Bool) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3439,7 +3608,7 @@ func (x *String) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[16]
+			mi := &file_test_msg_proto_msgTypes[17]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3488,7 +3657,7 @@ func (x *String) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *String) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3530,7 +3699,7 @@ func (x *Bytes) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[17]
+			mi := &file_test_msg_proto_msgTypes[18]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3579,7 +3748,7 @@ func (x *Bytes) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Bytes) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3621,7 +3790,7 @@ func (x *TestProtoMsg) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[18]
+			mi := &file_test_msg_proto_msgTypes[19]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3682,7 +3851,7 @@ func (x *TestProtoMsg) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *TestProtoMsg) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3693,10 +3862,10 @@ func (x *TestProtoMsg) Marshal() ([]byte, error) {
 func (x *TestProtoMsg) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if x.Val != nil {
 		data = protowire.AppendVarint(data, 10)
-		sz := uint64(x.Val.Size())
+		sz := uint64(fastproto.Size(x.Val))
 		data = protowire.AppendVarint(data, uint64(sz))
 		if sz > 0 {
-			data, err = x.Val.AppendToSizedBuffer(data)
+			data, err = fastproto.AppendToSizedBuffer(data, x.Val)
 			if err != nil {
 				return nil, err
 			}
@@ -3716,7 +3885,7 @@ func (x *TestProtoMsg) Size() (n int) {
 	var l int
 	_ = l
 	if x.Val != nil {
-		n += 1 + protowire.SizeBytes(x.Val.Size())
+		n += 1 + protowire.SizeBytes(fastproto.Size(x.Val))
 	}
 	if x.Val2 != 0 {
 		n += 1 + protowire.SizeVarint(uint64(x.Val2))
@@ -3736,7 +3905,7 @@ func (x *Floats) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[19]
+			mi := &file_test_msg_proto_msgTypes[20]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3805,7 +3974,7 @@ func (x *Floats) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Floats) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3848,7 +4017,7 @@ func (x *Doubles) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[20]
+			mi := &file_test_msg_proto_msgTypes[21]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3917,7 +4086,7 @@ func (x *Doubles) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Doubles) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -3960,7 +4129,7 @@ func (x *Int32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[21]
+			mi := &file_test_msg_proto_msgTypes[22]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4034,7 +4203,7 @@ func (x *Int32S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Int32S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4077,7 +4246,7 @@ func (x *Int64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[22]
+			mi := &file_test_msg_proto_msgTypes[23]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4151,7 +4320,7 @@ func (x *Int64S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Int64S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4194,7 +4363,7 @@ func (x *Sint32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[23]
+			mi := &file_test_msg_proto_msgTypes[24]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4268,7 +4437,7 @@ func (x *Sint32S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sint32S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4311,7 +4480,7 @@ func (x *Sint64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[24]
+			mi := &file_test_msg_proto_msgTypes[25]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4385,7 +4554,7 @@ func (x *Sint64S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sint64S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4428,7 +4597,7 @@ func (x *Uint32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[25]
+			mi := &file_test_msg_proto_msgTypes[26]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4502,7 +4671,7 @@ func (x *Uint32S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Uint32S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4545,7 +4714,7 @@ func (x *Uint64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[26]
+			mi := &file_test_msg_proto_msgTypes[27]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4619,7 +4788,7 @@ func (x *Uint64S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Uint64S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4662,7 +4831,7 @@ func (x *Fixed32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[27]
+			mi := &file_test_msg_proto_msgTypes[28]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4731,7 +4900,7 @@ func (x *Fixed32S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Fixed32S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4774,7 +4943,7 @@ func (x *Fixed64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[28]
+			mi := &file_test_msg_proto_msgTypes[29]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4843,7 +5012,7 @@ func (x *Fixed64S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Fixed64S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4886,7 +5055,7 @@ func (x *Sfixed32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[29]
+			mi := &file_test_msg_proto_msgTypes[30]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4955,7 +5124,7 @@ func (x *Sfixed32S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sfixed32S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -4998,7 +5167,7 @@ func (x *Sfixed64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[30]
+			mi := &file_test_msg_proto_msgTypes[31]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5067,7 +5236,7 @@ func (x *Sfixed64S) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Sfixed64S) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5110,7 +5279,7 @@ func (x *Bools) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[31]
+			mi := &file_test_msg_proto_msgTypes[32]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5179,7 +5348,7 @@ func (x *Bools) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Bools) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5222,7 +5391,7 @@ func (x *Strings) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[32]
+			mi := &file_test_msg_proto_msgTypes[33]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5271,7 +5440,7 @@ func (x *Strings) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Strings) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5315,7 +5484,7 @@ func (x *Bytess) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[33]
+			mi := &file_test_msg_proto_msgTypes[34]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5364,7 +5533,7 @@ func (x *Bytess) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Bytess) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5408,7 +5577,7 @@ func (x *TestProtoMsgs) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[34]
+			mi := &file_test_msg_proto_msgTypes[35]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5458,7 +5627,7 @@ func (x *TestProtoMsgs) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *TestProtoMsgs) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5470,10 +5639,10 @@ func (x *TestProtoMsgs) AppendToSizedBuffer(data []byte) (ret []byte, err error)
 	if len(x.Val) > 0 {
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, 10)
-			sz := v.Size()
+			sz := fastproto.Size(v)
 			data = protowire.AppendVarint(data, uint64(sz))
 			if sz > 0 {
-				data, err = v.AppendToSizedBuffer(data)
+				data, err = fastproto.AppendToSizedBuffer(data, v)
 				if err != nil {
 					return nil, err
 				}
@@ -5490,7 +5659,7 @@ func (x *TestProtoMsgs) Size() (n int) {
 	var l int
 	_ = l
 	for _, e := range x.Val {
-		n += 1 + protowire.SizeBytes(e.Size())
+		n += 1 + protowire.SizeBytes(fastproto.Size(e))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -5507,7 +5676,7 @@ func (x *TestEnums) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[35]
+			mi := &file_test_msg_proto_msgTypes[36]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5581,7 +5750,7 @@ func (x *TestEnums) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *TestEnums) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5632,7 +5801,7 @@ func (x *Mapint32Fixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[36]
+			mi := &file_test_msg_proto_msgTypes[37]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5721,7 +5890,7 @@ func (x *Mapint32Fixed64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapint32Fixed64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5773,7 +5942,7 @@ func (x *Mapint64Fixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[37]
+			mi := &file_test_msg_proto_msgTypes[38]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5862,7 +6031,7 @@ func (x *Mapint64Fixed32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapint64Fixed32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -5914,7 +6083,7 @@ func (x *Mapuint32Sint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[38]
+			mi := &file_test_msg_proto_msgTypes[39]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6003,7 +6172,7 @@ func (x *Mapuint32Sint64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapuint32Sint64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6055,7 +6224,7 @@ func (x *Mapuint64Sint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[39]
+			mi := &file_test_msg_proto_msgTypes[40]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6144,7 +6313,7 @@ func (x *Mapuint64Sint32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapuint64Sint32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6196,7 +6365,7 @@ func (x *MapSint32Int64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[40]
+			mi := &file_test_msg_proto_msgTypes[41]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6285,7 +6454,7 @@ func (x *MapSint32Int64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *MapSint32Int64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6337,7 +6506,7 @@ func (x *MapSint64Int32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[41]
+			mi := &file_test_msg_proto_msgTypes[42]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6426,7 +6595,7 @@ func (x *MapSint64Int32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *MapSint64Int32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6478,7 +6647,7 @@ func (x *MapFixed32Double) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[42]
+			mi := &file_test_msg_proto_msgTypes[43]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6567,7 +6736,7 @@ func (x *MapFixed32Double) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *MapFixed32Double) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6619,7 +6788,7 @@ func (x *MapFixed64Float) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[43]
+			mi := &file_test_msg_proto_msgTypes[44]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6708,7 +6877,7 @@ func (x *MapFixed64Float) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *MapFixed64Float) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6760,7 +6929,7 @@ func (x *Mapsfixed64Uint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[44]
+			mi := &file_test_msg_proto_msgTypes[45]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6849,7 +7018,7 @@ func (x *Mapsfixed64Uint32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapsfixed64Uint32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -6901,7 +7070,7 @@ func (x *Mapsfixed32Uint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[45]
+			mi := &file_test_msg_proto_msgTypes[46]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6990,7 +7159,7 @@ func (x *Mapsfixed32Uint64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapsfixed32Uint64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7042,7 +7211,7 @@ func (x *Mapstringsfixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[46]
+			mi := &file_test_msg_proto_msgTypes[47]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7131,7 +7300,7 @@ func (x *Mapstringsfixed32) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapstringsfixed32) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7184,7 +7353,7 @@ func (x *Mapstringsfixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[47]
+			mi := &file_test_msg_proto_msgTypes[48]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7273,7 +7442,7 @@ func (x *Mapstringsfixed64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapstringsfixed64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7326,7 +7495,7 @@ func (x *Mapint64String) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[48]
+			mi := &file_test_msg_proto_msgTypes[49]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7415,7 +7584,7 @@ func (x *Mapint64String) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapint64String) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7468,7 +7637,7 @@ func (x *Mapint64Bytes) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[49]
+			mi := &file_test_msg_proto_msgTypes[50]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7557,7 +7726,7 @@ func (x *Mapint64Bytes) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapint64Bytes) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7610,7 +7779,7 @@ func (x *Mapint64Bool) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[50]
+			mi := &file_test_msg_proto_msgTypes[51]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7699,7 +7868,7 @@ func (x *Mapint64Bool) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapint64Bool) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7751,7 +7920,7 @@ func (x *MapBoolInt64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[51]
+			mi := &file_test_msg_proto_msgTypes[52]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7840,7 +8009,7 @@ func (x *MapBoolInt64) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *MapBoolInt64) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7892,7 +8061,7 @@ func (x *Mapint64TestProtoMsg) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[52]
+			mi := &file_test_msg_proto_msgTypes[53]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7981,7 +8150,7 @@ func (x *Mapint64TestProtoMsg) MarshalTo(data []byte) (n int, err error) {
 }
 
 func (x *Mapint64TestProtoMsg) Marshal() ([]byte, error) {
-	data := make([]byte, 0, x.Size())
+	data := make([]byte, 0, fastproto.Size(x))
 	data, err := x.AppendToSizedBuffer(data)
 	if err != nil {
 		return nil, err
@@ -7994,15 +8163,15 @@ func (x *Mapint64TestProtoMsg) AppendToSizedBuffer(data []byte) (ret []byte, err
 		for k, v := range x.Val {
 			data = protowire.AppendVarint(data, 10)
 			_, _ = k, v
-			l := 1 + protowire.SizeVarint(uint64(k)) + 1 + protowire.SizeBytes(v.Size())
+			l := 1 + protowire.SizeVarint(uint64(k)) + 1 + protowire.SizeBytes(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(l))
 			data = protowire.AppendVarint(data, 8)
 			data = protowire.AppendVarint(data, uint64(k))
 			data = protowire.AppendVarint(data, 18)
-			sz := uint64(v.Size())
+			sz := uint64(fastproto.Size(v))
 			data = protowire.AppendVarint(data, uint64(sz))
 			if sz > 0 {
-				data, err = v.AppendToSizedBuffer(data)
+				data, err = fastproto.AppendToSizedBuffer(data, v)
 				if err != nil {
 					return nil, err
 				}
@@ -8021,7 +8190,7 @@ func (x *Mapint64TestProtoMsg) Size() (n int) {
 	if len(x.Val) > 0 {
 		for k, v := range x.Val {
 			_, _ = k, v
-			sz := v.Size()
+			sz := fastproto.Size(v)
 			l = 1 + protowire.SizeVarint(uint64(k)) + sz + 1 + protowire.SizeVarint(uint64(sz))
 			n += 1 + l + protowire.SizeVarint(uint64(l))
 		}

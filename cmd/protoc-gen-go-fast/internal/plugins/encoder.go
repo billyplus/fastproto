@@ -10,15 +10,16 @@ import (
 )
 
 var (
-	encodeZigZag  = fastproto.ProtoWirePackage.Ident("EncodeZigZag")
-	encodeTag     = fastproto.ProtoWirePackage.Ident("EncodeTag")
-	appendVarint  = fastproto.ProtoWirePackage.Ident("AppendVarint")
-	appendTag     = fastproto.ProtoWirePackage.Ident("AppendTag")
-	appendString  = fastproto.ProtoWirePackage.Ident("AppendString")
-	appendBytes   = fastproto.ProtoWirePackage.Ident("AppendBytes")
-	appendFixed32 = fastproto.ProtoWirePackage.Ident("AppendFixed32")
-	appendFixed64 = fastproto.ProtoWirePackage.Ident("AppendFixed64")
-	bool2Int      = fastproto.FastProtoPackage.Ident("Bool2Int")
+	encodeZigZag        = fastproto.ProtoWirePackage.Ident("EncodeZigZag")
+	encodeTag           = fastproto.ProtoWirePackage.Ident("EncodeTag")
+	appendVarint        = fastproto.ProtoWirePackage.Ident("AppendVarint")
+	appendTag           = fastproto.ProtoWirePackage.Ident("AppendTag")
+	appendString        = fastproto.ProtoWirePackage.Ident("AppendString")
+	appendBytes         = fastproto.ProtoWirePackage.Ident("AppendBytes")
+	appendFixed32       = fastproto.ProtoWirePackage.Ident("AppendFixed32")
+	appendFixed64       = fastproto.ProtoWirePackage.Ident("AppendFixed64")
+	bool2Int            = fastproto.FastProtoPackage.Ident("Bool2Int")
+	appendToSizedBuffer = fastproto.FastProtoPackage.Ident("AppendToSizedBuffer")
 )
 
 func init() {
@@ -57,11 +58,10 @@ func (p *encoder) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFil
 	g.P(`}`)
 	g.P()
 	g.P(`func (x *`, m.GoIdent.GoName, `) Marshal() ([]byte, error) {`)
-	// g.P(`	size := x.Size()`)
 	if len(m.Fields) == 0 {
 		g.P(`	return []byte{}, nil`)
 	} else {
-		g.P(`	data := make([]byte, 0, x.Size())`)
+		g.P(`	data := make([]byte, 0, `, size, `(x))`)
 		g.P(`	data, err := x.AppendToSizedBuffer(data)`)
 		g.P(`	if err != nil {`)
 		g.P(`		return nil, err`)
@@ -187,10 +187,10 @@ func (p *encoder) generateSliceField(f *protogen.File, field *protogen.Field) {
 	case protoreflect.MessageKind:
 		p.P(`        for _, v := range x.`, fieldName, ` {`)
 		p.P(`        	data = `, appendVarint, `(data, `, protowire.EncodeTag(fieldNumber, wireType), `)`)
-		p.P(`        	sz := v.Size()`)
+		p.P(`        	sz := `, size, `(v)`)
 		p.P(`        	data = `, appendVarint, `(data, uint64(sz))`)
 		p.P(`        	if sz > 0 {`)
-		p.P(`        		data, err = v.AppendToSizedBuffer(data)`)
+		p.P(`        		data, err = `, appendToSizedBuffer, `(data, v)`)
 		p.P(`        		if err != nil {`)
 		p.P(`        			return nil, err`)
 		p.P(`        		}`)
@@ -220,7 +220,7 @@ func (p *encoder) generateMapEntrySize(f *protogen.File, key, value protoreflect
 	tmp := append([]interface{}{`            l := `}, keySizer[key.Kind()]...)
 
 	if value.Kind() == protoreflect.MessageKind {
-		tmp = append(tmp, " + 1 + ", sizeBytes, `(v.Size())`)
+		tmp = append(tmp, " + 1 + ", sizeBytes, `(`, size, `(v))`)
 	} else {
 		tmp = append(tmp, " + ")
 		tmp = append(tmp, valueSizer[value.Kind()]...)
@@ -262,10 +262,10 @@ func (p *encoder) generateEntry(f *protogen.File, fieldName string, entryField p
 		p.P(`        data = `, appendVarint, `(data, uint64(len(`, fieldName, `)))`)
 		p.P(`        data = append(data, `, fieldName, `...)`)
 	case protoreflect.MessageKind:
-		p.P(`        sz := uint64(`, fieldName, `.Size())`)
+		p.P(`        sz := uint64(`, size, `(`, fieldName, `))`)
 		p.P(`        data = `, appendVarint, `(data, uint64(sz))`)
 		p.P(`        if sz > 0 {`)
-		p.P(`        	data, err = `, fieldName, `.AppendToSizedBuffer(data)`)
+		p.P(`        	data, err = `, appendToSizedBuffer, `(data, `, fieldName, `)`)
 		p.P(`        	if err != nil {`)
 		p.P(`        		return nil, err`)
 		p.P(`        	}`)
