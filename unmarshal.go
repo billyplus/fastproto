@@ -3,13 +3,12 @@ package fastproto
 import (
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type Unmarshaler interface {
 	Unmarshal(data []byte) error
-	Reset()
 	XxxReset()
-	FillMessageInfo()
 }
 
 type UnmarshalOptions struct {
@@ -18,8 +17,12 @@ type UnmarshalOptions struct {
 	// unless Merge is specified.
 	Merge bool
 
-	// sometimes we don't need message info. so we can ignore message info when we unmarshal message
-	IgnoreMessageInfo bool
+	// Resolver is used for looking up types when unmarshaling extension fields.
+	// If nil, this defaults to using protoregistry.GlobalTypes.
+	Resolver interface {
+		FindExtensionByName(field protoreflect.FullName) (protoreflect.ExtensionType, error)
+		FindExtensionByNumber(message protoreflect.FullName, field protoreflect.FieldNumber) (protoreflect.ExtensionType, error)
+	}
 }
 
 func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
@@ -29,15 +32,7 @@ func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	}
 
 	if !opt.Merge {
-		if opt.IgnoreMessageInfo {
-			mm.XxxReset()
-		} else {
-			mm.Reset()
-		}
-	} else {
-		if !opt.IgnoreMessageInfo {
-			mm.FillMessageInfo()
-		}
+		mm.XxxReset()
 	}
 
 	return mm.Unmarshal(b)
@@ -55,8 +50,9 @@ func ConsumeMessage(data []byte, msg proto.Message) (int, error) {
 	return n + msglen, nil
 }
 
-// // Unmarshal parses the wire-format message in b and places the result in m.
-// // if m does not implement unmarshaler interface, it will fallback to proto.Unmarshal
+// Unmarshal parses the wire-format message in b and places the result in m.
+// if m does not implement unmarshaler interface, it will fallback to proto.Unmarshal
+// merge = true is the default behavior
 func Unmarshal(b []byte, m proto.Message) error {
-	return UnmarshalOptions{IgnoreMessageInfo: true}.Unmarshal(b, m)
+	return UnmarshalOptions{Merge: true}.Unmarshal(b, m)
 }
