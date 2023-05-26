@@ -12,6 +12,7 @@ import (
 	pb "github.com/billyplus/fastproto/test/pb"
 	protowire "google.golang.org/protobuf/encoding/protowire"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	math "math"
 )
@@ -2443,6 +2444,121 @@ func (x *WithStandardMessage) Size() (n int) {
 	return
 }
 
+func (x *WithAnyMessage) XxxReset() {
+	*x = WithAnyMessage{}
+}
+
+func (x *WithAnyMessage) FillMessageInfo() {
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			mi := &file_test_msg_proto_msgTypes[4]
+			ms.StoreMessageInfo(mi)
+		}
+	}
+}
+
+func (x *WithAnyMessage) Unmarshal(data []byte) error {
+	for len(data) > 0 {
+		num, wireType, n := protowire.ConsumeTag(data)
+		if n < 0 {
+			return protowire.ParseError(n)
+		}
+		if num <= 0 {
+			return fmt.Errorf("proto: WithAnyMessage: illegal tag %d (wire type %d)", num, wireType)
+		}
+		data = data[n:]
+		switch num {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			v, n := protowire.ConsumeVarint(data)
+			if n < 0 {
+				return protowire.ParseError(n)
+			}
+			data = data[n:]
+			x.Id = uint64(v)
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AnyMsg", wireType)
+			}
+			if x.AnyMsg == nil {
+				x.AnyMsg = &anypb.Any{}
+			}
+			if n, err := fastproto.ConsumeMessage(data, x.AnyMsg); err != nil {
+				return err
+			} else {
+				data = data[n:]
+			}
+		default:
+			_, n = protowire.ConsumeBytes(data)
+			if n < 0 {
+				return protowire.ParseError(n)
+			}
+			x.unknownFields = append(x.unknownFields, data[:n]...)
+			data = data[n:]
+		}
+	}
+	return nil
+}
+
+func (x *WithAnyMessage) MarshalTo(data []byte) (n int, err error) {
+	maxN := cap(data)
+	data, err = x.AppendToSizedBuffer(data[:0])
+	if maxN < len(data) {
+		return 0, fmt.Errorf("Not enough space for message(WithAnyMessage)")
+	}
+	return len(data), nil
+}
+
+func (x *WithAnyMessage) Marshal() ([]byte, error) {
+	data := make([]byte, 0, fastproto.Size(x))
+	data, err := x.AppendToSizedBuffer(data)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (x *WithAnyMessage) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
+	if x.Id != 0 {
+		data = protowire.AppendVarint(data, 8)
+		data = protowire.AppendVarint(data, uint64(x.Id))
+	}
+	if x.AnyMsg != nil {
+		data = protowire.AppendVarint(data, 34)
+		sz := uint64(fastproto.Size(x.AnyMsg))
+		data = protowire.AppendVarint(data, uint64(sz))
+		if sz > 0 {
+			data, err = fastproto.AppendToSizedBuffer(data, x.AnyMsg)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return data, nil
+}
+
+func (x *WithAnyMessage) Size() (n int) {
+	if x == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if x.Id != 0 {
+		n += 1 + protowire.SizeVarint(uint64(x.Id))
+	}
+	if x.AnyMsg != nil {
+		n += 1 + protowire.SizeBytes(fastproto.Size(x.AnyMsg))
+	}
+	if x.unknownFields != nil {
+		n += len(x.unknownFields)
+	}
+	x.sizeCache = int32(n)
+	return
+}
+
 func (x *Float) XxxReset() {
 	*x = Float{}
 }
@@ -2451,7 +2567,7 @@ func (x *Float) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[4]
+			mi := &file_test_msg_proto_msgTypes[5]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2540,7 +2656,7 @@ func (x *Double) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[5]
+			mi := &file_test_msg_proto_msgTypes[6]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2629,7 +2745,7 @@ func (x *Int32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[6]
+			mi := &file_test_msg_proto_msgTypes[7]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2718,7 +2834,7 @@ func (x *Int64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[7]
+			mi := &file_test_msg_proto_msgTypes[8]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2807,7 +2923,7 @@ func (x *Sint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[8]
+			mi := &file_test_msg_proto_msgTypes[9]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2896,7 +3012,7 @@ func (x *Sint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[9]
+			mi := &file_test_msg_proto_msgTypes[10]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -2985,7 +3101,7 @@ func (x *Uint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[10]
+			mi := &file_test_msg_proto_msgTypes[11]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3074,7 +3190,7 @@ func (x *Uint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[11]
+			mi := &file_test_msg_proto_msgTypes[12]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3163,7 +3279,7 @@ func (x *Fixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[12]
+			mi := &file_test_msg_proto_msgTypes[13]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3252,7 +3368,7 @@ func (x *Fixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[13]
+			mi := &file_test_msg_proto_msgTypes[14]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3341,7 +3457,7 @@ func (x *Sfixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[14]
+			mi := &file_test_msg_proto_msgTypes[15]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3430,7 +3546,7 @@ func (x *Sfixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[15]
+			mi := &file_test_msg_proto_msgTypes[16]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3519,7 +3635,7 @@ func (x *Bool) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[16]
+			mi := &file_test_msg_proto_msgTypes[17]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3608,7 +3724,7 @@ func (x *String) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[17]
+			mi := &file_test_msg_proto_msgTypes[18]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3699,7 +3815,7 @@ func (x *Bytes) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[18]
+			mi := &file_test_msg_proto_msgTypes[19]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3790,7 +3906,7 @@ func (x *TestProtoMsg) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[19]
+			mi := &file_test_msg_proto_msgTypes[20]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -3905,7 +4021,7 @@ func (x *Floats) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[20]
+			mi := &file_test_msg_proto_msgTypes[21]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4017,7 +4133,7 @@ func (x *Doubles) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[21]
+			mi := &file_test_msg_proto_msgTypes[22]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4129,7 +4245,7 @@ func (x *Int32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[22]
+			mi := &file_test_msg_proto_msgTypes[23]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4246,7 +4362,7 @@ func (x *Int64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[23]
+			mi := &file_test_msg_proto_msgTypes[24]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4363,7 +4479,7 @@ func (x *Sint32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[24]
+			mi := &file_test_msg_proto_msgTypes[25]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4480,7 +4596,7 @@ func (x *Sint64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[25]
+			mi := &file_test_msg_proto_msgTypes[26]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4597,7 +4713,7 @@ func (x *Uint32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[26]
+			mi := &file_test_msg_proto_msgTypes[27]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4714,7 +4830,7 @@ func (x *Uint64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[27]
+			mi := &file_test_msg_proto_msgTypes[28]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4831,7 +4947,7 @@ func (x *Fixed32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[28]
+			mi := &file_test_msg_proto_msgTypes[29]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -4943,7 +5059,7 @@ func (x *Fixed64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[29]
+			mi := &file_test_msg_proto_msgTypes[30]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5055,7 +5171,7 @@ func (x *Sfixed32S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[30]
+			mi := &file_test_msg_proto_msgTypes[31]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5167,7 +5283,7 @@ func (x *Sfixed64S) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[31]
+			mi := &file_test_msg_proto_msgTypes[32]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5279,7 +5395,7 @@ func (x *Bools) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[32]
+			mi := &file_test_msg_proto_msgTypes[33]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5391,7 +5507,7 @@ func (x *Strings) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[33]
+			mi := &file_test_msg_proto_msgTypes[34]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5484,7 +5600,7 @@ func (x *Bytess) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[34]
+			mi := &file_test_msg_proto_msgTypes[35]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5577,7 +5693,7 @@ func (x *TestProtoMsgs) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[35]
+			mi := &file_test_msg_proto_msgTypes[36]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5676,7 +5792,7 @@ func (x *TestEnums) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[36]
+			mi := &file_test_msg_proto_msgTypes[37]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5801,7 +5917,7 @@ func (x *Mapint32Fixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[37]
+			mi := &file_test_msg_proto_msgTypes[38]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -5942,7 +6058,7 @@ func (x *Mapint64Fixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[38]
+			mi := &file_test_msg_proto_msgTypes[39]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6083,7 +6199,7 @@ func (x *Mapuint32Sint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[39]
+			mi := &file_test_msg_proto_msgTypes[40]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6224,7 +6340,7 @@ func (x *Mapuint64Sint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[40]
+			mi := &file_test_msg_proto_msgTypes[41]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6365,7 +6481,7 @@ func (x *MapSint32Int64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[41]
+			mi := &file_test_msg_proto_msgTypes[42]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6506,7 +6622,7 @@ func (x *MapSint64Int32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[42]
+			mi := &file_test_msg_proto_msgTypes[43]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6647,7 +6763,7 @@ func (x *MapFixed32Double) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[43]
+			mi := &file_test_msg_proto_msgTypes[44]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6788,7 +6904,7 @@ func (x *MapFixed64Float) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[44]
+			mi := &file_test_msg_proto_msgTypes[45]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -6929,7 +7045,7 @@ func (x *Mapsfixed64Uint32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[45]
+			mi := &file_test_msg_proto_msgTypes[46]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7070,7 +7186,7 @@ func (x *Mapsfixed32Uint64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[46]
+			mi := &file_test_msg_proto_msgTypes[47]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7211,7 +7327,7 @@ func (x *Mapstringsfixed32) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[47]
+			mi := &file_test_msg_proto_msgTypes[48]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7353,7 +7469,7 @@ func (x *Mapstringsfixed64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[48]
+			mi := &file_test_msg_proto_msgTypes[49]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7495,7 +7611,7 @@ func (x *Mapint64String) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[49]
+			mi := &file_test_msg_proto_msgTypes[50]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7637,7 +7753,7 @@ func (x *Mapint64Bytes) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[50]
+			mi := &file_test_msg_proto_msgTypes[51]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7779,7 +7895,7 @@ func (x *Mapint64Bool) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[51]
+			mi := &file_test_msg_proto_msgTypes[52]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -7920,7 +8036,7 @@ func (x *MapBoolInt64) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[52]
+			mi := &file_test_msg_proto_msgTypes[53]
 			ms.StoreMessageInfo(mi)
 		}
 	}
@@ -8061,7 +8177,7 @@ func (x *Mapint64TestProtoMsg) FillMessageInfo() {
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_msg_proto_msgTypes[53]
+			mi := &file_test_msg_proto_msgTypes[54]
 			ms.StoreMessageInfo(mi)
 		}
 	}

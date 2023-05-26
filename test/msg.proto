@@ -6,7 +6,7 @@ option go_package = "github.com/billyplus/fastproto/test";
 import "test/outer.proto";
 import "test/nofast.proto";
 import "google/protobuf/timestamp.proto";
-// import "google/protobuf/any.proto";
+import "google/protobuf/any.proto";
 // message which is empty
 message EmptyMsg {}
 
@@ -86,6 +86,11 @@ message WithStandardMessage {
   pb.NoFastMessage nofast = 2;
   repeated pb.NoFastMessage nofasts = 3;
   google.protobuf.Timestamp last_updated = 4;
+}
+
+message WithAnyMessage {
+  uint64 id = 1;
+  google.protobuf.Any any_msg = 4;
 }
 
 // test enum
