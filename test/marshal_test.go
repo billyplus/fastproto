@@ -18,7 +18,7 @@ func TestMarshaler(t *testing.T) {
 }
 
 func testMarshaler(t *testing.T, v proto.Message) {
-	data, err := fastproto.Marshal(v)
+	data, err := v.(fastproto.Message).Marshal()
 	if err != nil {
 		t.Fatalf("marshal %T to []byte has error: %v", v, err)
 	}
@@ -28,13 +28,17 @@ func testMarshaler(t *testing.T, v proto.Message) {
 	if err != nil {
 		t.Fatalf("unmarshal %T with google proto has error: %v", v, err)
 	}
+	if !proto.Equal(v, v2) {
+		t.Fatalf("message[%T] from proto.Unmarshal should be equal to original message", v)
+		return
+	}
 
 	v3 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(proto.Message)
-	err = fastproto.UnmarshalOptions{IgnoreMessageInfo: false}.Unmarshal(data, v3)
+	err = fastproto.Unmarshal(data, v3)
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = false` has error: %v", v, err)
 	}
-	if !proto.Equal(v3, v2) {
+	if !proto.Equal(v, v3) {
 		t.Fatalf("message[%T] with messageinfo should be equal to message from proto.Unmarshal", v)
 		return
 	}
@@ -44,13 +48,13 @@ func testMarshaler(t *testing.T, v proto.Message) {
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = false` has error: %v", v, err)
 	}
-	if !proto.Equal(v5, v2) {
+	if !proto.Equal(v, v5) {
 		t.Fatalf("message[%T] with messageinfo should be equal to message from proto.Unmarshal", v)
 		return
 	}
 
 	v4 := reflect.New(reflect.TypeOf(v).Elem()).Interface().(proto.Message)
-	err = fastproto.UnmarshalOptions{IgnoreMessageInfo: true}.Unmarshal(data, v4)
+	err = fastproto.Unmarshal(data, v4)
 
 	if err != nil {
 		t.Fatalf("unmarshal %T with fastproto option `IgnoreMessageInfo = true` has error: %v", v, err)
@@ -58,7 +62,7 @@ func testMarshaler(t *testing.T, v proto.Message) {
 	// ensure size is cached
 	fastproto.Size(v4)
 
-	if !proto.Equal(v, v4) {
+	if !proto.Equal(v2, v4) {
 		t.Fatalf("message[%T] without messageinfo should be equal to original message", v)
 		return
 	}
