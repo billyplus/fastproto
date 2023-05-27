@@ -4039,7 +4039,7 @@ func (x *Floats) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
+			if wireType == 5 {
 				v, n := protowire.ConsumeFixed32(data)
 				if n < 0 {
 					return protowire.ParseError(n)
@@ -4151,7 +4151,7 @@ func (x *Doubles) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
+			if wireType == 1 {
 				v, n := protowire.ConsumeFixed64(data)
 				if n < 0 {
 					return protowire.ParseError(n)
@@ -4965,7 +4965,7 @@ func (x *Fixed32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
+			if wireType == 5 {
 				v, n := protowire.ConsumeFixed32(data)
 				if n < 0 {
 					return protowire.ParseError(n)
@@ -5077,7 +5077,7 @@ func (x *Fixed64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
+			if wireType == 1 {
 				v, n := protowire.ConsumeFixed64(data)
 				if n < 0 {
 					return protowire.ParseError(n)
@@ -5189,7 +5189,7 @@ func (x *Sfixed32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
+			if wireType == 5 {
 				v, n := protowire.ConsumeFixed32(data)
 				if n < 0 {
 					return protowire.ParseError(n)
@@ -5301,7 +5301,7 @@ func (x *Sfixed64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
+			if wireType == 1 {
 				v, n := protowire.ConsumeFixed64(data)
 				if n < 0 {
 					return protowire.ParseError(n)

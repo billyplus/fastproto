@@ -189,7 +189,7 @@ func (p *decoder) genStringField(f *protogen.File, wireType protowire.Type, fiel
 
 func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *protogen.Field, method protogen.GoIdent) {
 	kind := field.Desc.Kind()
-	p.P(`		if wireType == 0 {`)
+	p.P(`		if wireType == `, wireType, ` {`)
 	if kind == protoreflect.BoolKind {
 		p.P(`			v, n := `, method, `(data)`)
 	} else {
