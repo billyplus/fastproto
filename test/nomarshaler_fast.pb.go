@@ -26,16 +26,6 @@ func (x *WithMarshalUnmarshalSize) XxxReset() {
 	*x = WithMarshalUnmarshalSize{}
 }
 
-func (x *WithMarshalUnmarshalSize) FillMessageInfo() {
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_nomarshaler_proto_msgTypes[0]
-			ms.StoreMessageInfo(mi)
-		}
-	}
-}
-
 func (x *WithMarshalUnmarshalSize) Unmarshal(data []byte) error {
 	for len(data) > 0 {
 		num, wireType, n := protowire.ConsumeTag(data)
@@ -115,16 +105,6 @@ func (x *WithUnmarshal) XxxReset() {
 	*x = WithUnmarshal{}
 }
 
-func (x *WithUnmarshal) FillMessageInfo() {
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_nomarshaler_proto_msgTypes[1]
-			ms.StoreMessageInfo(mi)
-		}
-	}
-}
-
 func (x *WithUnmarshal) Unmarshal(data []byte) error {
 	for len(data) > 0 {
 		num, wireType, n := protowire.ConsumeTag(data)
@@ -160,16 +140,6 @@ func (x *WithUnmarshal) Unmarshal(data []byte) error {
 
 func (x *WithUnmarshalSize) XxxReset() {
 	*x = WithUnmarshalSize{}
-}
-
-func (x *WithUnmarshalSize) FillMessageInfo() {
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_nomarshaler_proto_msgTypes[2]
-			ms.StoreMessageInfo(mi)
-		}
-	}
 }
 
 func (x *WithUnmarshalSize) Unmarshal(data []byte) error {

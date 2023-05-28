@@ -26,16 +26,6 @@ func (x *OuterMsg) XxxReset() {
 	*x = OuterMsg{}
 }
 
-func (x *OuterMsg) FillMessageInfo() {
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			mi := &file_test_outer_proto_msgTypes[0]
-			ms.StoreMessageInfo(mi)
-		}
-	}
-}
-
 func (x *OuterMsg) Unmarshal(data []byte) error {
 	for len(data) > 0 {
 		num, wireType, n := protowire.ConsumeTag(data)

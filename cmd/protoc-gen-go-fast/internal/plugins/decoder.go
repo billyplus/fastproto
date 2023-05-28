@@ -52,7 +52,7 @@ func (p *decoder) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFil
 	p.GeneratedFile = g
 	p.plugin = gen
 	p.generateXxxReset(f, idx, m)
-	p.generateFillMessageInfo(f, idx, m)
+	// p.generateFillMessageInfo(f, idx, m)
 	p.generateUnmarshaler(f, idx, m)
 }
 
@@ -63,18 +63,18 @@ func (p *decoder) generateXxxReset(f *protogen.File, idx int, m *protogen.Messag
 	p.P(``)
 }
 
-func (p *decoder) generateFillMessageInfo(f *protogen.File, idx int, m *protogen.Message) {
-	p.P(`func (x *`, m.GoIdent.GoName, `) FillMessageInfo() {`)
-	p.P(`	if x != nil{`)
-	p.P(`		ms := `, fastproto.ProtoImplPackage.Ident("X.MessageStateOf"), "(", fastproto.ProtoImplPackage.Ident("Pointer"), "(x))")
-	p.P(`		if ms.LoadMessageInfo() == nil {`)
-	p.P(`			mi := &`, fastproto.MessageTypesVarName(f), `[`, idx, `]`)
-	p.P(`			ms.StoreMessageInfo(mi)`)
-	p.P(`		}`)
-	p.P(`	}`)
-	p.P(`}`)
-	p.P(``)
-}
+// func (p *decoder) generateFillMessageInfo(f *protogen.File, idx int, m *protogen.Message) {
+// 	p.P(`func (x *`, m.GoIdent.GoName, `) FillMessageInfo() {`)
+// 	p.P(`	if x != nil{`)
+// 	p.P(`		ms := `, fastproto.ProtoImplPackage.Ident("X.MessageStateOf"), "(", fastproto.ProtoImplPackage.Ident("Pointer"), "(x))")
+// 	p.P(`		if ms.LoadMessageInfo() == nil {`)
+// 	p.P(`			mi := &`, fastproto.MessageTypesVarName(f), `[`, idx, `]`)
+// 	p.P(`			ms.StoreMessageInfo(mi)`)
+// 	p.P(`		}`)
+// 	p.P(`	}`)
+// 	p.P(`}`)
+// 	p.P(``)
+// }
 
 func (p *decoder) generateUnmarshaler(f *protogen.File, idx int, m *protogen.Message) {
 	p.P(`func (x *`, m.GoIdent.GoName, `) Unmarshal(data []byte) error {`)
