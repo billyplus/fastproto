@@ -3,6 +3,7 @@ package plugin
 import (
 	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
+	"github.com/billyplus/fastproto/goimport"
 	"github.com/billyplus/fastproto/options"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -11,16 +12,16 @@ import (
 )
 
 var (
-	encodeZigZag        = fastproto.ProtoWirePackage.Ident("EncodeZigZag")
-	encodeTag           = fastproto.ProtoWirePackage.Ident("EncodeTag")
-	appendVarint        = fastproto.ProtoWirePackage.Ident("AppendVarint")
-	appendTag           = fastproto.ProtoWirePackage.Ident("AppendTag")
-	appendString        = fastproto.ProtoWirePackage.Ident("AppendString")
-	appendBytes         = fastproto.ProtoWirePackage.Ident("AppendBytes")
-	appendFixed32       = fastproto.ProtoWirePackage.Ident("AppendFixed32")
-	appendFixed64       = fastproto.ProtoWirePackage.Ident("AppendFixed64")
-	bool2Int            = fastproto.FastProtoPackage.Ident("Bool2Int")
-	appendToSizedBuffer = fastproto.FastProtoPackage.Ident("AppendToSizedBuffer")
+	encodeZigZag        = goimport.ProtoWirePackage.Ident("EncodeZigZag")
+	encodeTag           = goimport.ProtoWirePackage.Ident("EncodeTag")
+	appendVarint        = goimport.ProtoWirePackage.Ident("AppendVarint")
+	appendTag           = goimport.ProtoWirePackage.Ident("AppendTag")
+	appendString        = goimport.ProtoWirePackage.Ident("AppendString")
+	appendBytes         = goimport.ProtoWirePackage.Ident("AppendBytes")
+	appendFixed32       = goimport.ProtoWirePackage.Ident("AppendFixed32")
+	appendFixed64       = goimport.ProtoWirePackage.Ident("AppendFixed64")
+	bool2Int            = goimport.FastProtoPackage.Ident("Bool2Int")
+	appendToSizedBuffer = goimport.FastProtoPackage.Ident("AppendToSizedBuffer")
 )
 
 func init() {

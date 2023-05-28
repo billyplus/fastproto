@@ -3,8 +3,8 @@ package plugin
 import (
 	"fmt"
 
-	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
+	"github.com/billyplus/fastproto/goimport"
 	"github.com/billyplus/fastproto/options"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	sizeVarint      = fastproto.ProtoWirePackage.Ident("SizeVarint")
-	sizeFixed32     = fastproto.ProtoWirePackage.Ident("SizeFixed32")
-	sizeFixed64     = fastproto.ProtoWirePackage.Ident("SizeFixed64")
-	sizeTag         = fastproto.ProtoWirePackage.Ident("SizeTag")
-	sizeBytes       = fastproto.ProtoWirePackage.Ident("SizeBytes")
-	sizeVarintSlice = fastproto.FastProtoPackage.Ident("SizeVarintSlice")
-	sizeZigZagSlice = fastproto.FastProtoPackage.Ident("SizeZigZagSlice")
-	size            = fastproto.FastProtoPackage.Ident("Size")
+	sizeVarint      = goimport.ProtoWirePackage.Ident("SizeVarint")
+	sizeFixed32     = goimport.ProtoWirePackage.Ident("SizeFixed32")
+	sizeFixed64     = goimport.ProtoWirePackage.Ident("SizeFixed64")
+	sizeTag         = goimport.ProtoWirePackage.Ident("SizeTag")
+	sizeBytes       = goimport.ProtoWirePackage.Ident("SizeBytes")
+	sizeVarintSlice = goimport.FastProtoPackage.Ident("SizeVarintSlice")
+	sizeZigZagSlice = goimport.FastProtoPackage.Ident("SizeZigZagSlice")
+	size            = goimport.FastProtoPackage.Ident("Size")
 )
 
 func init() {

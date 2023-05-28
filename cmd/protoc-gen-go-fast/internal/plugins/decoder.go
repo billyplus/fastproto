@@ -5,6 +5,7 @@ import (
 
 	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
+	"github.com/billyplus/fastproto/goimport"
 	"github.com/billyplus/fastproto/options"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -13,15 +14,20 @@ import (
 )
 
 var (
-	consumeFixed32 = fastproto.ProtoWirePackage.Ident("ConsumeFixed32")
-	consumeFixed64 = fastproto.ProtoWirePackage.Ident("ConsumeFixed64")
-	consumeVarint  = fastproto.ProtoWirePackage.Ident("ConsumeVarint")
-	consumeBytes   = fastproto.ProtoWirePackage.Ident("ConsumeBytes")
-	consumeMessage = fastproto.FastProtoPackage.Ident("ConsumeMessage")
+	consumeFixed32 = goimport.ProtoWirePackage.Ident("ConsumeFixed32")
+	consumeFixed64 = goimport.ProtoWirePackage.Ident("ConsumeFixed64")
+	consumeVarint  = goimport.ProtoWirePackage.Ident("ConsumeVarint")
+	consumeBytes   = goimport.ProtoWirePackage.Ident("ConsumeBytes")
+	consumeMessage = goimport.FastProtoPackage.Ident("ConsumeMessage")
+	consumeTag     = goimport.ProtoWirePackage.Ident("ConsumeTag")
 
-	float32frombits = fastproto.MathPackage.Ident("Float32frombits")
-	float64frombits = fastproto.MathPackage.Ident("Float64frombits")
-	decodeZigZag    = fastproto.ProtoWirePackage.Ident("DecodeZigZag")
+	float32frombits = goimport.MathPackage.Ident("Float32frombits")
+	float64frombits = goimport.MathPackage.Ident("Float64frombits")
+	decodeZigZag    = goimport.ProtoWirePackage.Ident("DecodeZigZag")
+
+	parseError     = goimport.ProtoWirePackage.Ident("ParseError")
+	calcListLength = goimport.FastProtoPackage.Ident("CalcListLength")
+	skip           = goimport.FastProtoPackage.Ident("Skip")
 )
 
 func init() {
@@ -81,9 +87,9 @@ func (p *decoder) generateUnmarshaler(f *protogen.File, idx int, m *protogen.Mes
 
 	if len(m.Fields) > 0 {
 		p.P(`	for len(data) > 0 {`)
-		p.P(`		num, wireType, n := `, fastproto.ProtoWirePackage.Ident("ConsumeTag"), `(data)`)
+		p.P(`		num, wireType, n := `, consumeTag, `(data)`)
 		p.P(`		if n < 0 {`)
-		p.P(`			return `, fastproto.ProtoWirePackage.Ident("ParseError"), "(n)")
+		p.P(`			return `, parseError, "(n)")
 		p.P(`		}`)
 		// p.P(`		if wireType == 4 {`)
 		// p.P(`			return fmt.Errorf("proto: `, m.Desc.Name(), `: wiretype end group for non-group")`)
@@ -100,9 +106,9 @@ func (p *decoder) generateUnmarshaler(f *protogen.File, idx int, m *protogen.Mes
 		}
 
 		p.P(`		default:`)
-		p.P(`		    _, n = `, fastproto.ProtoWirePackage.Ident("ConsumeBytes"), "(data)")
+		p.P(`		    _, n = `, consumeBytes, "(data)")
 		p.P(`		    if n < 0 {`)
-		p.P(`				return `, fastproto.ProtoWirePackage.Ident("ParseError"), "(n)")
+		p.P(`				return `, parseError, "(n)")
 		p.P(`			}`)
 		p.P(`   		x.unknownFields = append(x.unknownFields, data[:n]...)`)
 		p.P(`   		data = data[n:]`)
@@ -151,18 +157,18 @@ func (p *decoder) genField(f *protogen.File, wireType protowire.Type, field *pro
 		p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
 		p.P(`		}`)
 		p.P(`		v, n := `, method, `(data)`)
-		p.P(`		if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+		p.P(`		if n < 0 { return `, parseError, `(n)}`)
 		p.P(`   	data = data[n:]`)
 		switch kind {
 		case protoreflect.BoolKind:
 			p.P(`		x.`, field.GoName, ` = bool(v!=0)`)
 		case protoreflect.FloatKind:
-			p.P(`   	x.`, field.GoName, " = ", fastproto.MathPackage.Ident("Float32frombits"), "(v)")
+			p.P(`   	x.`, field.GoName, " = ", float32frombits, "(v)")
 		case protoreflect.DoubleKind:
-			p.P(`   	x.`, field.GoName, " = ", fastproto.MathPackage.Ident("Float64frombits"), "(v)")
+			p.P(`   	x.`, field.GoName, " = ", float64frombits, "(v)")
 		case protoreflect.Sint32Kind,
 			protoreflect.Sint64Kind:
-			p.P(`   	x.`, field.GoName, " = ", fastproto.GoTypeOfField(field.Desc), "(", fastproto.ProtoWirePackage.Ident("DecodeZigZag"), "(v))")
+			p.P(`   	x.`, field.GoName, " = ", fastproto.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
 
 		default:
 			p.P(`   	x.`, field.GoName, " = ", fastproto.GoTypeOfField(field.Desc), "(v)")
@@ -175,7 +181,7 @@ func (p *decoder) genStringField(f *protogen.File, wireType protowire.Type, fiel
 	p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
 	p.P(`		}`)
 	p.P(`		v, n := `, method, `(data)`)
-	p.P(`		if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+	p.P(`		if n < 0 { return `, parseError, `(n)}`)
 	p.P(`   	data = data[n:]`)
 	if field.Desc.IsList() {
 		if field.Desc.Kind() == protoreflect.StringKind {
@@ -200,24 +206,24 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 	} else {
 		p.P(`			v, n := `, method, `(data)`)
 	}
-	p.P(`			if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+	p.P(`			if n < 0 { return `, parseError, `(n)}`)
 	p.P(`   		data = data[n:]`)
 	switch kind {
 	case protoreflect.BoolKind:
 		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, `, v != 0)`)
 	case protoreflect.FloatKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.MathPackage.Ident("Float32frombits"), `(v))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float32frombits, `(v))`)
 	case protoreflect.DoubleKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.MathPackage.Ident("Float64frombits"), `(v))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), "(", fastproto.ProtoWirePackage.Ident("DecodeZigZag"), `(v)))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
 	default:
 		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), `(v))`)
 	}
 	p.P(`		} else if wireType == 2 {`)
-	p.P(`			msglen, n := `, fastproto.FastProtoPackage.Ident("CalcListLength"), `(data)`)
-	p.P(`			if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+	p.P(`			msglen, n := `, calcListLength, `(data)`)
+	p.P(`			if n < 0 { return `, parseError, `(n)}`)
 	p.P(`   		data = data[n:]`)
 	switch kind {
 	case protoreflect.Int32Kind,
@@ -245,19 +251,19 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 	p.P(`		    }`)
 	p.P(`		    for elementCount > 0 {`)
 	p.P(`				v, n := `, method, `(data)`)
-	p.P(`				if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+	p.P(`				if n < 0 { return `, parseError, `(n)}`)
 	p.P(`   			data = data[n:]`)
 	p.P(`   			elementCount--`)
 	switch kind {
 	case protoreflect.BoolKind:
 		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, `, v != 0)`)
 	case protoreflect.FloatKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.MathPackage.Ident("Float32frombits"), `(v))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float32frombits, `(v))`)
 	case protoreflect.DoubleKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.MathPackage.Ident("Float64frombits"), `(v))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), "(", fastproto.ProtoWirePackage.Ident("DecodeZigZag"), `(v)))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
 	default:
 		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), `(v))`)
 	}
@@ -311,8 +317,8 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 	p.P(`		if wireType != `, wireType, ` {`)
 	p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
 	p.P(`		}`)
-	p.P(`		msglen, n := `, fastproto.FastProtoPackage.Ident("CalcListLength"), `(data)`)
-	p.P(`		if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+	p.P(`		msglen, n := `, calcListLength, `(data)`)
+	p.P(`		if n < 0 { return `, parseError, `(n)}`)
 	p.P(`   	data = data[n:]`)
 	p.P(`		if x.`, field.GoName, ` == nil {`)
 	p.P(`		    x.`, field.GoName, ` = make(map[`, keyKind, `]`, valKind, `)`)
@@ -321,8 +327,8 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 	p.P(`		var mapvalue `, valKind)
 	p.P(`		for msglen > 0 {`)
 	// p.P(`		    entryPreIndex := r.idx`)
-	p.P(`			subNum, subWireType, n := `, fastproto.ProtoWirePackage.Ident("ConsumeTag"), `(data)`)
-	p.P(`			if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+	p.P(`			subNum, subWireType, n := `, consumeTag, `(data)`)
+	p.P(`			if n < 0 { return `, parseError, `(n)}`)
 	// p.P(`   		data = data[n:]`)
 	// p.P(`		    msglen -= n`)
 	p.P(`   		data, msglen = data[n:], msglen-n`)
@@ -331,7 +337,7 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 	p.P(`		    } else if subNum == 2 {`)
 	p.generateEntry(f, "mapvalue", value)
 	p.P(`		    } else {`)
-	p.P(`		        if skippy, err := `, fastproto.FastProtoPackage.Ident("Skip"), `(data); err!=nil{`)
+	p.P(`		        if skippy, err := `, skip, `(data); err!=nil{`)
 	p.P(`		            return err`)
 	p.P(`		        } else {`)
 	p.P(`		        	data = data[skippy:]`)
@@ -397,7 +403,7 @@ func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protor
 		p.P(`		  		if err != nil { return err }`)
 	default:
 		p.P(`		v, n := `, dec, `(data)`)
-		p.P(`		if n < 0 { return `, fastproto.ProtoWirePackage.Ident("ParseError"), `(n)}`)
+		p.P(`		if n < 0 { return `, parseError, `(n)}`)
 	}
 	p.P(`   	data, msglen = data[n:], msglen-n`)
 	// p.P(`   	msglen -= n`)

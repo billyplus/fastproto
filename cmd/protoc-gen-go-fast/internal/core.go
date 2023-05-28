@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/billyplus/fastproto"
+	"github.com/billyplus/fastproto/goimport"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -31,11 +32,11 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 func generateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile) {
 	g.P("// This is a compile-time assertion to ensure that this generated file")
 	g.P("// is compatible with the packages it is being compiled against.")
-	g.P("var _ = ", fastproto.FmtPackage.Ident("Errorf"))
-	g.P("var _ = ", fastproto.MathPackage.Ident("MaxFloat32"))
-	g.P("var _ = ", fastproto.ProtoWirePackage.Ident("MinValidNumber"))
-	g.P("var _ = ", fastproto.FastProtoPackage.Ident("Skip"))
-	g.P("var _ = ", fastproto.ProtoImplPackage.Ident("MinVersion"))
+	g.P("var _ = ", goimport.FmtPackage.Ident("Errorf"))
+	g.P("var _ = ", goimport.MathPackage.Ident("MaxFloat32"))
+	g.P("var _ = ", goimport.ProtoWirePackage.Ident("MinValidNumber"))
+	g.P("var _ = ", goimport.FastProtoPackage.Ident("Skip"))
+	g.P("var _ = ", goimport.ProtoImplPackage.Ident("MinVersion"))
 	g.P()
 
 	// for i, imps := 0, file.Desc.Imports(); i < imps.Len(); i++ {
