@@ -5,15 +5,27 @@ option go_package = "github.com/billyplus/fastproto/options";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FileOptions {
+  // if true, Marshal interface will be ignored for this file
   optional bool fastproto_no_marshaler = 56002;
+  // if true, Unmarshal interface will be ignored for this file
   optional bool fastproto_no_unmarshaler = 56004;
+  // if true, Size interface will be ignored for this file.
+  // Marshal() method depends on Size()
   optional bool fastproto_sizer = 56005;
 }
 
 extend google.protobuf.MessageOptions {
+  // if true, Marshal interface will be generated for this message whatever
+  // fastproto_no_marshaler is.
   optional bool fastproto_msg_marshaler = 56001;
+  // if true, Marshal interface will be ignored for this message
   optional bool fastproto_msg_no_marshaler = 56002;
+  // if true, Unmarshal interface will be generated for this message whatever
+  // fastproto_no_unmarshaler is.
   optional bool fastproto_msg_unmarshaler = 56003;
+  // if true, Unmarshal interface will be ignored for this message
   optional bool fastproto_msg_no_unmarshaler = 56004;
+  // if true, Size method will be ignored for this message
+  // Marshal() method depends on Size()
   optional bool fastproto_msg_sizer = 56005;
 }

@@ -65,6 +65,44 @@ Option 2. **Not recommended**. Use `grpc.ForceServerCodec` option or `grpc.Custo
 
 ```
 
+### Options to control code generation
+
+if you want to ignore marshal method
+
+```
+    import "github.com/billyplus/fastproto/options/options.proto"
+
+    // if true, Marshal interface will not be generated for this file
+    option (options.fastproto_no_marshaler) = true;
+
+    message XXXX {
+        // if true, Marshal interface will be generated for this message whatever fastproto_no_marshaler is.
+        option (options.fastproto_msg_marshaler) = true;
+        // if true, Marshal interface will not be generated for this message
+        option (options.fastproto_msg_no_marshaler) = true;
+    }
+
+```
+
+if you want to ignore unmarshal method
+
+```
+    import "github.com/billyplus/fastproto/options/options.proto"
+
+    // if true, Unmarshal interface will not be generated for this file
+    option (options.fastproto_no_unmarshaler) = true;
+
+    message XXXX {
+        // if true, Unmarshal interface will be generated for this message whatever fastproto_no_unmarshaler is.
+        option (options.fastproto_msg_unmarshaler) = true;
+        // if true, Unmarshal interface will not be generated for this message
+        option (options.fastproto_msg_no_unmarshaler) = true;
+    }
+
+```
+
+please check `options/options.proto` for other options.
+
 ### Benchmarks
 
 [code](https://github.com/billyplus/fastproto/tree/main/test)
