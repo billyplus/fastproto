@@ -5,6 +5,7 @@ import (
 
 	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
+	"github.com/billyplus/fastproto/options"
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/protowire"
@@ -44,6 +45,10 @@ func (p *decoder) Init() {
 }
 
 func (p *decoder) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *protogen.File, idx int, m *protogen.Message) {
+	if !options.IsUnmarshaler(f.Desc, m.Desc) {
+		return
+	}
+
 	p.GeneratedFile = g
 	p.plugin = gen
 	p.generateXxxReset(f, idx, m)

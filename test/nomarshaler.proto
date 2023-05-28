@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package test;
+option go_package = "github.com/billyplus/fastproto/test";
+
+import "options/options.proto";
+// import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (options.fastproto_no_marshaler) = true;
+
+message with_marshal_unmarshal_size {
+  option (options.fastproto_msg_marshaler) = true;
+  uint32 id = 1;
+}
+
+message with_unmarshal { uint32 id = 1; }
+
+message with_unmarshal_size {
+  option (options.fastproto_msg_sizer) = true;
+  uint32 id = 1;
+}

@@ -6,25 +6,40 @@ import (
 )
 
 func IsMarshaler(fileDesc protoreflect.FileDescriptor, msgDesc protoreflect.MessageDescriptor) bool {
-	if proto.HasExtension(msgDesc.Options(), E_FastprotoMsgMarshaler) {
-		return true
+	if GetExtension[bool](msgDesc.Options(), E_FastprotoMsgNoMarshaler) {
+		// fmt.Println("msg no marshaler")
+		return false
 	}
-	return proto.HasExtension(fileDesc.Options(), E_FastprotoMarshaler)
+	if GetExtension[bool](fileDesc.Options(), E_FastprotoNoMarshaler) {
+		// fmt.Println("file no marshaler")
+		return GetExtension[bool](msgDesc.Options(), E_FastprotoMsgMarshaler)
+	}
+
+	return true
 }
 
 func IsUnmarshaler(fileDesc protoreflect.FileDescriptor, msgDesc protoreflect.MessageDescriptor) bool {
-	if proto.HasExtension(msgDesc.Options(), E_FastprotoMsgUnmarshaler) {
-		return true
+	if GetExtension[bool](msgDesc.Options(), E_FastprotoMsgNoUnmarshaler) {
+		return false
 	}
-	return proto.HasExtension(fileDesc.Options(), E_FastprotoUnmarshaler)
+
+	if GetExtension[bool](fileDesc.Options(), E_FastprotoNoUnmarshaler) {
+		return GetExtension[bool](msgDesc.Options(), E_FastprotoMsgUnmarshaler)
+	}
+
+	return true
 }
 
 func IsSizer(fileDesc protoreflect.FileDescriptor, msgDesc protoreflect.MessageDescriptor) bool {
 	if IsMarshaler(fileDesc, msgDesc) {
 		return true
 	}
-	if proto.HasExtension(msgDesc.Options(), E_FastprotoMsgSizer) {
+	if GetExtension[bool](msgDesc.Options(), E_FastprotoMsgSizer) {
 		return true
 	}
-	return proto.HasExtension(fileDesc.Options(), E_FastprotoSizer)
+	return GetExtension[bool](fileDesc.Options(), E_FastprotoSizer)
+}
+
+func GetExtension[T any](m proto.Message, xt protoreflect.ExtensionType) T {
+	return proto.GetExtension(m, xt).(T)
 }

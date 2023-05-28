@@ -3,6 +3,7 @@ package plugin
 import (
 	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
+	"github.com/billyplus/fastproto/options"
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/protowire"
@@ -42,6 +43,10 @@ func (p *encoder) Init() {
 }
 
 func (p *encoder) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *protogen.File, idx int, m *protogen.Message) {
+	if !options.IsMarshaler(f.Desc, m.Desc) {
+		return
+	}
+
 	p.GeneratedFile = g
 
 	g.P(`func (x *`, m.GoIdent.GoName, `) MarshalTo(data []byte) (n int, err error) {`)
