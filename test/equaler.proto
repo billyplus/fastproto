@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package test;
+option go_package = "github.com/billyplus/fastproto/test";
+
+import "test/outer.proto";
+import "test/msg.proto";
+import "test/nofast.proto";
+import "google/protobuf/timestamp.proto";
+
+import "options/options.proto";
+
+option (options.fastproto_no_marshaler) = true;
+option (options.fastproto_no_unmarshaler) = true;
+option (options.fastproto_equaler) = true;
+
+message EqualProto {
+  //
+  int32 v_int32 = 1;
+  int64 v_int64 = 2;
+  uint32 v_uint32 = 3;
+  uint64 v_uint64 = 4;
+  string v_string = 5;
+  bytes v_bytes = 20;
+  bool v_bool = 6;
+  //
+  sint32 s_int32 = 7;
+  sint64 s_int64 = 8;
+  fixed32 fixed32 = 9;
+  fixed64 fixed64 = 10;
+  sfixed32 sfixed32 = 11;
+  sfixed64 sfixed64 = 12;
+  //
+  repeated int32 arr_int32 = 41;
+  repeated int64 arr_int64 = 42;
+  repeated uint32 arr_uint32 = 43;
+  repeated uint64 arr_uint64 = 44;
+  repeated bool arr_bool = 45;
+  repeated string arr_string = 46;
+  repeated bytes arr_bytes = 47;
+
+  //
+  map<int32, bool> map_int32_bool = 81;
+  map<int32, int32> map_int32_int32 = 82;
+  map<int32, string> map_int32_string = 83;
+  map<int64, bool> map_int64_bool = 101;
+  map<int64, int64> map_int64_int64 = 102;
+  map<int64, bytes> map_int64_bytes = 103;
+  map<sint32, sint64> map_sint32_sint64 = 121;
+  map<sint64, sint32> map_sint64_sint32 = 141;
+  map<fixed32, sfixed64> map_fixed32_sfixed64 = 161;
+  map<sfixed32, fixed64> map_sfixed32_fixed64 = 181;
+  map<string, bool> map_string_bool = 201;
+  map<string, int32> map_string_int32 = 202;
+  map<string, int64> map_string_int64 = 203;
+  map<string, sint64> map_string_sint64 = 204;
+  map<string, sfixed64> map_string_sfixed64 = 205;
+  map<string, string> map_string_string = 206;
+  map<string, TestEnum> map_string_enum = 207;
+  //
+
+  OtherMessage m_actor = 231;
+
+  repeated OtherMessage arr_actor = 232;
+
+  map<string, OtherMessage> map_string_actor = 233;
+  map<int32, OtherMessage> map_int32_actor = 234;
+  map<int64, OtherMessage> map_int64_actor = 235;
+
+  pb.OuterMsg outer = 281;
+
+  pb.NoFastMessage nofase = 282;
+  repeated pb.NoFastMessage nofasts = 283;
+  google.protobuf.Timestamp last_updated = 284;
+}
