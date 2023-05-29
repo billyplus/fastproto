@@ -1,22 +1,6 @@
-package fastproto
+package protohelper
 
-import (
-	"google.golang.org/protobuf/encoding/protowire"
-	"google.golang.org/protobuf/proto"
-)
-
-type Sizer interface {
-	// Message
-	Size() int
-}
-
-func Size(v proto.Message) int {
-	if mm, ok := v.(Sizer); ok {
-		return mm.Size()
-	}
-
-	return proto.Size(v)
-}
+import "google.golang.org/protobuf/encoding/protowire"
 
 func SizeVarintSlice[T int32 | uint32 | int64 | uint64](arr []T) int {
 	sz := 0

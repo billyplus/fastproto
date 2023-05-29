@@ -3,10 +3,10 @@ package plugin
 import (
 	"fmt"
 
-	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
 	"github.com/billyplus/fastproto/goimport"
 	"github.com/billyplus/fastproto/options"
+	"github.com/billyplus/fastproto/protohelper"
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/protowire"
@@ -18,7 +18,7 @@ var (
 	consumeFixed64 = goimport.ProtoWirePackage.Ident("ConsumeFixed64")
 	consumeVarint  = goimport.ProtoWirePackage.Ident("ConsumeVarint")
 	consumeBytes   = goimport.ProtoWirePackage.Ident("ConsumeBytes")
-	consumeMessage = goimport.FastProtoPackage.Ident("ConsumeMessage")
+	consumeMessage = goimport.FastProtoHelperPackage.Ident("ConsumeMessage")
 	consumeTag     = goimport.ProtoWirePackage.Ident("ConsumeTag")
 
 	float32frombits = goimport.MathPackage.Ident("Float32frombits")
@@ -26,8 +26,8 @@ var (
 	decodeZigZag    = goimport.ProtoWirePackage.Ident("DecodeZigZag")
 
 	parseError     = goimport.ProtoWirePackage.Ident("ParseError")
-	calcListLength = goimport.FastProtoPackage.Ident("CalcListLength")
-	skip           = goimport.FastProtoPackage.Ident("Skip")
+	calcListLength = goimport.FastProtoHelperPackage.Ident("CalcListLength")
+	skip           = goimport.FastProtoHelperPackage.Ident("Skip")
 )
 
 func init() {
@@ -131,7 +131,7 @@ func (p *decoder) generateField(f *protogen.File, field *protogen.Field) {
 	fieldNumber := field.Desc.Number()
 	p.P(fmt.Sprintf(`		case %d:`, fieldNumber))
 	kind := field.Desc.Kind()
-	wireType := fastproto.KindToType(kind)
+	wireType := protohelper.KindToType(kind)
 	dec := valueDecoder[kind]
 	switch kind {
 	case protoreflect.StringKind, protoreflect.BytesKind:
@@ -168,10 +168,10 @@ func (p *decoder) genField(f *protogen.File, wireType protowire.Type, field *pro
 			p.P(`   	x.`, field.GoName, " = ", float64frombits, "(v)")
 		case protoreflect.Sint32Kind,
 			protoreflect.Sint64Kind:
-			p.P(`   	x.`, field.GoName, " = ", fastproto.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
+			p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
 
 		default:
-			p.P(`   	x.`, field.GoName, " = ", fastproto.GoTypeOfField(field.Desc), "(v)")
+			p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(v)")
 		}
 	}
 }
@@ -217,9 +217,9 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
 	default:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), `(v))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), `(v))`)
 	}
 	p.P(`		} else if wireType == 2 {`)
 	p.P(`			msglen, n := `, calcListLength, `(data)`)
@@ -247,7 +247,7 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 		p.P(`		    elementCount := msglen`)
 	}
 	p.P(`		    if elementCount != 0 && len(x.`, field.GoName, `) == 0 {`)
-	p.P(`		        x.`, field.GoName, ` = make([]`, fastproto.GoTypeOfField(field.Desc), `, 0, elementCount)`)
+	p.P(`		        x.`, field.GoName, ` = make([]`, protohelper.GoTypeOfField(field.Desc), `, 0, elementCount)`)
 	p.P(`		    }`)
 	p.P(`		    for elementCount > 0 {`)
 	p.P(`				v, n := `, method, `(data)`)
@@ -263,9 +263,9 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
 	default:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", fastproto.GoTypeOfField(field.Desc), `(v))`)
+		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), `(v))`)
 	}
 	p.P(`		    }`)
 	p.P(`		} else {`)
@@ -311,8 +311,8 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 	key := field.Desc.MapKey()
 	value := field.Desc.MapValue()
 
-	keyKind := fastproto.GoTypeOfField(key)
-	valKind := fastproto.GoTypeOfField(value)
+	keyKind := protohelper.GoTypeOfField(key)
+	valKind := protohelper.GoTypeOfField(value)
 
 	p.P(`		if wireType != `, wireType, ` {`)
 	p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
@@ -391,7 +391,7 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protoreflect.FieldDescriptor) {
 	kind := field.Kind()
 	dec := valueDecoder[kind]
-	wireType := fastproto.KindToType(kind)
+	wireType := protohelper.KindToType(kind)
 	p.P(`				if subWireType != `, wireType, ` {`)
 	p.P(`					return fmt.Errorf("proto: wrong wireType = %d for field `, field.Name(), `", subWireType)`)
 	p.P(`				}`)
@@ -417,11 +417,11 @@ func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protor
 		p.P(`   	`, fieldName, " = ", float64frombits, "(v)")
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		p.P(`   	`, fieldName, " = ", fastproto.GoTypeOfField(field), "(", decodeZigZag, "(v))")
+		p.P(`   	`, fieldName, " = ", protohelper.GoTypeOfField(field), "(", decodeZigZag, "(v))")
 	case protoreflect.MessageKind:
 		// skip
 	default:
-		p.P(`   	`, fieldName, " = ", fastproto.GoTypeOfField(field), "(v)")
+		p.P(`   	`, fieldName, " = ", protohelper.GoTypeOfField(field), "(v)")
 	}
 }
 

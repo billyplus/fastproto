@@ -1,7 +1,6 @@
 package fastproto
 
 import (
-	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -36,18 +35,6 @@ func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	}
 
 	return mm.Unmarshal(b)
-}
-
-func ConsumeMessage(data []byte, msg proto.Message) (int, error) {
-	msglen, n := CalcListLength(data)
-	if n < 0 {
-		return 0, protowire.ParseError(n)
-	}
-	data = data[n:]
-	if err := Unmarshal(data[:msglen], msg); err != nil {
-		return 0, err
-	}
-	return n + msglen, nil
 }
 
 // Unmarshal parses the wire-format message in b and places the result in m.

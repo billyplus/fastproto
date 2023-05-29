@@ -40,6 +40,13 @@ func IsSizer(fileDesc protoreflect.FileDescriptor, msgDesc protoreflect.MessageD
 	return GetExtension[bool](fileDesc.Options(), E_FastprotoSizer)
 }
 
+func IsEqualer(fileDesc protoreflect.FileDescriptor, msgDesc protoreflect.MessageDescriptor) bool {
+	if GetExtension[bool](msgDesc.Options(), E_FastprotoMsgEqualer) {
+		return true
+	}
+	return GetExtension[bool](fileDesc.Options(), E_FastprotoEqualer)
+}
+
 func GetExtension[T any](m proto.Message, xt protoreflect.ExtensionType) T {
 	return proto.GetExtension(m, xt).(T)
 }

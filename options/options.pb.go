@@ -46,6 +46,14 @@ var file_options_options_proto_extTypes = []protoimpl.ExtensionInfo{
 		Filename:      "options/options.proto",
 	},
 	{
+		ExtendedType:  (*descriptorpb.FileOptions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         56006,
+		Name:          "options.fastproto_equaler",
+		Tag:           "varint,56006,opt,name=fastproto_equaler",
+		Filename:      "options/options.proto",
+	},
+	{
 		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         56001,
@@ -85,30 +93,66 @@ var file_options_options_proto_extTypes = []protoimpl.ExtensionInfo{
 		Tag:           "varint,56005,opt,name=fastproto_msg_sizer",
 		Filename:      "options/options.proto",
 	},
+	{
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         56006,
+		Name:          "options.fastproto_msg_equaler",
+		Tag:           "varint,56006,opt,name=fastproto_msg_equaler",
+		Filename:      "options/options.proto",
+	},
 }
 
 // Extension fields to descriptorpb.FileOptions.
 var (
+	// if true, Marshal interface will be ignored for this file
+	//
 	// optional bool fastproto_no_marshaler = 56002;
 	E_FastprotoNoMarshaler = &file_options_options_proto_extTypes[0]
+	// if true, Unmarshal interface will be ignored for this file
+	//
 	// optional bool fastproto_no_unmarshaler = 56004;
 	E_FastprotoNoUnmarshaler = &file_options_options_proto_extTypes[1]
+	// if true, Size interface will be ignored for this file.
+	// Marshal() method depends on Size()
+	//
 	// optional bool fastproto_sizer = 56005;
 	E_FastprotoSizer = &file_options_options_proto_extTypes[2]
+	// if true, Equal interface will be ignored for this file.
+	//
+	// optional bool fastproto_equaler = 56006;
+	E_FastprotoEqualer = &file_options_options_proto_extTypes[3]
 )
 
 // Extension fields to descriptorpb.MessageOptions.
 var (
+	// if true, Marshal interface will be generated for this message whatever
+	// fastproto_no_marshaler is.
+	//
 	// optional bool fastproto_msg_marshaler = 56001;
-	E_FastprotoMsgMarshaler = &file_options_options_proto_extTypes[3]
+	E_FastprotoMsgMarshaler = &file_options_options_proto_extTypes[4]
+	// if true, Marshal interface will be ignored for this message
+	//
 	// optional bool fastproto_msg_no_marshaler = 56002;
-	E_FastprotoMsgNoMarshaler = &file_options_options_proto_extTypes[4]
+	E_FastprotoMsgNoMarshaler = &file_options_options_proto_extTypes[5]
+	// if true, Unmarshal interface will be generated for this message whatever
+	// fastproto_no_unmarshaler is.
+	//
 	// optional bool fastproto_msg_unmarshaler = 56003;
-	E_FastprotoMsgUnmarshaler = &file_options_options_proto_extTypes[5]
+	E_FastprotoMsgUnmarshaler = &file_options_options_proto_extTypes[6]
+	// if true, Unmarshal interface will be ignored for this message
+	//
 	// optional bool fastproto_msg_no_unmarshaler = 56004;
-	E_FastprotoMsgNoUnmarshaler = &file_options_options_proto_extTypes[6]
+	E_FastprotoMsgNoUnmarshaler = &file_options_options_proto_extTypes[7]
+	// if true, Size method will be ignored for this message
+	// Marshal() method depends on Size()
+	//
 	// optional bool fastproto_msg_sizer = 56005;
-	E_FastprotoMsgSizer = &file_options_options_proto_extTypes[7]
+	E_FastprotoMsgSizer = &file_options_options_proto_extTypes[8]
+	// if true, Equal method will be ignored for this message
+	//
+	// optional bool fastproto_msg_equaler = 56006;
+	E_FastprotoMsgEqualer = &file_options_options_proto_extTypes[9]
 )
 
 var File_options_options_proto protoreflect.FileDescriptor
@@ -134,6 +178,11 @@ var file_options_options_proto_rawDesc = []byte{
 	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x46, 0x69,
 	0x6c, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0xc5, 0xb5, 0x03, 0x20, 0x01, 0x28,
 	0x08, 0x52, 0x0e, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x53, 0x69, 0x7a, 0x65,
+	0x72, 0x88, 0x01, 0x01, 0x3a, 0x4e, 0x0a, 0x11, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x5f, 0x65, 0x71, 0x75, 0x61, 0x6c, 0x65, 0x72, 0x12, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x46, 0x69, 0x6c, 0x65,
+	0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0xc6, 0xb5, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x10, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x45, 0x71, 0x75, 0x61, 0x6c, 0x65,
 	0x72, 0x88, 0x01, 0x01, 0x3a, 0x5c, 0x0a, 0x17, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x5f, 0x6d, 0x73, 0x67, 0x5f, 0x6d, 0x61, 0x72, 0x73, 0x68, 0x61, 0x6c, 0x65, 0x72, 0x12,
 	0x1f, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -164,10 +213,15 @@ var file_options_options_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x4f,
 	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0xc5, 0xb5, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x11,
 	0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x4d, 0x73, 0x67, 0x53, 0x69, 0x7a, 0x65,
-	0x72, 0x88, 0x01, 0x01, 0x42, 0x28, 0x5a, 0x26, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x62, 0x69, 0x6c, 0x6c, 0x79, 0x70, 0x6c, 0x75, 0x73, 0x2f, 0x66, 0x61, 0x73,
-	0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x88, 0x01, 0x01, 0x3a, 0x58, 0x0a, 0x15, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x5f, 0x6d, 0x73, 0x67, 0x5f, 0x65, 0x71, 0x75, 0x61, 0x6c, 0x65, 0x72, 0x12, 0x1f, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0xc6,
+	0xb5, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x13, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x4d, 0x73, 0x67, 0x45, 0x71, 0x75, 0x61, 0x6c, 0x65, 0x72, 0x88, 0x01, 0x01, 0x42, 0x28,
+	0x5a, 0x26, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x69, 0x6c,
+	0x6c, 0x79, 0x70, 0x6c, 0x75, 0x73, 0x2f, 0x66, 0x61, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2f, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_options_options_proto_goTypes = []interface{}{
@@ -175,19 +229,21 @@ var file_options_options_proto_goTypes = []interface{}{
 	(*descriptorpb.MessageOptions)(nil), // 1: google.protobuf.MessageOptions
 }
 var file_options_options_proto_depIdxs = []int32{
-	0, // 0: options.fastproto_no_marshaler:extendee -> google.protobuf.FileOptions
-	0, // 1: options.fastproto_no_unmarshaler:extendee -> google.protobuf.FileOptions
-	0, // 2: options.fastproto_sizer:extendee -> google.protobuf.FileOptions
-	1, // 3: options.fastproto_msg_marshaler:extendee -> google.protobuf.MessageOptions
-	1, // 4: options.fastproto_msg_no_marshaler:extendee -> google.protobuf.MessageOptions
-	1, // 5: options.fastproto_msg_unmarshaler:extendee -> google.protobuf.MessageOptions
-	1, // 6: options.fastproto_msg_no_unmarshaler:extendee -> google.protobuf.MessageOptions
-	1, // 7: options.fastproto_msg_sizer:extendee -> google.protobuf.MessageOptions
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	0, // [0:8] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: options.fastproto_no_marshaler:extendee -> google.protobuf.FileOptions
+	0,  // 1: options.fastproto_no_unmarshaler:extendee -> google.protobuf.FileOptions
+	0,  // 2: options.fastproto_sizer:extendee -> google.protobuf.FileOptions
+	0,  // 3: options.fastproto_equaler:extendee -> google.protobuf.FileOptions
+	1,  // 4: options.fastproto_msg_marshaler:extendee -> google.protobuf.MessageOptions
+	1,  // 5: options.fastproto_msg_no_marshaler:extendee -> google.protobuf.MessageOptions
+	1,  // 6: options.fastproto_msg_unmarshaler:extendee -> google.protobuf.MessageOptions
+	1,  // 7: options.fastproto_msg_no_unmarshaler:extendee -> google.protobuf.MessageOptions
+	1,  // 8: options.fastproto_msg_sizer:extendee -> google.protobuf.MessageOptions
+	1,  // 9: options.fastproto_msg_equaler:extendee -> google.protobuf.MessageOptions
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	0,  // [0:10] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_options_options_proto_init() }
@@ -202,7 +258,7 @@ func file_options_options_proto_init() {
 			RawDescriptor: file_options_options_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   0,
-			NumExtensions: 8,
+			NumExtensions: 10,
 			NumServices:   0,
 		},
 		GoTypes:           file_options_options_proto_goTypes,

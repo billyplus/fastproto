@@ -18,8 +18,8 @@ var (
 	sizeFixed64     = goimport.ProtoWirePackage.Ident("SizeFixed64")
 	sizeTag         = goimport.ProtoWirePackage.Ident("SizeTag")
 	sizeBytes       = goimport.ProtoWirePackage.Ident("SizeBytes")
-	sizeVarintSlice = goimport.FastProtoPackage.Ident("SizeVarintSlice")
-	sizeZigZagSlice = goimport.FastProtoPackage.Ident("SizeZigZagSlice")
+	sizeVarintSlice = goimport.FastProtoHelperPackage.Ident("SizeVarintSlice")
+	sizeZigZagSlice = goimport.FastProtoHelperPackage.Ident("SizeZigZagSlice")
 	size            = goimport.FastProtoPackage.Ident("Size")
 )
 

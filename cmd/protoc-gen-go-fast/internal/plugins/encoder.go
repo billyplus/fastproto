@@ -1,10 +1,10 @@
 package plugin
 
 import (
-	"github.com/billyplus/fastproto"
 	"github.com/billyplus/fastproto/cmd/protoc-gen-go-fast/internal"
 	"github.com/billyplus/fastproto/goimport"
 	"github.com/billyplus/fastproto/options"
+	"github.com/billyplus/fastproto/protohelper"
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/protowire"
@@ -20,7 +20,7 @@ var (
 	appendBytes         = goimport.ProtoWirePackage.Ident("AppendBytes")
 	appendFixed32       = goimport.ProtoWirePackage.Ident("AppendFixed32")
 	appendFixed64       = goimport.ProtoWirePackage.Ident("AppendFixed64")
-	bool2Int            = goimport.FastProtoPackage.Ident("Bool2Int")
+	bool2Int            = goimport.FastProtoHelperPackage.Ident("Bool2Int")
 	appendToSizedBuffer = goimport.FastProtoPackage.Ident("AppendToSizedBuffer")
 )
 
@@ -125,7 +125,7 @@ func (p *encoder) generateSliceField(f *protogen.File, field *protogen.Field) {
 	kind := field.Desc.Kind()
 	fieldName := field.GoName
 	fieldNumber := field.Desc.Number()
-	wireType := fastproto.KindToType(field.Desc.Kind())
+	wireType := protohelper.KindToType(field.Desc.Kind())
 
 	switch kind {
 	case protoreflect.BytesKind,
@@ -207,7 +207,7 @@ func (p *encoder) generateSliceField(f *protogen.File, field *protogen.Field) {
 
 func (p *encoder) generateMapField(f *protogen.File, field *protogen.Field) {
 	fieldNumber := field.Desc.Number()
-	wireType := fastproto.KindToType(field.Desc.Kind())
+	wireType := protohelper.KindToType(field.Desc.Kind())
 
 	key := field.Desc.MapKey()
 	value := field.Desc.MapValue()
@@ -238,7 +238,7 @@ func (p *encoder) generateMapEntrySize(f *protogen.File, key, value protoreflect
 
 func (p *encoder) generateEntry(f *protogen.File, fieldName string, entryField protoreflect.FieldDescriptor) {
 	kind := entryField.Kind()
-	wireType := fastproto.KindToType(kind)
+	wireType := protohelper.KindToType(kind)
 
 	fieldNumber := entryField.Number()
 	p.P(`        data = `, appendVarint, `(data, `, protowire.EncodeTag(fieldNumber, wireType), `)`)

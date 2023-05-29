@@ -9,6 +9,7 @@ package pb
 import (
 	fmt "fmt"
 	fastproto "github.com/billyplus/fastproto"
+	protohelper "github.com/billyplus/fastproto/protohelper"
 	protowire "google.golang.org/protobuf/encoding/protowire"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	math "math"
@@ -19,7 +20,7 @@ import (
 var _ = fmt.Errorf
 var _ = math.MaxFloat32
 var _ = protowire.MinValidNumber
-var _ = fastproto.Skip
+var _ = protohelper.Skip
 var _ = protoimpl.MinVersion
 
 func (x *OuterMsg) XxxReset() {

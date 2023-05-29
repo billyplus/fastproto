@@ -1,4 +1,4 @@
-package fastproto
+package protohelper
 
 import (
 	"fmt"

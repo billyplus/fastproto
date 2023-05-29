@@ -12,6 +12,9 @@ extend google.protobuf.FileOptions {
   // if true, Size interface will be ignored for this file.
   // Marshal() method depends on Size()
   optional bool fastproto_sizer = 56005;
+
+  // if true, Equal interface will be ignored for this file.
+  optional bool fastproto_equaler = 56006;
 }
 
 extend google.protobuf.MessageOptions {
@@ -28,4 +31,7 @@ extend google.protobuf.MessageOptions {
   // if true, Size method will be ignored for this message
   // Marshal() method depends on Size()
   optional bool fastproto_msg_sizer = 56005;
+
+  // if true, Equal method will be ignored for this message
+  optional bool fastproto_msg_equaler = 56006;
 }

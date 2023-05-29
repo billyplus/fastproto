@@ -35,7 +35,7 @@ func generateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.
 	g.P("var _ = ", goimport.FmtPackage.Ident("Errorf"))
 	g.P("var _ = ", goimport.MathPackage.Ident("MaxFloat32"))
 	g.P("var _ = ", goimport.ProtoWirePackage.Ident("MinValidNumber"))
-	g.P("var _ = ", goimport.FastProtoPackage.Ident("Skip"))
+	g.P("var _ = ", goimport.FastProtoHelperPackage.Ident("Skip"))
 	g.P("var _ = ", goimport.ProtoImplPackage.Ident("MinVersion"))
 	g.P()
 

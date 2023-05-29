@@ -9,6 +9,7 @@ package test
 import (
 	fmt "fmt"
 	fastproto "github.com/billyplus/fastproto"
+	protohelper "github.com/billyplus/fastproto/protohelper"
 	pb "github.com/billyplus/fastproto/test/pb"
 	protowire "google.golang.org/protobuf/encoding/protowire"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -22,7 +23,7 @@ import (
 var _ = fmt.Errorf
 var _ = math.MaxFloat32
 var _ = protowire.MinValidNumber
-var _ = fastproto.Skip
+var _ = protohelper.Skip
 var _ = protoimpl.MinVersion
 
 func (x *EmptyMsg) XxxReset() {
@@ -206,7 +207,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.ArrInt32 = append(x.ArrInt32, int32(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -241,7 +242,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.ArrInt64 = append(x.ArrInt64, int64(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -276,7 +277,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.ArrUint32 = append(x.ArrUint32, uint32(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -311,7 +312,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.ArrUint64 = append(x.ArrUint64, uint64(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -346,7 +347,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.ArrBool = append(x.ArrBool, v != 0)
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -391,7 +392,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32Bool", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -428,7 +429,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = bool(v != 0)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -441,7 +442,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32Int32", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -478,7 +479,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int32(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -491,7 +492,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32String", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -528,7 +529,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = string(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -541,7 +542,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Bool", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -578,7 +579,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = bool(v != 0)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -591,7 +592,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Int64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -628,7 +629,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -641,7 +642,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Bytes", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -678,7 +679,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = []byte(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -691,7 +692,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapSint32Sint64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -728,7 +729,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(protowire.DecodeZigZag(v))
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -741,7 +742,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapSint64Sint32", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -778,7 +779,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int32(protowire.DecodeZigZag(v))
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -791,7 +792,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapFixed32Sfixed64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -828,7 +829,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -841,7 +842,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapSfixed32Fixed64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -878,7 +879,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = uint64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -891,7 +892,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringBool", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -928,7 +929,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = bool(v != 0)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -941,7 +942,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringInt32", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -978,7 +979,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int32(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -991,7 +992,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringInt64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1028,7 +1029,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1041,7 +1042,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringSint64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1078,7 +1079,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(protowire.DecodeZigZag(v))
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1091,7 +1092,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringSfixed64", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1128,7 +1129,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1141,7 +1142,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringString", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1178,7 +1179,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = string(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1191,7 +1192,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringEnum", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1228,7 +1229,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = TestEnum(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1244,7 +1245,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if x.MActor == nil {
 				x.MActor = &OtherMessage{}
 			}
-			if n, err := fastproto.ConsumeMessage(data, x.MActor); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, x.MActor); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -1254,7 +1255,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return fmt.Errorf("proto: wrong wireType = %d for field ArrActor", wireType)
 			}
 			v := &OtherMessage{}
-			if n, err := fastproto.ConsumeMessage(data, v); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, v); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -1264,7 +1265,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapStringActor", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1295,13 +1296,13 @@ func (x *FullProto) Unmarshal(data []byte) error {
 						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
 					}
 					mapvalue = &OtherMessage{}
-					n, err := fastproto.ConsumeMessage(data, mapvalue)
+					n, err := protohelper.ConsumeMessage(data, mapvalue)
 					if err != nil {
 						return err
 					}
 					data, msglen = data[n:], msglen-n
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1314,7 +1315,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32Actor", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1345,13 +1346,13 @@ func (x *FullProto) Unmarshal(data []byte) error {
 						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
 					}
 					mapvalue = &OtherMessage{}
-					n, err := fastproto.ConsumeMessage(data, mapvalue)
+					n, err := protohelper.ConsumeMessage(data, mapvalue)
 					if err != nil {
 						return err
 					}
 					data, msglen = data[n:], msglen-n
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1364,7 +1365,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Actor", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -1395,13 +1396,13 @@ func (x *FullProto) Unmarshal(data []byte) error {
 						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
 					}
 					mapvalue = &OtherMessage{}
-					n, err := fastproto.ConsumeMessage(data, mapvalue)
+					n, err := protohelper.ConsumeMessage(data, mapvalue)
 					if err != nil {
 						return err
 					}
 					data, msglen = data[n:], msglen-n
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -1417,7 +1418,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if x.Outer == nil {
 				x.Outer = &pb.OuterMsg{}
 			}
-			if n, err := fastproto.ConsumeMessage(data, x.Outer); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, x.Outer); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -1481,7 +1482,7 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	}
 	if x.VBool {
 		data = protowire.AppendVarint(data, 48)
-		data = append(data, uint8(fastproto.Bool2Int(x.VBool)))
+		data = append(data, uint8(protohelper.Bool2Int(x.VBool)))
 	}
 	if x.SInt32 != 0 {
 		data = protowire.AppendVarint(data, 56)
@@ -1509,28 +1510,28 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	}
 	if len(x.ArrInt32) > 0 {
 		data = protowire.AppendVarint(data, 330)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.ArrInt32)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.ArrInt32)))
 		for _, v := range x.ArrInt32 {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
 	}
 	if len(x.ArrInt64) > 0 {
 		data = protowire.AppendVarint(data, 338)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.ArrInt64)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.ArrInt64)))
 		for _, v := range x.ArrInt64 {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
 	}
 	if len(x.ArrUint32) > 0 {
 		data = protowire.AppendVarint(data, 346)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.ArrUint32)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.ArrUint32)))
 		for _, v := range x.ArrUint32 {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
 	}
 	if len(x.ArrUint64) > 0 {
 		data = protowire.AppendVarint(data, 354)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.ArrUint64)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.ArrUint64)))
 		for _, v := range x.ArrUint64 {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
@@ -1539,7 +1540,7 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendVarint(data, 362)
 		data = protowire.AppendVarint(data, uint64(len(x.ArrBool)))
 		for _, v := range x.ArrBool {
-			data = append(data, uint8(fastproto.Bool2Int(v)))
+			data = append(data, uint8(protohelper.Bool2Int(v)))
 		}
 	}
 	if len(x.ArrString) > 0 {
@@ -1563,7 +1564,7 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 			data = protowire.AppendVarint(data, 8)
 			data = protowire.AppendVarint(data, uint64(k))
 			data = protowire.AppendVarint(data, 16)
-			data = append(data, uint8(fastproto.Bool2Int(v)))
+			data = append(data, uint8(protohelper.Bool2Int(v)))
 		}
 	}
 	if len(x.MapInt32Int32) > 0 {
@@ -1600,7 +1601,7 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 			data = protowire.AppendVarint(data, 8)
 			data = protowire.AppendVarint(data, uint64(k))
 			data = protowire.AppendVarint(data, 16)
-			data = append(data, uint8(fastproto.Bool2Int(v)))
+			data = append(data, uint8(protohelper.Bool2Int(v)))
 		}
 	}
 	if len(x.MapInt64Int64) > 0 {
@@ -1686,7 +1687,7 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 			data = protowire.AppendVarint(data, uint64(len(k)))
 			data = append(data, k...)
 			data = protowire.AppendVarint(data, 16)
-			data = append(data, uint8(fastproto.Bool2Int(v)))
+			data = append(data, uint8(protohelper.Bool2Int(v)))
 		}
 	}
 	if len(x.MapStringInt32) > 0 {
@@ -1912,16 +1913,16 @@ func (x *FullProto) Size() (n int) {
 		n += 1 + 8
 	}
 	if len(x.ArrInt32) > 0 {
-		n += 2 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.ArrInt32))
+		n += 2 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.ArrInt32))
 	}
 	if len(x.ArrInt64) > 0 {
-		n += 2 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.ArrInt64))
+		n += 2 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.ArrInt64))
 	}
 	if len(x.ArrUint32) > 0 {
-		n += 2 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.ArrUint32))
+		n += 2 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.ArrUint32))
 	}
 	if len(x.ArrUint64) > 0 {
-		n += 2 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.ArrUint64))
+		n += 2 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.ArrUint64))
 	}
 	if len(x.ArrBool) > 0 {
 		n += 2 + protowire.SizeBytes(len(x.ArrBool))
@@ -2278,7 +2279,7 @@ func (x *WithStandardMessage) Unmarshal(data []byte) error {
 			if x.Nofast == nil {
 				x.Nofast = &pb.NoFastMessage{}
 			}
-			if n, err := fastproto.ConsumeMessage(data, x.Nofast); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, x.Nofast); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -2288,7 +2289,7 @@ func (x *WithStandardMessage) Unmarshal(data []byte) error {
 				return fmt.Errorf("proto: wrong wireType = %d for field Nofasts", wireType)
 			}
 			v := &pb.NoFastMessage{}
-			if n, err := fastproto.ConsumeMessage(data, v); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, v); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -2301,7 +2302,7 @@ func (x *WithStandardMessage) Unmarshal(data []byte) error {
 			if x.LastUpdated == nil {
 				x.LastUpdated = &timestamppb.Timestamp{}
 			}
-			if n, err := fastproto.ConsumeMessage(data, x.LastUpdated); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, x.LastUpdated); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -2436,7 +2437,7 @@ func (x *WithAnyMessage) Unmarshal(data []byte) error {
 			if x.AnyMsg == nil {
 				x.AnyMsg = &anypb.Any{}
 			}
-			if n, err := fastproto.ConsumeMessage(data, x.AnyMsg); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, x.AnyMsg); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -3515,7 +3516,7 @@ func (x *Bool) Marshal() ([]byte, error) {
 func (x *Bool) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if x.Val {
 		data = protowire.AppendVarint(data, 8)
-		data = append(data, uint8(fastproto.Bool2Int(x.Val)))
+		data = append(data, uint8(protohelper.Bool2Int(x.Val)))
 	}
 	return data, nil
 }
@@ -3720,7 +3721,7 @@ func (x *TestProtoMsg) Unmarshal(data []byte) error {
 			if x.Val == nil {
 				x.Val = &OtherMessage{}
 			}
-			if n, err := fastproto.ConsumeMessage(data, x.Val); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, x.Val); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -3827,7 +3828,7 @@ func (x *Floats) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, math.Float32frombits(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -3929,7 +3930,7 @@ func (x *Doubles) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, math.Float64frombits(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4031,7 +4032,7 @@ func (x *Int32S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, int32(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4090,7 +4091,7 @@ func (x *Int32S) Marshal() ([]byte, error) {
 func (x *Int32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.Val) > 0 {
 		data = protowire.AppendVarint(data, 10)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.Val)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.Val)))
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
@@ -4105,7 +4106,7 @@ func (x *Int32S) Size() (n int) {
 	var l int
 	_ = l
 	if len(x.Val) > 0 {
-		n += 1 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.Val))
+		n += 1 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.Val))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -4138,7 +4139,7 @@ func (x *Int64S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, int64(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4197,7 +4198,7 @@ func (x *Int64S) Marshal() ([]byte, error) {
 func (x *Int64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.Val) > 0 {
 		data = protowire.AppendVarint(data, 10)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.Val)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.Val)))
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
@@ -4212,7 +4213,7 @@ func (x *Int64S) Size() (n int) {
 	var l int
 	_ = l
 	if len(x.Val) > 0 {
-		n += 1 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.Val))
+		n += 1 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.Val))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -4245,7 +4246,7 @@ func (x *Sint32S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, int32(protowire.DecodeZigZag(v)))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4304,7 +4305,7 @@ func (x *Sint32S) Marshal() ([]byte, error) {
 func (x *Sint32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.Val) > 0 {
 		data = protowire.AppendVarint(data, 10)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeZigZagSlice(x.Val)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeZigZagSlice(x.Val)))
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, protowire.EncodeZigZag(int64(v)))
 		}
@@ -4319,7 +4320,7 @@ func (x *Sint32S) Size() (n int) {
 	var l int
 	_ = l
 	if len(x.Val) > 0 {
-		n += 1 + protowire.SizeBytes(fastproto.SizeZigZagSlice(x.Val))
+		n += 1 + protowire.SizeBytes(protohelper.SizeZigZagSlice(x.Val))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -4352,7 +4353,7 @@ func (x *Sint64S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, int64(protowire.DecodeZigZag(v)))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4411,7 +4412,7 @@ func (x *Sint64S) Marshal() ([]byte, error) {
 func (x *Sint64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.Val) > 0 {
 		data = protowire.AppendVarint(data, 10)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeZigZagSlice(x.Val)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeZigZagSlice(x.Val)))
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, protowire.EncodeZigZag(int64(v)))
 		}
@@ -4426,7 +4427,7 @@ func (x *Sint64S) Size() (n int) {
 	var l int
 	_ = l
 	if len(x.Val) > 0 {
-		n += 1 + protowire.SizeBytes(fastproto.SizeZigZagSlice(x.Val))
+		n += 1 + protowire.SizeBytes(protohelper.SizeZigZagSlice(x.Val))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -4459,7 +4460,7 @@ func (x *Uint32S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, uint32(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4518,7 +4519,7 @@ func (x *Uint32S) Marshal() ([]byte, error) {
 func (x *Uint32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.Val) > 0 {
 		data = protowire.AppendVarint(data, 10)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.Val)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.Val)))
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
@@ -4533,7 +4534,7 @@ func (x *Uint32S) Size() (n int) {
 	var l int
 	_ = l
 	if len(x.Val) > 0 {
-		n += 1 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.Val))
+		n += 1 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.Val))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -4566,7 +4567,7 @@ func (x *Uint64S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, uint64(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4625,7 +4626,7 @@ func (x *Uint64S) Marshal() ([]byte, error) {
 func (x *Uint64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	if len(x.Val) > 0 {
 		data = protowire.AppendVarint(data, 10)
-		data = protowire.AppendVarint(data, uint64(fastproto.SizeVarintSlice(x.Val)))
+		data = protowire.AppendVarint(data, uint64(protohelper.SizeVarintSlice(x.Val)))
 		for _, v := range x.Val {
 			data = protowire.AppendVarint(data, uint64(v))
 		}
@@ -4640,7 +4641,7 @@ func (x *Uint64S) Size() (n int) {
 	var l int
 	_ = l
 	if len(x.Val) > 0 {
-		n += 1 + protowire.SizeBytes(fastproto.SizeVarintSlice(x.Val))
+		n += 1 + protowire.SizeBytes(protohelper.SizeVarintSlice(x.Val))
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)
@@ -4673,7 +4674,7 @@ func (x *Fixed32S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, uint32(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4775,7 +4776,7 @@ func (x *Fixed64S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, uint64(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4877,7 +4878,7 @@ func (x *Sfixed32S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, int32(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -4979,7 +4980,7 @@ func (x *Sfixed64S) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, int64(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -5081,7 +5082,7 @@ func (x *Bools) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, v != 0)
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -5137,7 +5138,7 @@ func (x *Bools) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendVarint(data, 10)
 		data = protowire.AppendVarint(data, uint64(len(x.Val)))
 		for _, v := range x.Val {
-			data = append(data, uint8(fastproto.Bool2Int(v)))
+			data = append(data, uint8(protohelper.Bool2Int(v)))
 		}
 	}
 	return data, nil
@@ -5345,7 +5346,7 @@ func (x *TestProtoMsgs) Unmarshal(data []byte) error {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
 			v := &OtherMessage{}
-			if n, err := fastproto.ConsumeMessage(data, v); err != nil {
+			if n, err := protohelper.ConsumeMessage(data, v); err != nil {
 				return err
 			} else {
 				data = data[n:]
@@ -5438,7 +5439,7 @@ func (x *TestEnums) Unmarshal(data []byte) error {
 				data = data[n:]
 				x.Val = append(x.Val, TestEnum(v))
 			} else if wireType == 2 {
-				msglen, n := fastproto.CalcListLength(data)
+				msglen, n := protohelper.CalcListLength(data)
 				if n < 0 {
 					return protowire.ParseError(n)
 				}
@@ -5548,7 +5549,7 @@ func (x *Mapint32Fixed64) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -5585,7 +5586,7 @@ func (x *Mapint32Fixed64) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = uint64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -5679,7 +5680,7 @@ func (x *Mapint64Fixed32) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -5716,7 +5717,7 @@ func (x *Mapint64Fixed32) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = uint32(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -5810,7 +5811,7 @@ func (x *Mapuint32Sint64) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -5847,7 +5848,7 @@ func (x *Mapuint32Sint64) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(protowire.DecodeZigZag(v))
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -5941,7 +5942,7 @@ func (x *Mapuint64Sint32) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -5978,7 +5979,7 @@ func (x *Mapuint64Sint32) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int32(protowire.DecodeZigZag(v))
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6072,7 +6073,7 @@ func (x *MapSint32Int64) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6109,7 +6110,7 @@ func (x *MapSint32Int64) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6203,7 +6204,7 @@ func (x *MapSint64Int32) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6240,7 +6241,7 @@ func (x *MapSint64Int32) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int32(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6334,7 +6335,7 @@ func (x *MapFixed32Double) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6371,7 +6372,7 @@ func (x *MapFixed32Double) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = math.Float64frombits(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6465,7 +6466,7 @@ func (x *MapFixed64Float) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6502,7 +6503,7 @@ func (x *MapFixed64Float) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = math.Float32frombits(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6596,7 +6597,7 @@ func (x *Mapsfixed64Uint32) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6633,7 +6634,7 @@ func (x *Mapsfixed64Uint32) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = uint32(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6727,7 +6728,7 @@ func (x *Mapsfixed32Uint64) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6764,7 +6765,7 @@ func (x *Mapsfixed32Uint64) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = uint64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6858,7 +6859,7 @@ func (x *Mapstringsfixed32) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -6895,7 +6896,7 @@ func (x *Mapstringsfixed32) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int32(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -6990,7 +6991,7 @@ func (x *Mapstringsfixed64) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -7027,7 +7028,7 @@ func (x *Mapstringsfixed64) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -7122,7 +7123,7 @@ func (x *Mapint64String) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -7159,7 +7160,7 @@ func (x *Mapint64String) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = string(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -7254,7 +7255,7 @@ func (x *Mapint64Bytes) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -7291,7 +7292,7 @@ func (x *Mapint64Bytes) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = []byte(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -7386,7 +7387,7 @@ func (x *Mapint64Bool) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -7423,7 +7424,7 @@ func (x *Mapint64Bool) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = bool(v != 0)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -7472,7 +7473,7 @@ func (x *Mapint64Bool) AppendToSizedBuffer(data []byte) (ret []byte, err error) 
 			data = protowire.AppendVarint(data, 8)
 			data = protowire.AppendVarint(data, uint64(k))
 			data = protowire.AppendVarint(data, 16)
-			data = append(data, uint8(fastproto.Bool2Int(v)))
+			data = append(data, uint8(protohelper.Bool2Int(v)))
 		}
 	}
 	return data, nil
@@ -7517,7 +7518,7 @@ func (x *MapBoolInt64) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -7554,7 +7555,7 @@ func (x *MapBoolInt64) Unmarshal(data []byte) error {
 					data, msglen = data[n:], msglen-n
 					mapvalue = int64(v)
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
@@ -7601,7 +7602,7 @@ func (x *MapBoolInt64) AppendToSizedBuffer(data []byte) (ret []byte, err error) 
 			l := 2 + 1 + protowire.SizeVarint(uint64(v))
 			data = protowire.AppendVarint(data, uint64(l))
 			data = protowire.AppendVarint(data, 8)
-			data = append(data, uint8(fastproto.Bool2Int(k)))
+			data = append(data, uint8(protohelper.Bool2Int(k)))
 			data = protowire.AppendVarint(data, 16)
 			data = protowire.AppendVarint(data, uint64(v))
 		}
@@ -7648,7 +7649,7 @@ func (x *Mapint64TestProtoMsg) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			msglen, n := fastproto.CalcListLength(data)
+			msglen, n := protohelper.CalcListLength(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -7679,13 +7680,13 @@ func (x *Mapint64TestProtoMsg) Unmarshal(data []byte) error {
 						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
 					}
 					mapvalue = &OtherMessage{}
-					n, err := fastproto.ConsumeMessage(data, mapvalue)
+					n, err := protohelper.ConsumeMessage(data, mapvalue)
 					if err != nil {
 						return err
 					}
 					data, msglen = data[n:], msglen-n
 				} else {
-					if skippy, err := fastproto.Skip(data); err != nil {
+					if skippy, err := protohelper.Skip(data); err != nil {
 						return err
 					} else {
 						data = data[skippy:]
