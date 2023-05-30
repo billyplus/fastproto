@@ -97,6 +97,17 @@ func TestEqual(t *testing.T) {
 	if fastproto.Equal(v1, v3) {
 		t.Fatalf("message %T should not be equal", v1)
 	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v4 := proto.Clone(v1).(*FullProto)
+	if !fastproto.Equal(v3, v4) {
+		t.Fatalf("message %T should be equal", v1)
+	}
+	v3.MActor = nil
+	v4.MActor = nil
+	if !fastproto.Equal(v3, v4) {
+		t.Fatalf("message %T should be equal", v1)
+	}
 }
 
 func BenchmarkFastEqual(b *testing.B) {
