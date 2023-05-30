@@ -27,7 +27,16 @@ var _ = protoimpl.MinVersion
 
 func (x *EqualProto) Equal(v2 proto.Message) bool {
 	vv, ok := v2.(*EqualProto)
-	if !ok ||
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
 		x.VInt32 != vv.VInt32 ||
 		x.VInt64 != vv.VInt64 ||
 		x.VUint32 != vv.VUint32 ||
@@ -72,7 +81,7 @@ func (x *EqualProto) Equal(v2 proto.Message) bool {
 		len(x.Nofasts) != len(vv.Nofasts) {
 		return false
 	}
-	if true ||
+	if false ||
 		!bytes.Equal(x.VBytes, vv.VBytes) ||
 		!protohelper.EqualSlice(x.ArrInt32, vv.ArrInt32) ||
 		!protohelper.EqualSlice(x.ArrInt64, vv.ArrInt64) ||

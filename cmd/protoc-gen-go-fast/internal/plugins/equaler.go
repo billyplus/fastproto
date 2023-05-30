@@ -48,9 +48,15 @@ func (p *equaler) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFil
 
 	g.P(`func (x *`, m.GoIdent.GoName, `) Equal(v2 `, protoMessage, `) bool {`)
 	g.P(`	vv, ok := v2.(*`, m.GoIdent.GoName, `)`)
-	// g.P(`	if !ok {`)
-	// g.P(`		return false`)
-	// g.P(`	}`)
+	g.P(`	if !ok {`)
+	g.P(`		return false`)
+	g.P(`	}`)
+	g.P(`	if x == nil || vv == nil {`)
+	g.P(`		return x == vv`)
+	g.P(`	}`)
+	g.P(`	if x == vv {`)
+	g.P(`		return true`)
+	g.P(`	}`)
 	if len(m.Fields) > 0 {
 		p.fastCheckField(gen, g, f, m)
 		p.slowCheckField(gen, g, f, m)
@@ -65,7 +71,7 @@ func (p *equaler) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFil
 
 func (p *equaler) fastCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *protogen.File, m *protogen.Message) {
 	v := make([]interface{}, 0, 16)
-	v = append(v, "		if !ok ")
+	v = append(v, "		if false ")
 	for _, field := range m.Fields {
 		kind := field.Desc.Kind()
 		fieldName := field.GoName
@@ -91,7 +97,7 @@ func (p *equaler) fastCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile
 
 func (p *equaler) slowCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *protogen.File, m *protogen.Message) {
 	v := make([]interface{}, 0, 16)
-	v = append(v, "		if true ")
+	v = append(v, "		if false ")
 	for _, field := range m.Fields {
 		kind := field.Desc.Kind()
 		fieldName := field.GoName

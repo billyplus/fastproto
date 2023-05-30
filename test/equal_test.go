@@ -1,85 +1,116 @@
 package test
 
 import (
-	"bytes"
-	"strings"
 	"testing"
+
+	"github.com/billyplus/fastproto"
+	"google.golang.org/protobuf/proto"
 )
 
-func BenchmarkStringEqual(b *testing.B) {
-	s1 := strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10)
-	s2 := strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10)
-	a := 0
-	for i := 0; i < b.N; i++ {
-		if s1 == s2 {
-			a = 1
-		}
+// func TestNil(t *testing.T) {
+// 	v1 := fullProtoMsg()
+// 	v1.MActor = nil
+// 	var v2 *FullProto
+// 	v2 = nil
+// 	checknil(v2, v1.MActor)
+// 	// checknil(v1.MActor)
+// 	// checknil(nil)
+// 	// t.Fatal("finish")
+// }
+
+// func checknil(m1, m2 proto.Message) {
+// 	if m1 == m2 {
+// 		fmt.Println("is nil")
+// 	} else {
+// 		fmt.Println("not nil")
+// 	}
+// 	if m1 == nil {
+// 		fmt.Println("m1 is nil")
+// 	}
+// 	if m2 == nil {
+// 		fmt.Println("m2 is nil")
+// 	}
+
+// }
+
+func TestEqual(t *testing.T) {
+	v1 := fullProtoMsg()
+	v2 := proto.Clone(v1)
+	if !fastproto.Equal(v1, v2) {
+		t.Fatalf("message %T should be equal", v1)
 	}
-	_ = a
+
+	v3 := proto.Clone(v1).(*FullProto)
+	v3.SInt32 += 100
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v3.ArrInt32[len(v3.ArrInt32)-1] += 100
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v3.ArrString[len(v3.ArrString)-1] = "test"
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v3.MActor.Job += 100
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v3.MActor.OpenId = "100"
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v3.MActor = nil
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	v3.MapSfixed32Fixed64[100] = 334343
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	for k := range v3.MapStringActor {
+		v3.MapStringActor[k] = nil
+	}
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
+
+	v3 = proto.Clone(v1).(*FullProto)
+	for k := range v3.MapStringActor {
+		v3.MapStringActor[k].OpenId = "nil"
+	}
+	if fastproto.Equal(v1, v3) {
+		t.Fatalf("message %T should not be equal", v1)
+	}
 }
 
-func BenchmarkStringCompare(b *testing.B) {
-	s1 := strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10)
-	s2 := strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10)
-	a := 0
+func BenchmarkFastEqual(b *testing.B) {
+	v1 := fullProtoTest
+	v2 := proto.Clone(v1)
 	for i := 0; i < b.N; i++ {
-		if 1 == strings.Compare(s1, s2) {
-			a = 1
-		}
+		_ = fastproto.Equal(v1, v2)
 	}
-	_ = a
 }
 
-func BenchmarkBytesCompare(b *testing.B) {
-	s1 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	s2 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	a := 0
+func BenchmarkGoogleEqual(b *testing.B) {
+	v1 := fullProtoTest
+	v2 := proto.Clone(v1)
 	for i := 0; i < b.N; i++ {
-		if 1 == bytes.Compare(s1, s2) {
-			a = 1
-		}
+		_ = proto.Equal(v1, v2)
 	}
-	_ = a
-}
-
-func BenchmarkBytesToStringCompare(b *testing.B) {
-	s1 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	s2 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	a := 0
-	for i := 0; i < b.N; i++ {
-		if 1 == bytes.Compare(s1, s2) {
-			a = 1
-		}
-	}
-	_ = a
-}
-
-func BenchmarkBytesEqual(b *testing.B) {
-	s1 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	s2 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	a := 0
-	for i := 0; i < b.N; i++ {
-		if bytes.Equal(s1, s2) {
-			a = 1
-		}
-	}
-	_ = a
-}
-
-func BenchmarkBytesIterate(b *testing.B) {
-	s1 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	s2 := []byte(strings.Repeat("adfweoiuHKjkjfdklajio342987439jkjfdsapoifuHjkfdkasj2349&*&^&*^(*^&*&)*&&*^&*^&*(&(*&))", 10))
-	a := 0
-	for i := 0; i < b.N; i++ {
-		if len(s1) != len(s2) {
-			break
-		}
-		for i, b := range s1 {
-			if s2[i] != b {
-				break
-			}
-		}
-		a = 1
-	}
-	_ = a
 }

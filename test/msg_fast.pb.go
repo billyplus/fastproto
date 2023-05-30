@@ -7,11 +7,13 @@
 package test
 
 import (
+	bytes "bytes"
 	fmt "fmt"
 	fastproto "github.com/billyplus/fastproto"
 	protohelper "github.com/billyplus/fastproto/protohelper"
 	pb "github.com/billyplus/fastproto/test/pb"
 	protowire "google.golang.org/protobuf/encoding/protowire"
+	proto "google.golang.org/protobuf/proto"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -47,6 +49,20 @@ func (x *EmptyMsg) Marshal() ([]byte, error) {
 
 func (x *EmptyMsg) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
+}
+
+func (x *EmptyMsg) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*EmptyMsg)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	return true
 }
 
 func (x *EmptyMsg) Size() (n int) {
@@ -1865,6 +1881,98 @@ func (x *FullProto) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *FullProto) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*FullProto)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.VInt32 != vv.VInt32 ||
+		x.VInt64 != vv.VInt64 ||
+		x.VUint32 != vv.VUint32 ||
+		x.VUint64 != vv.VUint64 ||
+		x.VString != vv.VString ||
+		len(x.VBytes) != len(vv.VBytes) ||
+		x.VBool != vv.VBool ||
+		x.SInt32 != vv.SInt32 ||
+		x.SInt64 != vv.SInt64 ||
+		x.Fixed32 != vv.Fixed32 ||
+		x.Fixed64 != vv.Fixed64 ||
+		x.Sfixed32 != vv.Sfixed32 ||
+		x.Sfixed64 != vv.Sfixed64 ||
+		len(x.ArrInt32) != len(vv.ArrInt32) ||
+		len(x.ArrInt64) != len(vv.ArrInt64) ||
+		len(x.ArrUint32) != len(vv.ArrUint32) ||
+		len(x.ArrUint64) != len(vv.ArrUint64) ||
+		len(x.ArrBool) != len(vv.ArrBool) ||
+		len(x.ArrString) != len(vv.ArrString) ||
+		len(x.ArrBytes) != len(vv.ArrBytes) ||
+		len(x.MapInt32Bool) != len(vv.MapInt32Bool) ||
+		len(x.MapInt32Int32) != len(vv.MapInt32Int32) ||
+		len(x.MapInt32String) != len(vv.MapInt32String) ||
+		len(x.MapInt64Bool) != len(vv.MapInt64Bool) ||
+		len(x.MapInt64Int64) != len(vv.MapInt64Int64) ||
+		len(x.MapInt64Bytes) != len(vv.MapInt64Bytes) ||
+		len(x.MapSint32Sint64) != len(vv.MapSint32Sint64) ||
+		len(x.MapSint64Sint32) != len(vv.MapSint64Sint32) ||
+		len(x.MapFixed32Sfixed64) != len(vv.MapFixed32Sfixed64) ||
+		len(x.MapSfixed32Fixed64) != len(vv.MapSfixed32Fixed64) ||
+		len(x.MapStringBool) != len(vv.MapStringBool) ||
+		len(x.MapStringInt32) != len(vv.MapStringInt32) ||
+		len(x.MapStringInt64) != len(vv.MapStringInt64) ||
+		len(x.MapStringSint64) != len(vv.MapStringSint64) ||
+		len(x.MapStringSfixed64) != len(vv.MapStringSfixed64) ||
+		len(x.MapStringString) != len(vv.MapStringString) ||
+		len(x.MapStringEnum) != len(vv.MapStringEnum) ||
+		len(x.ArrActor) != len(vv.ArrActor) ||
+		len(x.MapStringActor) != len(vv.MapStringActor) ||
+		len(x.MapInt32Actor) != len(vv.MapInt32Actor) ||
+		len(x.MapInt64Actor) != len(vv.MapInt64Actor) {
+		return false
+	}
+	if false ||
+		!bytes.Equal(x.VBytes, vv.VBytes) ||
+		!protohelper.EqualSlice(x.ArrInt32, vv.ArrInt32) ||
+		!protohelper.EqualSlice(x.ArrInt64, vv.ArrInt64) ||
+		!protohelper.EqualSlice(x.ArrUint32, vv.ArrUint32) ||
+		!protohelper.EqualSlice(x.ArrUint64, vv.ArrUint64) ||
+		!protohelper.EqualSlice(x.ArrBool, vv.ArrBool) ||
+		!protohelper.EqualSlice(x.ArrString, vv.ArrString) ||
+		!protohelper.EqualBytesSlice(x.ArrBytes, vv.ArrBytes) ||
+		!protohelper.EqualMap(x.MapInt32Bool, vv.MapInt32Bool) ||
+		!protohelper.EqualMap(x.MapInt32Int32, vv.MapInt32Int32) ||
+		!protohelper.EqualMap(x.MapInt32String, vv.MapInt32String) ||
+		!protohelper.EqualMap(x.MapInt64Bool, vv.MapInt64Bool) ||
+		!protohelper.EqualMap(x.MapInt64Int64, vv.MapInt64Int64) ||
+		!protohelper.EqualBytesMap(x.MapInt64Bytes, vv.MapInt64Bytes) ||
+		!protohelper.EqualMap(x.MapSint32Sint64, vv.MapSint32Sint64) ||
+		!protohelper.EqualMap(x.MapSint64Sint32, vv.MapSint64Sint32) ||
+		!protohelper.EqualMap(x.MapFixed32Sfixed64, vv.MapFixed32Sfixed64) ||
+		!protohelper.EqualMap(x.MapSfixed32Fixed64, vv.MapSfixed32Fixed64) ||
+		!protohelper.EqualMap(x.MapStringBool, vv.MapStringBool) ||
+		!protohelper.EqualMap(x.MapStringInt32, vv.MapStringInt32) ||
+		!protohelper.EqualMap(x.MapStringInt64, vv.MapStringInt64) ||
+		!protohelper.EqualMap(x.MapStringSint64, vv.MapStringSint64) ||
+		!protohelper.EqualMap(x.MapStringSfixed64, vv.MapStringSfixed64) ||
+		!protohelper.EqualMap(x.MapStringString, vv.MapStringString) ||
+		!protohelper.EqualMap(x.MapStringEnum, vv.MapStringEnum) ||
+		!fastproto.Equal(x.MActor, vv.MActor) ||
+		!protohelper.EqualProtoSlice(x.ArrActor, vv.ArrActor) ||
+		!protohelper.EqualProtoMap(x.MapStringActor, vv.MapStringActor) ||
+		!protohelper.EqualProtoMap(x.MapInt32Actor, vv.MapInt32Actor) ||
+		!protohelper.EqualProtoMap(x.MapInt64Actor, vv.MapInt64Actor) ||
+		!fastproto.Equal(x.Outer, vv.Outer) {
+		return false
+	}
+	return true
+}
+
 func (x *FullProto) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2217,6 +2325,31 @@ func (x *OtherMessage) AppendToSizedBuffer(data []byte) (ret []byte, err error) 
 	return data, nil
 }
 
+func (x *OtherMessage) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*OtherMessage)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Eid != vv.Eid ||
+		x.OpenId != vv.OpenId ||
+		x.Name != vv.Name ||
+		x.Job != vv.Job ||
+		x.Sex != vv.Sex {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *OtherMessage) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2380,6 +2513,31 @@ func (x *WithStandardMessage) AppendToSizedBuffer(data []byte) (ret []byte, err 
 	return data, nil
 }
 
+func (x *WithStandardMessage) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*WithStandardMessage)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Id != vv.Id ||
+		len(x.Nofasts) != len(vv.Nofasts) {
+		return false
+	}
+	if false ||
+		!fastproto.Equal(x.Nofast, vv.Nofast) ||
+		!protohelper.EqualProtoSlice(x.Nofasts, vv.Nofasts) ||
+		!fastproto.Equal(x.LastUpdated, vv.LastUpdated) {
+		return false
+	}
+	return true
+}
+
 func (x *WithStandardMessage) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2491,6 +2649,28 @@ func (x *WithAnyMessage) AppendToSizedBuffer(data []byte) (ret []byte, err error
 	return data, nil
 }
 
+func (x *WithAnyMessage) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*WithAnyMessage)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Id != vv.Id {
+		return false
+	}
+	if false ||
+		!fastproto.Equal(x.AnyMsg, vv.AnyMsg) {
+		return false
+	}
+	return true
+}
+
 func (x *WithAnyMessage) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2573,6 +2753,27 @@ func (x *Float) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Float) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Float)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Float) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2650,6 +2851,27 @@ func (x *Double) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendFixed64(data, uint64(math.Float64bits(x.Val)))
 	}
 	return data, nil
+}
+
+func (x *Double) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Double)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
 }
 
 func (x *Double) Size() (n int) {
@@ -2731,6 +2953,27 @@ func (x *Int32) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Int32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Int32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Int32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2808,6 +3051,27 @@ func (x *Int64) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendVarint(data, uint64(x.Val))
 	}
 	return data, nil
+}
+
+func (x *Int64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Int64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
 }
 
 func (x *Int64) Size() (n int) {
@@ -2889,6 +3153,27 @@ func (x *Sint32) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Sint32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sint32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Sint32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -2966,6 +3251,27 @@ func (x *Sint64) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendVarint(data, protowire.EncodeZigZag(int64(x.Val)))
 	}
 	return data, nil
+}
+
+func (x *Sint64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sint64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
 }
 
 func (x *Sint64) Size() (n int) {
@@ -3047,6 +3353,27 @@ func (x *Uint32) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Uint32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Uint32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Uint32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -3124,6 +3451,27 @@ func (x *Uint64) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendVarint(data, uint64(x.Val))
 	}
 	return data, nil
+}
+
+func (x *Uint64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Uint64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
 }
 
 func (x *Uint64) Size() (n int) {
@@ -3205,6 +3553,27 @@ func (x *Fixed32) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Fixed32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Fixed32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Fixed32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -3282,6 +3651,27 @@ func (x *Fixed64) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = protowire.AppendFixed64(data, uint64(x.Val))
 	}
 	return data, nil
+}
+
+func (x *Fixed64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Fixed64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
 }
 
 func (x *Fixed64) Size() (n int) {
@@ -3363,6 +3753,27 @@ func (x *Sfixed32) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Sfixed32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sfixed32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Sfixed32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -3442,6 +3853,27 @@ func (x *Sfixed64) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Sfixed64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sfixed64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *Sfixed64) Size() (n int) {
 	if x == nil {
 		return 0
@@ -3519,6 +3951,27 @@ func (x *Bool) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = append(data, uint8(protohelper.Bool2Int(x.Val)))
 	}
 	return data, nil
+}
+
+func (x *Bool) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Bool)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
 }
 
 func (x *Bool) Size() (n int) {
@@ -3601,6 +4054,27 @@ func (x *String) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *String) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*String)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val != vv.Val {
+		return false
+	}
+	if false {
+		return false
+	}
+	return true
+}
+
 func (x *String) Size() (n int) {
 	if x == nil {
 		return 0
@@ -3680,6 +4154,28 @@ func (x *Bytes) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		data = append(data, x.Val...)
 	}
 	return data, nil
+}
+
+func (x *Bytes) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Bytes)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!bytes.Equal(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Bytes) Size() (n int) {
@@ -3783,6 +4279,28 @@ func (x *TestProtoMsg) AppendToSizedBuffer(data []byte) (ret []byte, err error) 
 		data = protowire.AppendVarint(data, uint64(x.Val2))
 	}
 	return data, nil
+}
+
+func (x *TestProtoMsg) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*TestProtoMsg)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		x.Val2 != vv.Val2 {
+		return false
+	}
+	if false ||
+		!fastproto.Equal(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *TestProtoMsg) Size() (n int) {
@@ -3890,6 +4408,28 @@ func (x *Floats) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Floats) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Floats)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Floats) Size() (n int) {
 	if x == nil {
 		return 0
@@ -3990,6 +4530,28 @@ func (x *Doubles) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Doubles) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Doubles)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Doubles) Size() (n int) {
@@ -4099,6 +4661,28 @@ func (x *Int32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Int32S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Int32S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Int32S) Size() (n int) {
 	if x == nil {
 		return 0
@@ -4204,6 +4788,28 @@ func (x *Int64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Int64S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Int64S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Int64S) Size() (n int) {
@@ -4313,6 +4919,28 @@ func (x *Sint32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Sint32S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sint32S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Sint32S) Size() (n int) {
 	if x == nil {
 		return 0
@@ -4418,6 +5046,28 @@ func (x *Sint64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Sint64S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sint64S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Sint64S) Size() (n int) {
@@ -4527,6 +5177,28 @@ func (x *Uint32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Uint32S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Uint32S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Uint32S) Size() (n int) {
 	if x == nil {
 		return 0
@@ -4634,6 +5306,28 @@ func (x *Uint64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Uint64S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Uint64S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Uint64S) Size() (n int) {
 	if x == nil {
 		return 0
@@ -4734,6 +5428,28 @@ func (x *Fixed32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Fixed32S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Fixed32S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Fixed32S) Size() (n int) {
@@ -4838,6 +5554,28 @@ func (x *Fixed64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Fixed64S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Fixed64S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Fixed64S) Size() (n int) {
 	if x == nil {
 		return 0
@@ -4938,6 +5676,28 @@ func (x *Sfixed32S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Sfixed32S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sfixed32S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Sfixed32S) Size() (n int) {
@@ -5042,6 +5802,28 @@ func (x *Sfixed64S) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Sfixed64S) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Sfixed64S)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Sfixed64S) Size() (n int) {
 	if x == nil {
 		return 0
@@ -5144,6 +5926,28 @@ func (x *Bools) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 	return data, nil
 }
 
+func (x *Bools) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Bools)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Bools) Size() (n int) {
 	if x == nil {
 		return 0
@@ -5223,6 +6027,28 @@ func (x *Strings) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Strings) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Strings)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Strings) Size() (n int) {
@@ -5306,6 +6132,28 @@ func (x *Bytess) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *Bytess) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Bytess)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualBytesSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Bytess) Size() (n int) {
@@ -5397,6 +6245,28 @@ func (x *TestProtoMsgs) AppendToSizedBuffer(data []byte) (ret []byte, err error)
 		}
 	}
 	return data, nil
+}
+
+func (x *TestProtoMsgs) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*TestProtoMsgs)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualProtoSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *TestProtoMsgs) Size() (n int) {
@@ -5508,6 +6378,28 @@ func (x *TestEnums) AppendToSizedBuffer(data []byte) (ret []byte, err error) {
 		}
 	}
 	return data, nil
+}
+
+func (x *TestEnums) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*TestEnums)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualSlice(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *TestEnums) Size() (n int) {
@@ -5641,6 +6533,28 @@ func (x *Mapint32Fixed64) AppendToSizedBuffer(data []byte) (ret []byte, err erro
 	return data, nil
 }
 
+func (x *Mapint32Fixed64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapint32Fixed64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Mapint32Fixed64) Size() (n int) {
 	if x == nil {
 		return 0
@@ -5770,6 +6684,28 @@ func (x *Mapint64Fixed32) AppendToSizedBuffer(data []byte) (ret []byte, err erro
 		}
 	}
 	return data, nil
+}
+
+func (x *Mapint64Fixed32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapint64Fixed32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Mapint64Fixed32) Size() (n int) {
@@ -5903,6 +6839,28 @@ func (x *Mapuint32Sint64) AppendToSizedBuffer(data []byte) (ret []byte, err erro
 	return data, nil
 }
 
+func (x *Mapuint32Sint64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapuint32Sint64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Mapuint32Sint64) Size() (n int) {
 	if x == nil {
 		return 0
@@ -6032,6 +6990,28 @@ func (x *Mapuint64Sint32) AppendToSizedBuffer(data []byte) (ret []byte, err erro
 		}
 	}
 	return data, nil
+}
+
+func (x *Mapuint64Sint32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapuint64Sint32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Mapuint64Sint32) Size() (n int) {
@@ -6165,6 +7145,28 @@ func (x *MapSint32Int64) AppendToSizedBuffer(data []byte) (ret []byte, err error
 	return data, nil
 }
 
+func (x *MapSint32Int64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*MapSint32Int64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *MapSint32Int64) Size() (n int) {
 	if x == nil {
 		return 0
@@ -6294,6 +7296,28 @@ func (x *MapSint64Int32) AppendToSizedBuffer(data []byte) (ret []byte, err error
 		}
 	}
 	return data, nil
+}
+
+func (x *MapSint64Int32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*MapSint64Int32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *MapSint64Int32) Size() (n int) {
@@ -6427,6 +7451,28 @@ func (x *MapFixed32Double) AppendToSizedBuffer(data []byte) (ret []byte, err err
 	return data, nil
 }
 
+func (x *MapFixed32Double) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*MapFixed32Double)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *MapFixed32Double) Size() (n int) {
 	if x == nil {
 		return 0
@@ -6556,6 +7602,28 @@ func (x *MapFixed64Float) AppendToSizedBuffer(data []byte) (ret []byte, err erro
 		}
 	}
 	return data, nil
+}
+
+func (x *MapFixed64Float) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*MapFixed64Float)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *MapFixed64Float) Size() (n int) {
@@ -6689,6 +7757,28 @@ func (x *Mapsfixed64Uint32) AppendToSizedBuffer(data []byte) (ret []byte, err er
 	return data, nil
 }
 
+func (x *Mapsfixed64Uint32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapsfixed64Uint32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Mapsfixed64Uint32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -6818,6 +7908,28 @@ func (x *Mapsfixed32Uint64) AppendToSizedBuffer(data []byte) (ret []byte, err er
 		}
 	}
 	return data, nil
+}
+
+func (x *Mapsfixed32Uint64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapsfixed32Uint64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Mapsfixed32Uint64) Size() (n int) {
@@ -6952,6 +8064,28 @@ func (x *Mapstringsfixed32) AppendToSizedBuffer(data []byte) (ret []byte, err er
 	return data, nil
 }
 
+func (x *Mapstringsfixed32) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapstringsfixed32)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Mapstringsfixed32) Size() (n int) {
 	if x == nil {
 		return 0
@@ -7082,6 +8216,28 @@ func (x *Mapstringsfixed64) AppendToSizedBuffer(data []byte) (ret []byte, err er
 		}
 	}
 	return data, nil
+}
+
+func (x *Mapstringsfixed64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapstringsfixed64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Mapstringsfixed64) Size() (n int) {
@@ -7216,6 +8372,28 @@ func (x *Mapint64String) AppendToSizedBuffer(data []byte) (ret []byte, err error
 	return data, nil
 }
 
+func (x *Mapint64String) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapint64String)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Mapint64String) Size() (n int) {
 	if x == nil {
 		return 0
@@ -7346,6 +8524,28 @@ func (x *Mapint64Bytes) AppendToSizedBuffer(data []byte) (ret []byte, err error)
 		}
 	}
 	return data, nil
+}
+
+func (x *Mapint64Bytes) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapint64Bytes)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualBytesMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Mapint64Bytes) Size() (n int) {
@@ -7479,6 +8679,28 @@ func (x *Mapint64Bool) AppendToSizedBuffer(data []byte) (ret []byte, err error) 
 	return data, nil
 }
 
+func (x *Mapint64Bool) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapint64Bool)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
+}
+
 func (x *Mapint64Bool) Size() (n int) {
 	if x == nil {
 		return 0
@@ -7608,6 +8830,28 @@ func (x *MapBoolInt64) AppendToSizedBuffer(data []byte) (ret []byte, err error) 
 		}
 	}
 	return data, nil
+}
+
+func (x *MapBoolInt64) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*MapBoolInt64)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *MapBoolInt64) Size() (n int) {
@@ -7746,6 +8990,28 @@ func (x *Mapint64TestProtoMsg) AppendToSizedBuffer(data []byte) (ret []byte, err
 		}
 	}
 	return data, nil
+}
+
+func (x *Mapint64TestProtoMsg) Equal(v2 proto.Message) bool {
+	vv, ok := v2.(*Mapint64TestProtoMsg)
+	if !ok {
+		return false
+	}
+	if x == nil || vv == nil {
+		return x == vv
+	}
+	if x == vv {
+		return true
+	}
+	if false ||
+		len(x.Val) != len(vv.Val) {
+		return false
+	}
+	if false ||
+		!protohelper.EqualProtoMap(x.Val, vv.Val) {
+		return false
+	}
+	return true
 }
 
 func (x *Mapint64TestProtoMsg) Size() (n int) {

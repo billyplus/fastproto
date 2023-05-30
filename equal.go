@@ -9,6 +9,9 @@ type Equaler interface {
 }
 
 func Equal(m1, m2 proto.Message) bool {
+	if m1 == m2 {
+		return true
+	}
 	if mm1, ok := m1.(Equaler); ok {
 		return mm1.Equal(m2)
 	}
