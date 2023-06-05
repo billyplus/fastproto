@@ -148,7 +148,6 @@ func (p *decoder) generateField(f *protogen.File, field *protogen.Field) {
 }
 
 func (p *decoder) genField(f *protogen.File, wireType protowire.Type, field *protogen.Field, method protogen.GoIdent) {
-
 	if field.Desc.IsList() {
 		p.genList(f, wireType, field, method)
 	} else {
@@ -159,20 +158,39 @@ func (p *decoder) genField(f *protogen.File, wireType protowire.Type, field *pro
 		p.P(`		v, n := `, method, `(data)`)
 		p.P(`		if n < 0 { return `, parseError, `(n)}`)
 		p.P(`   	data = data[n:]`)
-		switch kind {
-		case protoreflect.BoolKind:
-			p.P(`		x.`, field.GoName, ` = bool(v!=0)`)
-		case protoreflect.FloatKind:
-			p.P(`   	x.`, field.GoName, " = ", float32frombits, "(v)")
-		case protoreflect.DoubleKind:
-			p.P(`   	x.`, field.GoName, " = ", float64frombits, "(v)")
-		case protoreflect.Sint32Kind,
-			protoreflect.Sint64Kind:
-			p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
+		oneof := field.Oneof
+		if oneof != nil {
+			switch kind {
+			case protoreflect.BoolKind:
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, `: bool(v!=0)}`)
+			case protoreflect.FloatKind:
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", float32frombits, "(v)}")
+			case protoreflect.DoubleKind:
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", float64frombits, "(v)}")
+			case protoreflect.Sint32Kind,
+				protoreflect.Sint64Kind:
+				p.P(`   	x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))}")
 
-		default:
-			p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(v)")
+			default:
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", protohelper.GoTypeOfField(field.Desc), "(v)}")
+			}
+		} else {
+			switch kind {
+			case protoreflect.BoolKind:
+				p.P(`		x.`, field.GoName, ` = bool(v!=0)`)
+			case protoreflect.FloatKind:
+				p.P(`   	x.`, field.GoName, " = ", float32frombits, "(v)")
+			case protoreflect.DoubleKind:
+				p.P(`   	x.`, field.GoName, " = ", float64frombits, "(v)")
+			case protoreflect.Sint32Kind,
+				protoreflect.Sint64Kind:
+				p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
+
+			default:
+				p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(v)")
+			}
 		}
+
 	}
 }
 
@@ -190,10 +208,19 @@ func (p *decoder) genStringField(f *protogen.File, wireType protowire.Type, fiel
 			p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:], append([]byte{}, v...))")
 		}
 	} else {
-		if field.Desc.Kind() == protoreflect.StringKind {
-			p.P(`		x.`, field.GoName, ` = string(v)`)
+		oneof := field.Oneof
+		if oneof != nil {
+			if field.Desc.Kind() == protoreflect.StringKind {
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, `: string(v)}`)
+			} else {
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ": append([]byte{}, v...)}")
+			}
 		} else {
-			p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:0], v...)")
+			if field.Desc.Kind() == protoreflect.StringKind {
+				p.P(`		x.`, field.GoName, ` = string(v)`)
+			} else {
+				p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:0], v...)")
+			}
 		}
 	}
 }
@@ -288,22 +315,25 @@ func (p *decoder) genMessage(f *protogen.File, wireType protowire.Type, field *p
 
 		p.P(`		x.`, field.GoName, ` = append(x.`, field.GoName, `, v)`)
 	} else {
-		p.P(`		if x.`, field.GoName, ` == nil {`)
-		p.P(`		    x.`, field.GoName, ` = &`, p.QualifiedGoIdent(field.Message.GoIdent), "{}")
-		p.P(`		}`)
-		p.P(`		if n, err := `, method, `(data, x.`, field.GoName, `); err != nil {`)
-		p.P(`		    return err`)
-		p.P(`		} else {`)
-		p.P(`			data = data[n:]`)
-		p.P(`		}`)
-		// p.P(`		msglen, n := `, protobuf.FastProtoPackage.Ident("CalcListLength"), `(data)`)
-		// p.P(`		if n < 0 { return `, protobuf.ProtoWirePackage.Ident("ParseError"), `(n)}`)
-		// p.P(`		data = data[n:]`)
-		// p.P(`		if err := x.`, field.GoName, `.Unmarshal(data[:msglen]); err != nil {`)
-		// p.P(`		    return err`)
-		// p.P(`		} else {`)
-		// p.P(`			data = data[msglen:]`)
-		// p.P(`		}`)
+		oneof := field.Oneof
+		if oneof != nil {
+			p.P(`		vv := &`, p.QualifiedGoIdent(field.Message.GoIdent), "{}")
+			p.P(`		if n, err := `, method, `(data, vv); err != nil {`)
+			p.P(`		    return err`)
+			p.P(`		} else {`)
+			p.P(`			x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, `: vv}`)
+			p.P(`			data = data[n:]`)
+			p.P(`		}`)
+		} else {
+			p.P(`		if x.`, field.GoName, ` == nil {`)
+			p.P(`		    x.`, field.GoName, ` = &`, p.QualifiedGoIdent(field.Message.GoIdent), "{}")
+			p.P(`		}`)
+			p.P(`		if n, err := `, method, `(data, x.`, field.GoName, `); err != nil {`)
+			p.P(`		    return err`)
+			p.P(`		} else {`)
+			p.P(`			data = data[n:]`)
+			p.P(`		}`)
+		}
 	}
 }
 
@@ -425,24 +455,22 @@ func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protor
 	}
 }
 
-var (
-	valueDecoder = []protogen.GoIdent{
-		protoreflect.Int32Kind:    consumeVarint,
-		protoreflect.Int64Kind:    consumeVarint,
-		protoreflect.FloatKind:    consumeFixed32,
-		protoreflect.DoubleKind:   consumeFixed64,
-		protoreflect.Uint32Kind:   consumeVarint,
-		protoreflect.Uint64Kind:   consumeVarint,
-		protoreflect.Sint32Kind:   consumeVarint,
-		protoreflect.Sint64Kind:   consumeVarint,
-		protoreflect.Fixed32Kind:  consumeFixed32,
-		protoreflect.Fixed64Kind:  consumeFixed64,
-		protoreflect.Sfixed32Kind: consumeFixed32,
-		protoreflect.Sfixed64Kind: consumeFixed64,
-		protoreflect.BoolKind:     consumeVarint,
-		protoreflect.EnumKind:     consumeVarint,
-		protoreflect.StringKind:   consumeBytes,
-		protoreflect.BytesKind:    consumeBytes,
-		protoreflect.MessageKind:  consumeMessage,
-	}
-)
+var valueDecoder = []protogen.GoIdent{
+	protoreflect.Int32Kind:    consumeVarint,
+	protoreflect.Int64Kind:    consumeVarint,
+	protoreflect.FloatKind:    consumeFixed32,
+	protoreflect.DoubleKind:   consumeFixed64,
+	protoreflect.Uint32Kind:   consumeVarint,
+	protoreflect.Uint64Kind:   consumeVarint,
+	protoreflect.Sint32Kind:   consumeVarint,
+	protoreflect.Sint64Kind:   consumeVarint,
+	protoreflect.Fixed32Kind:  consumeFixed32,
+	protoreflect.Fixed64Kind:  consumeFixed64,
+	protoreflect.Sfixed32Kind: consumeFixed32,
+	protoreflect.Sfixed64Kind: consumeFixed64,
+	protoreflect.BoolKind:     consumeVarint,
+	protoreflect.EnumKind:     consumeVarint,
+	protoreflect.StringKind:   consumeBytes,
+	protoreflect.BytesKind:    consumeBytes,
+	protoreflect.MessageKind:  consumeMessage,
+}
