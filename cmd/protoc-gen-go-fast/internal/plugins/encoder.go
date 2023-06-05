@@ -30,6 +30,8 @@ func init() {
 
 type encoder struct {
 	*protogen.GeneratedFile
+
+	oneofList []*protogen.Oneof
 }
 
 func newEncoder() internal.Plugin {
@@ -83,8 +85,17 @@ func (p *encoder) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFil
 func (p *encoder) genMarshalToSizedBuffer(f *protogen.File, m *protogen.Message) {
 	p.P(`func (x *`, m.GoIdent.GoName, `) AppendToSizedBuffer(data []byte) (ret []byte, err error) {`)
 	if len(m.Fields) > 0 {
+		oneofList := make(map[*protogen.Oneof]bool, len(m.Fields))
 		for _, field := range m.Fields {
+			if field.Oneof != nil {
+				oneofList[field.Oneof] = true
+				continue
+			}
 			p.generateField(f, field)
+		}
+
+		for oneof := range oneofList {
+			p.generateOneOf(f, oneof)
 		}
 	}
 	p.P(`    return data, nil`)
@@ -219,7 +230,6 @@ func (p *encoder) generateMapField(f *protogen.File, field *protogen.Field) {
 	p.generateEntry(f, "k", key)
 	p.generateEntry(f, "v", value)
 	p.P(`        }`)
-
 }
 
 func (p *encoder) generateMapEntrySize(f *protogen.File, key, value protoreflect.FieldDescriptor) {
@@ -233,7 +243,6 @@ func (p *encoder) generateMapEntrySize(f *protogen.File, key, value protoreflect
 	}
 	p.P(tmp...)
 	p.P(`        data = `, appendVarint, `(data, uint64(l))`)
-
 }
 
 func (p *encoder) generateEntry(f *protogen.File, fieldName string, entryField protoreflect.FieldDescriptor) {
@@ -277,4 +286,28 @@ func (p *encoder) generateEntry(f *protogen.File, fieldName string, entryField p
 		p.P(`        	}`)
 		p.P(`        }`)
 	}
+}
+
+func (p *encoder) generateOneOf(f *protogen.File, oneof *protogen.Oneof) {
+	if len(oneof.Fields) == 0 {
+		return
+	}
+	p.P(`        switch vv:= x.Get`, oneof.GoName, "().(type){")
+	for _, field := range oneof.Fields {
+		p.P("        case *", field.GoIdent, ":")
+		kind := field.Desc.Kind()
+		if kind == protoreflect.StringKind || kind == protoreflect.BytesKind {
+			p.P(`    if len(vv.`, field.GoName, `) > 0 {`)
+		} else if kind == protoreflect.MessageKind {
+			p.P(`    if vv.`, field.GoName, ` != nil {`)
+		} else if kind == protoreflect.BoolKind {
+			p.P(`    if vv.`, field.GoName, ` {`)
+		} else {
+			p.P(`    if vv.`, field.GoName, ` != 0{`)
+		}
+		p.generateEntry(f, "vv."+field.GoName, field.Desc)
+		p.P(`        }`)
+	}
+	p.P(`        default:`)
+	p.P(`        }`)
 }
