@@ -2600,6 +2600,27 @@ func (x *WithAnyMessage) Unmarshal(data []byte) error {
 			} else {
 				data = data[n:]
 			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			v, n := protowire.ConsumeBytes(data)
+			if n < 0 {
+				return protowire.ParseError(n)
+			}
+			data = data[n:]
+			x.TestOneof = &WithAnyMessage_Name{Name: string(v)}
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SubMessage", wireType)
+			}
+			vv := &OtherMessage{}
+			if n, err := protohelper.ConsumeMessage(data, vv); err != nil {
+				return err
+			} else {
+				x.TestOneof = &WithAnyMessage_SubMessage{SubMessage: vv}
+				data = data[n:]
+			}
 		default:
 			_, n = protowire.ConsumeBytes(data)
 			if n < 0 {
@@ -2646,6 +2667,27 @@ func (x *WithAnyMessage) AppendToSizedBuffer(data []byte) (ret []byte, err error
 			}
 		}
 	}
+	switch vv := x.GetTestOneof().(type) {
+	case *WithAnyMessage_Name:
+		if len(vv.Name) > 0 {
+			data = protowire.AppendVarint(data, 42)
+			data = protowire.AppendVarint(data, uint64(len(vv.Name)))
+			data = append(data, vv.Name...)
+		}
+	case *WithAnyMessage_SubMessage:
+		if vv.SubMessage != nil {
+			data = protowire.AppendVarint(data, 74)
+			sz := uint64(fastproto.Size(vv.SubMessage))
+			data = protowire.AppendVarint(data, uint64(sz))
+			if sz > 0 {
+				data, err = fastproto.AppendToSizedBuffer(data, vv.SubMessage)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+	default:
+	}
 	return data, nil
 }
 
@@ -2668,6 +2710,21 @@ func (x *WithAnyMessage) Equal(v2 proto.Message) bool {
 		!fastproto.Equal(x.AnyMsg, vv.AnyMsg) {
 		return false
 	}
+	switch xx := x.GetTestOneof().(type) {
+	case *WithAnyMessage_Name:
+		if vv2, ok := vv.GetTestOneof().(*WithAnyMessage_Name); !ok {
+			return false
+		} else if vv2.Name != xx.Name {
+			return false
+		}
+	case *WithAnyMessage_SubMessage:
+		if vv2, ok := vv.GetTestOneof().(*WithAnyMessage_SubMessage); !ok {
+			return false
+		} else if !fastproto.Equal(vv2.SubMessage, xx.SubMessage) {
+			return false
+		}
+	default:
+	}
 	return true
 }
 
@@ -2682,6 +2739,18 @@ func (x *WithAnyMessage) Size() (n int) {
 	}
 	if x.AnyMsg != nil {
 		n += 1 + protowire.SizeBytes(fastproto.Size(x.AnyMsg))
+	}
+	switch vv := x.GetTestOneof().(type) {
+	case *WithAnyMessage_Name:
+		l = len(vv.Name)
+		if l > 0 {
+			n += 1 + protowire.SizeBytes(l)
+		}
+	case *WithAnyMessage_SubMessage:
+		if vv.SubMessage != nil {
+			n += 1 + protowire.SizeBytes(fastproto.Size(vv.SubMessage))
+		}
+	default:
 	}
 	if x.unknownFields != nil {
 		n += len(x.unknownFields)

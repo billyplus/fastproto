@@ -95,6 +95,10 @@ message WithStandardMessage {
 message WithAnyMessage {
   uint64 id = 1;
   google.protobuf.Any any_msg = 4;
+  oneof test_oneof {
+    string name = 5;
+    OtherMessage sub_message = 9;
+  }
 }
 
 // test enum

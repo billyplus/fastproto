@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package test;
+option go_package = "github.com/billyplus/fastproto/test";
+
+import "test/outer.proto";
+import "options/options.proto";
+import "test/msg.proto";
+
+option (options.fastproto_equaler) = true;
+
+// full proto
+message OneOfProto {
+  //
+  oneof test_oneof {
+    int32 v_int32 = 1;
+    int64 v_int64 = 2;
+    uint32 v_uint32 = 3;
+    uint64 v_uint64 = 4;
+    string v_string = 5;
+    bytes v_bytes = 23;
+    bool v_bool = 6;
+    //
+    sint32 s_int32 = 7;
+    sint64 s_int64 = 8;
+    fixed32 fixed32 = 9;
+    fixed64 fixed64 = 10;
+    sfixed32 sfixed32 = 11;
+    sfixed64 sfixed64 = 12;
+    //
+    float float32 = 20;
+    double float64 = 21;
+
+    OtherMessage m_actor = 231;
+
+    pb.OuterMsg outer = 281;
+  }
+}
