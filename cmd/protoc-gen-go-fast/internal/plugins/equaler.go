@@ -60,9 +60,17 @@ func (p *equaler) GenerateMessage(gen *protogen.Plugin, g *protogen.GeneratedFil
 	if len(m.Fields) > 0 {
 		p.fastCheckField(gen, g, f, m)
 		p.slowCheckField(gen, g, f, m)
-		// for _, field := range m.Fields {
-		// 	p.generateField(f, field)
-		// }
+
+		oneofList := make(map[*protogen.Oneof]bool, len(m.Fields))
+		for _, field := range m.Fields {
+			if field.Oneof != nil {
+				oneofList[field.Oneof] = true
+			}
+		}
+
+		for oneof := range oneofList {
+			p.generateOneOf(f, oneof)
+		}
 	}
 	g.P(`	return true`)
 	g.P(`}`)
@@ -73,6 +81,10 @@ func (p *equaler) fastCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile
 	v := make([]interface{}, 0, 16)
 	v = append(v, "		if false ")
 	for _, field := range m.Fields {
+		if field.Oneof != nil {
+			continue
+		}
+
 		kind := field.Desc.Kind()
 		fieldName := field.GoName
 
@@ -99,6 +111,10 @@ func (p *equaler) slowCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile
 	v := make([]interface{}, 0, 16)
 	v = append(v, "		if false ")
 	for _, field := range m.Fields {
+		if field.Oneof != nil {
+			continue
+		}
+
 		kind := field.Desc.Kind()
 		fieldName := field.GoName
 
@@ -127,7 +143,6 @@ func (p *equaler) slowCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile
 				v = append(v, "|| \n!", equalMap, "(x.", fieldName, ", vv.", fieldName, ")")
 			}
 		} else {
-
 			switch kind {
 			case protoreflect.MessageKind:
 				v = append(v, "|| \n!", equal, "(x.", fieldName, ", vv.", fieldName, ")")
@@ -144,11 +159,52 @@ func (p *equaler) slowCheckField(gen *protogen.Plugin, g *protogen.GeneratedFile
 	p.P(`        }`)
 }
 
+func (p *equaler) generateOneOf(f *protogen.File, oneof *protogen.Oneof) {
+	if len(oneof.Fields) == 0 {
+		return
+	}
+	p.P(`        switch xx:= x.Get`, oneof.GoName, "().(type){")
+	for _, field := range oneof.Fields {
+		p.P("        case *", field.GoIdent, ":")
+		p.P(`    if vv2,ok:=vv.Get`, oneof.GoName, `().(*`, field.GoIdent, `); !ok {`)
+		p.P(`    	return false`)
+		kind := field.Desc.Kind()
+		switch kind {
+		case protoreflect.MessageKind:
+			// v = append(v, "|| \n!", equal, "(x.", fieldName, ", vv.", fieldName, ")")
+			p.P(`    } else if !`, equal, "(vv2.", field.GoName, `, xx.`, field.GoName, `) {`)
+		case protoreflect.BytesKind:
+			p.P(`    } else if !`, equalBytes, "(vv2.", field.GoName, `, xx.`, field.GoName, `) {`)
+			// v = append(v, "|| \n!", equalBytes, "(x.", fieldName, ", vv.", fieldName, ")")
+			// p.P(`    } else if vv2.`, field.GoName, ` != xx.`, field.GoName, `{`)
+		default:
+			p.P(`    } else if vv2.`, field.GoName, ` != xx.`, field.GoName, `{`)
+		}
+		p.P(`    	return false`)
+		p.P(`    }`)
+		// if kind == protoreflect.StringKind || kind == protoreflect.BytesKind {
+		// 	p.P(`    if vv2,ok:=vv.Get`, oneof.GoName, `().(*`, field.GoIdent, `); !ok {`)
+		// 	p.P(`    	return false`)
+		// 	p.P(`    } else if vv2.`, field.GoName, ` != xx.`, field.GoName, `{`)
+		// 	p.P(`    	return false`)
+		// 	// p.P(`    }`)
+		// } else if kind == protoreflect.MessageKind {
+		// 	p.P(`    if xx.`, field.GoName, ` != nil {`)
+		// } else if kind == protoreflect.BoolKind {
+		// 	p.P(`    if xx.`, field.GoName, ` {`)
+		// } else {
+		// 	p.P(`    if xx.`, field.GoName, ` != 0{`)
+		// }
+		// p.generateEntry(f, "xx."+field.GoName, field.Desc)
+		// p.P(`        }`)
+	}
+	p.P(`        default:`)
+	p.P(`        }`)
+}
+
 func (p *equaler) generateField(f *protogen.File, field *protogen.Field) {
 	if field.Desc.IsMap() {
-
 	} else if field.Desc.IsList() {
-
 	} else {
 		p.generateEntry(f, field.GoName, field.Desc)
 	}
