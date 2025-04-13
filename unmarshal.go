@@ -30,7 +30,7 @@ func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 		return proto.UnmarshalOptions{Merge: opt.Merge}.Unmarshal(b, m)
 	}
 
-	if !opt.Merge {
+	if !opt.Merge || mm == nil {
 		mm.XxxReset()
 	}
 

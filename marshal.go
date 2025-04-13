@@ -20,6 +20,9 @@ type Marshaler interface {
 // }
 
 func Marshal(m proto.Message) ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
 	if mm, ok := m.(Marshaler); ok {
 		return mm.Marshal()
 	}
@@ -30,6 +33,9 @@ func Marshal(m proto.Message) ([]byte, error) {
 // the return int indicate how many bytes of data is used.
 // data[:n] is encoded message.
 func MarshalTo(data []byte, m proto.Message) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
 	if mm, ok := m.(Marshaler); ok {
 		return mm.MarshalTo(data)
 	}
@@ -42,6 +48,9 @@ func MarshalTo(data []byte, m proto.Message) (int, error) {
 }
 
 func AppendToSizedBuffer(data []byte, m proto.Message) ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
 	if mm, ok := m.(Marshaler); ok {
 		return mm.AppendToSizedBuffer(data)
 	}
