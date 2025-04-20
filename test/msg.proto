@@ -85,6 +85,18 @@ message OtherMessage {
   int32 sex = 5;
 }
 
+// less other message
+message LessOtherMessage {
+  //
+  int64 eid = 1;
+  //
+  string open_id = 2;
+  // job
+  int32 job = 4;
+  // sex
+  int32 sex = 5;
+}
+
 message WithStandardMessage {
   uint64 id = 1;
   pb.NoFastMessage nofast = 2;
