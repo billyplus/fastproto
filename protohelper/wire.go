@@ -73,6 +73,7 @@ func Skip(data []byte) (n int, err error) {
 		if n < 0 {
 			return 0, protowire.ParseError(n)
 		}
+		idx += n
 		wireType := int(wire & 0x7)
 		switch wireType {
 		case 0:

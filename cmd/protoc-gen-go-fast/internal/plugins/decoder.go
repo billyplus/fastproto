@@ -97,6 +97,7 @@ func (p *decoder) generateUnmarshaler(f *protogen.File, idx int, m *protogen.Mes
 		p.P(`		if num <= 0 {`)
 		p.P(`			return fmt.Errorf("proto: `, m.Desc.Name(), `: illegal tag %d (wire type %d)", num, wireType)`)
 		p.P(`	   	}`)
+		p.P(`   	prev := data`)
 		p.P(`   	data = data[n:]`)
 
 		p.P(`		switch num {`)
@@ -105,13 +106,34 @@ func (p *decoder) generateUnmarshaler(f *protogen.File, idx int, m *protogen.Mes
 			p.generateField(f, field)
 		}
 
+		/**
+		n, err := fastproto.SkipUnrecognized(data[:])
+		if err != nil {
+			return err
+		}
+		if (n < 0)  {
+			return fastproto.ErrInvalidLengthUnrecognized
+		}
+		if n > len(data) {
+			return io.ErrUnexpectedEOF
+		}
+		x.unknownFields = append(x.unknownFields, data[:n]...)
+		data = data[n:]
+		*/
+
 		p.P(`		default:`)
-		p.P(`		    _, n = `, consumeBytes, "(data)")
-		p.P(`		    if n < 0 {`)
-		p.P(`				return `, parseError, "(n)")
+		p.P(`		    n, err := `, skip, `(prev[:])`)
+		p.P(`		    if err != nil {`)
+		p.P(`				return err`)
 		p.P(`			}`)
-		p.P(`   		x.unknownFields = append(x.unknownFields, data[:n]...)`)
-		p.P(`   		data = data[n:]`)
+		// p.P(`			if (n < 0)  {`)
+		// p.P(`			    return fastproto.ErrInvalidLengthUnrecognized`)
+		// p.P(`			}`)
+		// p.P(`			if n > len(data) {`)
+		// p.P(`				return fastproto.ErrUnexpectedEOF`)
+		// p.P(`			}`)
+		p.P(`   		x.unknownFields = append(x.unknownFields, prev[:n]...)`)
+		p.P(`   		data = prev[n:]`)
 		p.P(`		}`)
 		p.P(`   }`)
 	} else {
