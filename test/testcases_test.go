@@ -24,7 +24,6 @@ var (
 
 func getTestCases() []proto.Message {
 	testcase := []proto.Message{
-
 		&Float{Val: 3036602},
 		&Float{Val: 3036.32899602},
 		&Float{Val: -3036.32899602},
@@ -131,7 +130,8 @@ func getTestCases() []proto.Message {
 				Job:    83804044,
 				Sex:    833333,
 			},
-			Val2: math.MaxInt32},
+			Val2: math.MaxInt32,
+		},
 
 		&Floats{Val: []float32{3.0038344, 4.00000001, -3434.22283, 0, 0, 0, math.MaxFloat32, -math.MaxFloat32}},
 		&Floats{Val: []float32{-3.0038344, 4.00000001, -3434.22283, 0, 0, 0, math.MaxFloat32, -math.MaxFloat32}},
@@ -439,7 +439,7 @@ const (
 func randStringN(n int) func() string {
 	return func() string {
 		b := make([]byte, n)
-		var src = rand.NewSource(time.Now().UnixNano())
+		src := rand.NewSource(time.Now().UnixNano())
 		// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 		for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 			if remain == 0 {

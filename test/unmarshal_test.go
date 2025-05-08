@@ -14,7 +14,6 @@ func TestUnmarshal(t *testing.T) {
 			return
 		}
 	}
-
 }
 
 func testUnmarshal(t *testing.T, v proto.Message) error {
@@ -100,27 +99,64 @@ func BenchmarkGoogleUnmarshalMixedProto(b *testing.B) {
 	benchGoogleUnmarshal(b, fullProtoTest)
 }
 
-func benchFastUnmarshal(b *testing.B, v proto.Message) {
+type imsg interface {
+	Reset()
+	proto.Message
+}
+
+//	func benchFastUnmarshal(b *testing.B, v proto.Message) {
+//		data, _ := proto.Marshal(v)
+//		t := reflect.TypeOf(v).Elem()
+//		v2 := reflect.New(t).Interface().(imsg)
+//		_ = fastproto.Unmarshal(data, v2)
+//		b.ResetTimer()
+//		for i := 0; i < b.N; i++ {
+//			b.StopTimer()
+//			v2.Reset()
+//			b.StartTimer()
+//			_ = fastproto.Unmarshal(data, v2)
+//		}
+//	}
+type unmarshaller[T any] interface {
+	proto.Message
+	*T
+}
+
+func benchFastUnmarshal[ITR unmarshaller[T], T any](b *testing.B, v ITR) {
 	data, _ := proto.Marshal(v)
-	t := reflect.TypeOf(v).Elem()
-	v2 := reflect.New(t).Interface().(proto.Message)
+	// t := reflect.TypeOf(v).Elem()
+	// v2 := reflect.New(t).Interface().(imsg)
+	// _ = fastproto.Unmarshal(data, v2)
+	var v2 ITR = new(T)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		// b.StopTimer()
+		// v2.Reset()
 		// b.StartTimer()
 		_ = fastproto.Unmarshal(data, v2)
 	}
 }
 
-func benchGoogleUnmarshal(b *testing.B, v proto.Message) {
+func benchGoogleUnmarshal[ITR unmarshaller[T], T any](b *testing.B, v ITR) {
 	data, _ := proto.Marshal(v)
-	t := reflect.TypeOf(v).Elem()
-	v3 := reflect.New(t).Interface().(proto.Message)
+	// t := reflect.TypeOf(v).Elem()
+	// v3 := reflect.New(t).Interface().(imsg)
+	var v3 ITR = new(T)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		// b.StopTimer()
-		// b.StartTimer()
 		_ = proto.Unmarshal(data, v3)
-
 	}
 }
+
+// func benchGoogleUnmarshal(b *testing.B, v proto.Message) {
+// 	data, _ := proto.Marshal(v)
+// 	t := reflect.TypeOf(v).Elem()
+// 	v3 := reflect.New(t).Interface().(imsg)
+// 	b.ResetTimer()
+// 	for i := 0; i < b.N; i++ {
+// 		b.StopTimer()
+// 		v3.Reset()
+// 		b.StartTimer()
+// 		_ = proto.Unmarshal(data, v3)
+// 	}
+// }

@@ -30,7 +30,7 @@ func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 		return proto.UnmarshalOptions{Merge: opt.Merge}.Unmarshal(b, m)
 	}
 
-	if !opt.Merge || mm == nil {
+	if !opt.Merge {
 		mm.XxxReset()
 	}
 
@@ -41,5 +41,5 @@ func (opt UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 // if m does not implement unmarshaler interface, it will fallback to proto.Unmarshal
 // merge = true is the default behavior
 func Unmarshal(b []byte, m proto.Message) error {
-	return UnmarshalOptions{Merge: true}.Unmarshal(b, m)
+	return UnmarshalOptions{}.Unmarshal(b, m)
 }

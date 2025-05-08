@@ -56,12 +56,12 @@ func CalcListLength(data []byte) (int, int) {
 	if n < 0 {
 		return 0, n
 	}
-	msglen := int(v)
-	if msglen < 0 || msglen+n > len(data) {
+	// msglen := int(v)
+	if int(v) < 0 || int(v)+n > len(data) {
 		return 0, errCodeOverflow
 	}
 
-	return msglen, n
+	return int(v), n
 }
 
 func Skip(data []byte) (n int, err error) {

@@ -136,7 +136,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Fixed32", wireType)
 			}
-			v, n := protowire.ConsumeFixed32(data)
+			v, n := protohelper.ConsumeFixed32[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -146,7 +146,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Fixed64", wireType)
 			}
-			v, n := protowire.ConsumeFixed64(data)
+			v, n := protohelper.ConsumeFixed64[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -156,7 +156,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sfixed32", wireType)
 			}
-			v, n := protowire.ConsumeFixed32(data)
+			v, n := protohelper.ConsumeFixed32[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -166,7 +166,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sfixed64", wireType)
 			}
-			v, n := protowire.ConsumeFixed64(data)
+			v, n := protohelper.ConsumeFixed64[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -176,7 +176,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Float32", wireType)
 			}
-			v, n := protowire.ConsumeFixed32(data)
+			v, n := protohelper.ConsumeFixed32[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -186,7 +186,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Float64", wireType)
 			}
-			v, n := protowire.ConsumeFixed64(data)
+			v, n := protohelper.ConsumeFixed64[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
