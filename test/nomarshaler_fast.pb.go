@@ -43,12 +43,12 @@ func (x *WithMarshalUnmarshalSize) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Id = uint32(v)
+			x.Id = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -123,12 +123,12 @@ func (x *WithUnmarshal) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Id = uint32(v)
+			x.Id = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -161,12 +161,12 @@ func (x *WithUnmarshalSize) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Id = uint32(v)
+			x.Id = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {

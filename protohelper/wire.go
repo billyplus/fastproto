@@ -1,8 +1,10 @@
 package protohelper
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"math"
 
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -12,6 +14,7 @@ var (
 	ErrInvalidLength        = fmt.Errorf("proto: negative length found during unmarshaling")
 	ErrIntOverflow          = fmt.Errorf("proto: integer overflow")
 	ErrUnexpectedEndOfGroup = fmt.Errorf("proto: unexpected end of group")
+	ErrOverflow             = errors.New("variable length integer overflow")
 )
 
 type VarintType interface {
@@ -27,7 +30,55 @@ const (
 	errCodeEndGroup
 )
 
-func ConsumeVarint[T int32 | uint32 | int64 | uint64 | float32 | float64](data []byte) (T, int) {
+func ConsumeVarint[T int32 | uint32 | int64 | uint64](data []byte) (T, int) {
+	v, n := protowire.ConsumeVarint(data)
+	if n < 0 {
+		return 0, n
+	}
+	return T(v), n
+}
+
+func ConsumeString(data []byte) (string, int) {
+	v, n := protowire.ConsumeBytes(data)
+	if n < 0 {
+		return "", n
+	}
+	return string(v), n
+}
+
+func ConsumeSint[T int32 | int64](data []byte) (T, int) {
+	v, n := protowire.ConsumeVarint(data)
+	if n < 0 {
+		return 0, n
+	}
+	return T(protowire.DecodeZigZag(v)), n
+}
+
+func ConsumeFloat32(data []byte) (float32, int) {
+	v, n := protowire.ConsumeFixed32(data)
+	if n < 0 {
+		return 0, n
+	}
+	return math.Float32frombits(v), n
+}
+
+func ConsumeFloat64(data []byte) (float64, int) {
+	v, n := protowire.ConsumeFixed64(data)
+	if n < 0 {
+		return 0, n
+	}
+	return math.Float64frombits(v), n
+}
+
+func ConsumeBool(data []byte) (bool, int) {
+	v, n := protowire.ConsumeVarint(data)
+	if n < 0 {
+		return false, n
+	}
+	return v != 0, n
+}
+
+func ConsumeEnum[T ~int32](data []byte) (T, int) {
 	v, n := protowire.ConsumeVarint(data)
 	if n < 0 {
 		return 0, n

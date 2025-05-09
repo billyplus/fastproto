@@ -33,6 +33,8 @@ var (
 	consumeFixedSlice  = goimport.FastProtoHelperPackage.Ident("ConsumeFixedSlice")
 	consumeFixed32     = goimport.FastProtoHelperPackage.Ident("ConsumeFixed32")
 	consumeFixed64     = goimport.FastProtoHelperPackage.Ident("ConsumeFixed64")
+	consumeMap         = goimport.FastProtoHelperPackage.Ident("ConsumeMap")
+	consumeMapMessage  = goimport.FastProtoHelperPackage.Ident("ConsumeMapMessage")
 )
 
 func init() {
@@ -159,7 +161,7 @@ func (p *decoder) generateField(f *protogen.File, field *protogen.Field) {
 	p.P(fmt.Sprintf(`		case %d:`, fieldNumber))
 	kind := field.Desc.Kind()
 	wireType := protohelper.KindToType(kind)
-	dec := valueDecoder[kind]
+	dec := getDecodeFn(field.Desc)
 	switch kind {
 	case protoreflect.StringKind, protoreflect.BytesKind:
 		p.genStringField(f, wireType, field, dec)
@@ -188,33 +190,35 @@ func (p *decoder) genField(f *protogen.File, wireType protowire.Type, field *pro
 		oneof := field.Oneof
 		if oneof != nil {
 			switch kind {
-			case protoreflect.BoolKind:
-				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, `: bool(v!=0)}`)
-			case protoreflect.FloatKind:
-				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", float32frombits, "(v)}")
-			case protoreflect.DoubleKind:
-				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", float64frombits, "(v)}")
-			case protoreflect.Sint32Kind,
-				protoreflect.Sint64Kind:
-				p.P(`   	x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))}")
-
-			default:
+			// case protoreflect.BoolKind:
+			// 	p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, `: bool(v!=0)}`)
+			// case protoreflect.FloatKind:
+			// 	p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", float32frombits, "(v)}")
+			// case protoreflect.DoubleKind:
+			// 	p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", float64frombits, "(v)}")
+			// case protoreflect.Sint32Kind,
+			// 	protoreflect.Sint64Kind:
+			// 	p.P(`   	x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))}")
+			case protoreflect.EnumKind:
 				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ":", protohelper.GoTypeOfField(field.Desc), "(v)}")
+			default:
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ": v}")
 			}
 		} else {
 			switch kind {
-			case protoreflect.BoolKind:
-				p.P(`		x.`, field.GoName, ` = bool(v!=0)`)
-			case protoreflect.FloatKind:
-				p.P(`   	x.`, field.GoName, " = ", float32frombits, "(v)")
-			case protoreflect.DoubleKind:
-				p.P(`   	x.`, field.GoName, " = ", float64frombits, "(v)")
-			case protoreflect.Sint32Kind,
-				protoreflect.Sint64Kind:
-				p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
-
-			default:
+			// case protoreflect.BoolKind:
+			// 	p.P(`		x.`, field.GoName, ` = bool(v!=0)`)
+			// case protoreflect.FloatKind:
+			// 	p.P(`   	x.`, field.GoName, " = ", float32frombits, "(v)")
+			// case protoreflect.DoubleKind:
+			// 	p.P(`   	x.`, field.GoName, " = ", float64frombits, "(v)")
+			// case protoreflect.Sint32Kind,
+			// 	protoreflect.Sint64Kind:
+			// 	p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
+			case protoreflect.EnumKind:
 				p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(v)")
+			default:
+				p.P(`   	x.`, field.GoName, " = v")
 			}
 		}
 
@@ -232,7 +236,7 @@ func (p *decoder) genStringField(f *protogen.File, wireType protowire.Type, fiel
 		if field.Desc.Kind() == protoreflect.StringKind {
 			p.P(`		x.`, field.GoName, ` = append(x.`, field.GoName, `, string(v))`)
 		} else {
-			p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:], append([]byte{}, v...))")
+			p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:], v)")
 		}
 	} else {
 		oneof := field.Oneof
@@ -240,13 +244,15 @@ func (p *decoder) genStringField(f *protogen.File, wireType protowire.Type, fiel
 			if field.Desc.Kind() == protoreflect.StringKind {
 				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, `: string(v)}`)
 			} else {
-				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ": append([]byte{}, v...)}")
+				// p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ": append([]byte{}, v...)}")
+				p.P(`		x.`, oneof.GoName, " = &", field.GoIdent, "{", field.GoName, ": v}")
 			}
 		} else {
 			if field.Desc.Kind() == protoreflect.StringKind {
 				p.P(`		x.`, field.GoName, ` = string(v)`)
 			} else {
-				p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:0], v...)")
+				// p.P(`		x.`, field.GoName, " = append(x.", field.GoName, "[:0], v...)")
+				p.P(`		x.`, field.GoName, " = v")
 			}
 		}
 	}
@@ -258,113 +264,118 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 	case protoreflect.Int32Kind,
 		protoreflect.Int64Kind,
 		protoreflect.Uint32Kind,
-		protoreflect.Uint64Kind:
-		p.P(`			n, err := `, consumeSlice, `(&x.`, field.GoName, `, data, wireType)`)
-		p.P(`			if err != nil {`)
-		p.P(`				return err`)
-		p.P(`			}`)
-		p.P(`   		data = data[n:]`)
-		return
-	case protoreflect.Sint32Kind, protoreflect.Sint64Kind:
-		p.P(`			n, err := `, consumeSignedSlice, `(&x.`, field.GoName, `, data, wireType)`)
-		p.P(`			if err != nil {`)
-		p.P(`				return err`)
-		p.P(`			}`)
-		p.P(`   		data = data[n:]`)
-		return
-	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind:
-		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, consumeFixed32, `, 4)`)
-		p.P(`			if err != nil {`)
-		p.P(`				return err`)
-		p.P(`			}`)
-		p.P(`   		data = data[n:]`)
-		return
-	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind:
-		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, consumeFixed64, `, 8)`)
-		p.P(`			if err != nil {`)
-		p.P(`				return err`)
-		p.P(`			}`)
-		p.P(`   		data = data[n:]`)
-		return
-	default:
-	}
-	p.P(`		if wireType == `, wireType, ` {`)
-	if kind == protoreflect.BoolKind {
-		p.P(`			v, n := `, method, `(data)`)
-	} else {
-		p.P(`			v, n := `, method, `(data)`)
-	}
-	p.P(`			if n < 0 { return `, parseError, `(n)}`)
-	p.P(`   		data = data[n:]`)
-	switch kind {
-	case protoreflect.BoolKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, `, v != 0)`)
-	case protoreflect.FloatKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float32frombits, `(v))`)
-	case protoreflect.DoubleKind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
-	case protoreflect.Sint32Kind,
-		protoreflect.Sint64Kind:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
-	default:
-		p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), `(v))`)
-	}
-	p.P(`		} else if wireType == 2 {`)
-	p.P(`			msglen, n := `, calcListLength, `(data)`)
-	p.P(`			if n < 0 { return `, parseError, `(n)}`)
-	p.P(`   		data = data[n:]`)
-	switch kind {
-	case protoreflect.Int32Kind,
-		protoreflect.Int64Kind,
-		protoreflect.Uint32Kind,
 		protoreflect.Uint64Kind,
 		protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind,
-		protoreflect.EnumKind:
-		p.P(`		    elementCount := 0`)
-		p.P(`		    for _, i := range data[:msglen] {`)
-		p.P(`		        if i < 128 {`)
-		p.P(`		            elementCount++`)
-		p.P(`		         }`)
-		p.P(`		     }`)
+		protoreflect.EnumKind,
+		protoreflect.BoolKind:
+		p.P(`			n, err := `, consumeSlice, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[kind], ",", getDecodeFn(field.Desc), `)`)
+		p.P(`			if err != nil {`)
+		p.P(`				return err`)
+		p.P(`			}`)
+		p.P(`   		data = data[n:]`)
+		return
+	// case protoreflect.Sint32Kind, protoreflect.Sint64Kind:
+	// 	p.P(`			n, err := `, consumeSlice, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[kind], ",", valueDecoder[kind], `)`)
+	// 	p.P(`			if err != nil {`)
+	// 	p.P(`				return err`)
+	// 	p.P(`			}`)
+	// 	p.P(`   		data = data[n:]`)
+	// 	return
 	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
-		p.P(`		    elementCount := msglen / 4`)
+		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, getDecodeFn(field.Desc), `, 4)`)
+		p.P(`			if err != nil {`)
+		p.P(`				return err`)
+		p.P(`			}`)
+		p.P(`   		data = data[n:]`)
+		return
 	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
-		p.P(`		    elementCount := msglen / 8`)
-	case protoreflect.BoolKind:
-		p.P(`		    elementCount := msglen`)
-	}
-	p.P(`		    if elementCount > 0 {`)
-	p.P(`		    	if  len(x.`, field.GoName, `) == 0 {`)
-	p.P(`		        	x.`, field.GoName, ` = make([]`, protohelper.GoTypeOfField(field.Desc), `, 0, elementCount)`)
-	p.P(`		    	} else {`)
-	p.P(`		    		ss := make([]`, protohelper.GoTypeOfField(field.Desc), `, 0, elementCount+len(x.`, field.GoName, `))`)
-	p.P(`		    		ss = append(ss, x.`, field.GoName, `...)`)
-	p.P(`		    		x.`, field.GoName, ` = ss`)
-	p.P(`		    	}`)
-	p.P(`		    	for elementCount > 0 {`)
-	p.P(`					v, n := `, method, `(data)`)
-	p.P(`					if n < 0 { return `, parseError, `(n)}`)
-	p.P(`   				data = data[n:]`)
-	p.P(`   				elementCount--`)
-	switch kind {
-	case protoreflect.BoolKind:
-		p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, `, v != 0)`)
-	case protoreflect.FloatKind:
-		p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", float32frombits, `(v))`)
-	case protoreflect.DoubleKind:
-		p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
-	case protoreflect.Sint32Kind,
-		protoreflect.Sint64Kind:
-		p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
+		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, getDecodeFn(field.Desc), `, 8)`)
+		p.P(`			if err != nil {`)
+		p.P(`				return err`)
+		p.P(`			}`)
+		p.P(`   		data = data[n:]`)
+		return
 	default:
-		p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), `(v))`)
 	}
-	p.P(`		    	}`)
-	p.P(`		    }`)
-	p.P(`		} else {`)
-	p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
-	p.P(`		}`)
+	fmt.Println("unknow list")
+	// p.P(`		if wireType == `, wireType, ` {`)
+	// if kind == protoreflect.BoolKind {
+	// 	p.P(`			v, n := `, method, `(data)`)
+	// } else {
+	// 	p.P(`			v, n := `, method, `(data)`)
+	// }
+	// p.P(`			if n < 0 { return `, parseError, `(n)}`)
+	// p.P(`   		data = data[n:]`)
+	// switch kind {
+	// case protoreflect.BoolKind:
+	// 	p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, `, v != 0)`)
+	// case protoreflect.FloatKind:
+	// 	p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float32frombits, `(v))`)
+	// case protoreflect.DoubleKind:
+	// 	p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
+	// case protoreflect.Sint32Kind,
+	// 	protoreflect.Sint64Kind:
+	// 	p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
+	// default:
+	// 	p.P(`		        x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), `(v))`)
+	// }
+	// p.P(`		} else if wireType == 2 {`)
+	// p.P(`			msglen, n := `, calcListLength, `(data)`)
+	// p.P(`			if n < 0 { return `, parseError, `(n)}`)
+	// p.P(`   		data = data[n:]`)
+	// switch kind {
+	// case protoreflect.Int32Kind,
+	// 	protoreflect.Int64Kind,
+	// 	protoreflect.Uint32Kind,
+	// 	protoreflect.Uint64Kind,
+	// 	protoreflect.Sint32Kind,
+	// 	protoreflect.Sint64Kind,
+	// 	protoreflect.EnumKind:
+	// 	p.P(`		    elementCount := 0`)
+	// 	p.P(`		    for _, i := range data[:msglen] {`)
+	// 	p.P(`		        if i < 128 {`)
+	// 	p.P(`		            elementCount++`)
+	// 	p.P(`		         }`)
+	// 	p.P(`		     }`)
+	// case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+	// 	p.P(`		    elementCount := msglen / 4`)
+	// case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+	// 	p.P(`		    elementCount := msglen / 8`)
+	// case protoreflect.BoolKind:
+	// 	p.P(`		    elementCount := msglen`)
+	// }
+	// p.P(`		    if elementCount > 0 {`)
+	// p.P(`		    	if  len(x.`, field.GoName, `) == 0 {`)
+	// p.P(`		        	x.`, field.GoName, ` = make([]`, protohelper.GoTypeOfField(field.Desc), `, 0, elementCount)`)
+	// p.P(`		    	} else {`)
+	// p.P(`		    		ss := make([]`, protohelper.GoTypeOfField(field.Desc), `, 0, elementCount+len(x.`, field.GoName, `))`)
+	// p.P(`		    		ss = append(ss, x.`, field.GoName, `...)`)
+	// p.P(`		    		x.`, field.GoName, ` = ss`)
+	// p.P(`		    	}`)
+	// p.P(`		    	for elementCount > 0 {`)
+	// p.P(`					v, n := `, method, `(data)`)
+	// p.P(`					if n < 0 { return `, parseError, `(n)}`)
+	// p.P(`   				data = data[n:]`)
+	// p.P(`   				elementCount--`)
+	// switch kind {
+	// case protoreflect.BoolKind:
+	// 	p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, `, v != 0)`)
+	// case protoreflect.FloatKind:
+	// 	p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", float32frombits, `(v))`)
+	// case protoreflect.DoubleKind:
+	// 	p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", float64frombits, `(v))`)
+	// case protoreflect.Sint32Kind,
+	// 	protoreflect.Sint64Kind:
+	// 	p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, `(v)))`)
+	// default:
+	// 	p.P(`		        	x.`, field.GoName, ` = append(x.`, field.GoName, ",", protohelper.GoTypeOfField(field.Desc), `(v))`)
+	// }
+	// p.P(`		    	}`)
+	// p.P(`		    }`)
+	// p.P(`		} else {`)
+	// p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
+	// p.P(`		}`)
 }
 
 func (p *decoder) genMessage(f *protogen.File, wireType protowire.Type, field *protogen.Field, method protogen.GoIdent) {
@@ -408,9 +419,38 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 	key := field.Desc.MapKey()
 	value := field.Desc.MapValue()
 
-	keyKind := protohelper.GoTypeOfField(key)
-	valKind := protohelper.GoTypeOfField(value)
+	// keyKind := protohelper.GoTypeOfField(key)
+	// valKind := protohelper.GoTypeOfField(value)
 
+	/**
+	n, err:= protohelper.ConsumeMap(&x.Val, data, wireType, protohelper.ConsumeSint[int32], protohelper.ConsumeSint[int64])
+	if err !=nil {
+		return err
+	}
+	data = data[n:]
+	*/
+	switch value.Kind() {
+	case protoreflect.MessageKind:
+		p.P(`		n, err:= `, consumeMapMessage, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[key.Kind()], ",", valueDecoder[key.Kind()], `)`)
+		p.P(`		if err != nil {`)
+		p.P(`			return err`)
+		p.P(`		}`)
+		p.P(`		data = data[n:]`)
+	case protoreflect.EnumKind:
+		p.P(`		n, err:= `, consumeMap, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[key.Kind()], ",", wireTypeMap[value.Kind()], ",", valueDecoder[key.Kind()], `, `, valueDecoder[value.Kind()], "[", protohelper.GoTypeOfField(value), `])`)
+		p.P(`		if err != nil {`)
+		p.P(`			return err`)
+		p.P(`		}`)
+		p.P(`		data = data[n:]`)
+	default:
+		p.P(`		n, err:= `, consumeMap, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[key.Kind()], ",", wireTypeMap[value.Kind()], ",", valueDecoder[key.Kind()], `, `, valueDecoder[value.Kind()], `)`)
+		p.P(`		if err != nil {`)
+		p.P(`			return err`)
+		p.P(`		}`)
+		p.P(`		data = data[n:]`)
+	}
+
+	/**
 	p.P(`		if wireType != `, wireType, ` {`)
 	p.P(`			return fmt.Errorf("proto: wrong wireType = %d for field `, field.GoName, `", wireType)`)
 	p.P(`		}`)
@@ -443,6 +483,7 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 	p.P(`		    }`)
 	p.P(`		}`)
 	p.P(`		x.`, field.GoName, `[mapkey] = mapvalue`)
+	*/
 }
 
 // func (p *decoder) genMapKeyVal(vname string, field protoreflect.FieldDescriptor) {
@@ -487,7 +528,7 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 
 func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protoreflect.FieldDescriptor) {
 	kind := field.Kind()
-	dec := valueDecoder[kind]
+	dec := getDecodeFn(field)
 	wireType := protohelper.KindToType(kind)
 	p.P(`				if subWireType != `, wireType, ` {`)
 	p.P(`					return fmt.Errorf("proto: wrong wireType = %d for field `, field.Name(), `", subWireType)`)
@@ -522,22 +563,50 @@ func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protor
 	}
 }
 
+func getDecodeFn(field protoreflect.FieldDescriptor) protogen.GoIdent {
+	kind := field.Kind()
+	if kind == protoreflect.EnumKind {
+		return goimport.FastProtoHelperPackage.Ident("ConsumeEnum[" + protohelper.GoTypeOfField(field) + "]")
+	}
+	return valueDecoder[kind]
+}
+
 var valueDecoder = []protogen.GoIdent{
-	protoreflect.Int32Kind:    consumeVarint,
-	protoreflect.Int64Kind:    consumeVarint,
-	protoreflect.FloatKind:    goimport.FastProtoHelperPackage.Ident("ConsumeFixed32[uint32]"),
-	protoreflect.DoubleKind:   goimport.FastProtoHelperPackage.Ident("ConsumeFixed64[uint64]"),
-	protoreflect.Uint32Kind:   consumeVarint,
-	protoreflect.Uint64Kind:   consumeVarint,
-	protoreflect.Sint32Kind:   consumeVarint,
-	protoreflect.Sint64Kind:   consumeVarint,
+	protoreflect.Int32Kind:    goimport.FastProtoHelperPackage.Ident("ConsumeVarint[int32]"),
+	protoreflect.Int64Kind:    goimport.FastProtoHelperPackage.Ident("ConsumeVarint[int64]"),
+	protoreflect.FloatKind:    goimport.FastProtoHelperPackage.Ident("ConsumeFloat32"),
+	protoreflect.DoubleKind:   goimport.FastProtoHelperPackage.Ident("ConsumeFloat64"),
+	protoreflect.Uint32Kind:   goimport.FastProtoHelperPackage.Ident("ConsumeVarint[uint32]"),
+	protoreflect.Uint64Kind:   goimport.FastProtoHelperPackage.Ident("ConsumeVarint[uint64]"),
+	protoreflect.Sint32Kind:   goimport.FastProtoHelperPackage.Ident("ConsumeSint[int32]"),
+	protoreflect.Sint64Kind:   goimport.FastProtoHelperPackage.Ident("ConsumeSint[int64]"),
 	protoreflect.Fixed32Kind:  goimport.FastProtoHelperPackage.Ident("ConsumeFixed32[uint32]"),
 	protoreflect.Fixed64Kind:  goimport.FastProtoHelperPackage.Ident("ConsumeFixed64[uint64]"),
 	protoreflect.Sfixed32Kind: goimport.FastProtoHelperPackage.Ident("ConsumeFixed32[int32]"),
 	protoreflect.Sfixed64Kind: goimport.FastProtoHelperPackage.Ident("ConsumeFixed64[int64]"),
-	protoreflect.BoolKind:     consumeVarint,
-	protoreflect.EnumKind:     consumeVarint,
-	protoreflect.StringKind:   consumeBytes,
+	protoreflect.BoolKind:     goimport.FastProtoHelperPackage.Ident("ConsumeBool"),
+	protoreflect.EnumKind:     goimport.FastProtoHelperPackage.Ident("ConsumeEnum"),
+	protoreflect.StringKind:   goimport.FastProtoHelperPackage.Ident("ConsumeString"),
 	protoreflect.BytesKind:    consumeBytes,
 	protoreflect.MessageKind:  consumeMessage,
+}
+
+var wireTypeMap = []protowire.Type{
+	protoreflect.Int32Kind:    protowire.VarintType,
+	protoreflect.Int64Kind:    protowire.VarintType,
+	protoreflect.FloatKind:    protowire.Fixed32Type,
+	protoreflect.DoubleKind:   protowire.Fixed64Type,
+	protoreflect.Uint32Kind:   protowire.VarintType,
+	protoreflect.Uint64Kind:   protowire.VarintType,
+	protoreflect.Sint32Kind:   protowire.VarintType,
+	protoreflect.Sint64Kind:   protowire.VarintType,
+	protoreflect.Fixed32Kind:  protowire.Fixed32Type,
+	protoreflect.Fixed64Kind:  protowire.Fixed64Type,
+	protoreflect.Sfixed32Kind: protowire.Fixed32Type,
+	protoreflect.Sfixed64Kind: protowire.Fixed64Type,
+	protoreflect.BoolKind:     protowire.VarintType,
+	protoreflect.EnumKind:     protowire.VarintType,
+	protoreflect.StringKind:   protowire.BytesType,
+	protoreflect.BytesKind:    protowire.BytesType,
+	protoreflect.MessageKind:  protowire.BytesType,
 }

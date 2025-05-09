@@ -20,16 +20,16 @@ func ConsumeMessage(data []byte, msg proto.Message) (int, error) {
 	return n + msglen, nil
 }
 
-func ConsumeSlice[T int32 | int64 | uint32 | uint64](arr *[]T, data []byte, wireType protowire.Type) (int, error) {
+func ConsumeSlice[T ~int32 | int64 | uint32 | uint64 | float32 | float64 | bool](arr *[]T, data []byte, wireType protowire.Type, valueWireType protowire.Type, consumeValFn func([]byte) (T, int)) (int, error) {
 	m := 0
-	if wireType == 0 {
-		v, n := protowire.ConsumeVarint(data)
+	if wireType == valueWireType {
+		v, n := consumeValFn(data)
 		if n < 0 {
 			return m, protowire.ParseError(n)
 		}
 		m += n
 		// data = data[n:]
-		*arr = append(*arr, T(v))
+		*arr = append(*arr, v)
 	} else if wireType == 2 {
 		msglen, n := CalcListLength(data)
 		if n < 0 {
@@ -53,14 +53,14 @@ func ConsumeSlice[T int32 | int64 | uint32 | uint64](arr *[]T, data []byte, wire
 			}
 
 			for elementCount > 0 {
-				v, n := protowire.ConsumeVarint(data)
+				v, n := consumeValFn(data)
 				if n < 0 {
 					return n, protowire.ParseError(n)
 				}
 				data = data[n:]
 				m += n
 				elementCount--
-				(*arr) = append((*arr), T(v))
+				(*arr) = append((*arr), v)
 			}
 		}
 	} else {
@@ -116,10 +116,10 @@ func ConsumeSignedSlice[T int32 | int64](arr *[]T, data []byte, wireType protowi
 	return m, nil
 }
 
-func ConsumeFixedSlice[T int32 | int64 | uint32 | uint64](arr *[]T, data []byte, wireType protowire.Type, consumefn func([]byte) (T, int), valSize int) (int, error) {
+func ConsumeFixedSlice[T int32 | int64 | uint32 | uint64 | float32 | float64](arr *[]T, data []byte, wireType protowire.Type, consumeValFn func([]byte) (T, int), valSize int) (int, error) {
 	m := 0
 	if wireType == 1 {
-		v, n := consumefn(data)
+		v, n := consumeValFn(data)
 		if n < 0 {
 			return m, protowire.ParseError(n)
 		}
@@ -142,7 +142,7 @@ func ConsumeFixedSlice[T int32 | int64 | uint32 | uint64](arr *[]T, data []byte,
 				(*arr) = ss
 			}
 			for elementCount > 0 {
-				v, n := consumefn(data)
+				v, n := consumeValFn(data)
 				if n < 0 {
 					return m, protowire.ParseError(n)
 				}
@@ -155,5 +155,128 @@ func ConsumeFixedSlice[T int32 | int64 | uint32 | uint64](arr *[]T, data []byte,
 	} else {
 		return m, fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 	}
+	return m, nil
+}
+
+func ConsumeMap[K int32 | int64 | uint32 | uint64 | string | bool, V any](dst *map[K]V, data []byte, wireType protowire.Type, keyWireType protowire.Type, valueWireType protowire.Type, consumeKey func([]byte) (K, int), consumeVal func([]byte) (V, int)) (int, error) {
+	m := 0
+	if wireType != 2 {
+		return m, fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
+	}
+	msglen, n := CalcListLength(data)
+	if n < 0 {
+		return m, protowire.ParseError(n)
+	}
+	data = data[n:]
+	m += n
+	if *dst == nil {
+		*dst = make(map[K]V)
+	}
+	var mapkey K
+	var mapvalue V
+	for msglen > 0 {
+		subNum, subWireType, n := protowire.ConsumeTag(data)
+		if n < 0 {
+			return m, protowire.ParseError(n)
+		}
+		data, msglen = data[n:], msglen-n
+		m += n
+		if subNum == 1 {
+			if subWireType != keyWireType {
+				return m, fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
+			}
+			v, n := consumeKey(data)
+			if n < 0 {
+				return m, protowire.ParseError(n)
+			}
+			data, msglen = data[n:], msglen-n
+			m += n
+			mapkey = v
+		} else if subNum == 2 {
+			if subWireType != valueWireType {
+				return m, fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
+			}
+			v, n := consumeVal(data)
+			if n < 0 {
+				return m, protowire.ParseError(n)
+			}
+			data, msglen = data[n:], msglen-n
+			m += n
+			mapvalue = v
+		} else {
+			if skippy, err := Skip(data); err != nil {
+				return m, err
+			} else {
+				data = data[skippy:]
+				m += skippy
+				msglen -= skippy
+			}
+		}
+	}
+	(*dst)[mapkey] = mapvalue
+	return m, nil
+}
+
+type IMessagePTR[T any] interface {
+	proto.Message
+	*T
+}
+
+func ConsumeMapMessage[K int32 | int64 | uint32 | uint64 | string | bool, IV IMessagePTR[V], V any](dst *map[K]IV, data []byte, wireType protowire.Type, keyWireType protowire.Type, consumeKey func([]byte) (K, int)) (int, error) {
+	m := 0
+	if wireType != 2 {
+		return m, fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
+	}
+	msglen, n := CalcListLength(data)
+	if n < 0 {
+		return m, protowire.ParseError(n)
+	}
+	data = data[n:]
+	m += n
+	if *dst == nil {
+		*dst = make(map[K]IV)
+	}
+	var mapkey K
+	var mapvalue IV
+	for msglen > 0 {
+		subNum, subWireType, n := protowire.ConsumeTag(data)
+		if n < 0 {
+			return m, protowire.ParseError(n)
+		}
+		data, msglen = data[n:], msglen-n
+		m += n
+		if subNum == 1 {
+			if subWireType != keyWireType {
+				return m, fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
+			}
+			v, n := consumeKey(data)
+			if n < 0 {
+				return m, protowire.ParseError(n)
+			}
+			data, msglen = data[n:], msglen-n
+			m += n
+			mapkey = v
+		} else if subNum == 2 {
+			if subWireType != 2 {
+				return m, fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
+			}
+			mapvalue = new(V)
+			n, err := ConsumeMessage(data, mapvalue)
+			if err != nil {
+				return m, err
+			}
+			data, msglen = data[n:], msglen-n
+			m += n
+		} else {
+			if skippy, err := Skip(data); err != nil {
+				return m, err
+			} else {
+				data = data[skippy:]
+				m += skippy
+				msglen -= skippy
+			}
+		}
+	}
+	(*dst)[mapkey] = mapvalue
 	return m, nil
 }

@@ -43,17 +43,17 @@ func (x *OuterMsg) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Eid", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Eid = int64(v)
+			x.Eid = v
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OpenId", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -63,7 +63,7 @@ func (x *OuterMsg) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -73,22 +73,22 @@ func (x *OuterMsg) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Job", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Job = int32(v)
+			x.Job = v
 		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Sex = int32(v)
+			x.Sex = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {

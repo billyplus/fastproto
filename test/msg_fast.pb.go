@@ -89,47 +89,47 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VInt32", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.VInt32 = int32(v)
+			x.VInt32 = v
 		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VInt64", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.VInt64 = int64(v)
+			x.VInt64 = v
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VUint32", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.VUint32 = uint32(v)
+			x.VUint32 = v
 		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VUint64", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.VUint64 = uint64(v)
+			x.VUint64 = v
 		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VString", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -144,37 +144,37 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.VBytes = append(x.VBytes[:0], v...)
+			x.VBytes = v
 		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VBool", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeBool(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.VBool = bool(v != 0)
+			x.VBool = v
 		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SInt32", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeSint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.SInt32 = int32(protowire.DecodeZigZag(v))
+			x.SInt32 = v
 		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SInt64", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeSint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.SInt64 = int64(protowire.DecodeZigZag(v))
+			x.SInt64 = v
 		case 9:
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Fixed32", wireType)
@@ -184,7 +184,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Fixed32 = uint32(v)
+			x.Fixed32 = v
 		case 10:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Fixed64", wireType)
@@ -194,7 +194,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Fixed64 = uint64(v)
+			x.Fixed64 = v
 		case 11:
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sfixed32", wireType)
@@ -204,7 +204,7 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Sfixed32 = int32(v)
+			x.Sfixed32 = v
 		case 12:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sfixed64", wireType)
@@ -214,72 +214,42 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Sfixed64 = int64(v)
+			x.Sfixed64 = v
 		case 41:
-			n, err := protohelper.ConsumeSlice(&x.ArrInt32, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.ArrInt32, data, wireType, 0, protohelper.ConsumeVarint[int32])
 			if err != nil {
 				return err
 			}
 			data = data[n:]
 		case 42:
-			n, err := protohelper.ConsumeSlice(&x.ArrInt64, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.ArrInt64, data, wireType, 0, protohelper.ConsumeVarint[int64])
 			if err != nil {
 				return err
 			}
 			data = data[n:]
 		case 43:
-			n, err := protohelper.ConsumeSlice(&x.ArrUint32, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.ArrUint32, data, wireType, 0, protohelper.ConsumeVarint[uint32])
 			if err != nil {
 				return err
 			}
 			data = data[n:]
 		case 44:
-			n, err := protohelper.ConsumeSlice(&x.ArrUint64, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.ArrUint64, data, wireType, 0, protohelper.ConsumeVarint[uint64])
 			if err != nil {
 				return err
 			}
 			data = data[n:]
 		case 45:
-			if wireType == 0 {
-				v, n := protowire.ConsumeVarint(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				x.ArrBool = append(x.ArrBool, v != 0)
-			} else if wireType == 2 {
-				msglen, n := protohelper.CalcListLength(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				elementCount := msglen
-				if elementCount > 0 {
-					if len(x.ArrBool) == 0 {
-						x.ArrBool = make([]bool, 0, elementCount)
-					} else {
-						ss := make([]bool, 0, elementCount+len(x.ArrBool))
-						ss = append(ss, x.ArrBool...)
-						x.ArrBool = ss
-					}
-					for elementCount > 0 {
-						v, n := protowire.ConsumeVarint(data)
-						if n < 0 {
-							return protowire.ParseError(n)
-						}
-						data = data[n:]
-						elementCount--
-						x.ArrBool = append(x.ArrBool, v != 0)
-					}
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field ArrBool", wireType)
+			n, err := protohelper.ConsumeSlice(&x.ArrBool, data, wireType, 0, protohelper.ConsumeBool)
+			if err != nil {
+				return err
 			}
+			data = data[n:]
 		case 46:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ArrString", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -294,857 +264,109 @@ func (x *FullProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.ArrBytes = append(x.ArrBytes[:], append([]byte{}, v...))
+			x.ArrBytes = append(x.ArrBytes[:], v)
 		case 81:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32Bool", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapInt32Bool, data, wireType, 0, 0, protohelper.ConsumeVarint[int32], protohelper.ConsumeBool)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt32Bool == nil {
-				x.MapInt32Bool = make(map[int32]bool)
-			}
-			var mapkey int32
-			var mapvalue bool
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = bool(v != 0)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt32Bool[mapkey] = mapvalue
 		case 82:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32Int32", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapInt32Int32, data, wireType, 0, 0, protohelper.ConsumeVarint[int32], protohelper.ConsumeVarint[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt32Int32 == nil {
-				x.MapInt32Int32 = make(map[int32]int32)
-			}
-			var mapkey int32
-			var mapvalue int32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int32(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt32Int32[mapkey] = mapvalue
 		case 83:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32String", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapInt32String, data, wireType, 0, 2, protohelper.ConsumeVarint[int32], protohelper.ConsumeString)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt32String == nil {
-				x.MapInt32String = make(map[int32]string)
-			}
-			var mapkey int32
-			var mapvalue string
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = string(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt32String[mapkey] = mapvalue
 		case 101:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Bool", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapInt64Bool, data, wireType, 0, 0, protohelper.ConsumeVarint[int64], protohelper.ConsumeBool)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt64Bool == nil {
-				x.MapInt64Bool = make(map[int64]bool)
-			}
-			var mapkey int64
-			var mapvalue bool
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = bool(v != 0)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt64Bool[mapkey] = mapvalue
 		case 102:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Int64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapInt64Int64, data, wireType, 0, 0, protohelper.ConsumeVarint[int64], protohelper.ConsumeVarint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt64Int64 == nil {
-				x.MapInt64Int64 = make(map[int64]int64)
-			}
-			var mapkey int64
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt64Int64[mapkey] = mapvalue
 		case 103:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Bytes", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapInt64Bytes, data, wireType, 0, 2, protohelper.ConsumeVarint[int64], protowire.ConsumeBytes)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt64Bytes == nil {
-				x.MapInt64Bytes = make(map[int64][]byte)
-			}
-			var mapkey int64
-			var mapvalue []byte
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = []byte(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt64Bytes[mapkey] = mapvalue
 		case 121:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapSint32Sint64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapSint32Sint64, data, wireType, 0, 0, protohelper.ConsumeSint[int32], protohelper.ConsumeSint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapSint32Sint64 == nil {
-				x.MapSint32Sint64 = make(map[int32]int64)
-			}
-			var mapkey int32
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(protowire.DecodeZigZag(v))
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(protowire.DecodeZigZag(v))
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapSint32Sint64[mapkey] = mapvalue
 		case 141:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapSint64Sint32", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapSint64Sint32, data, wireType, 0, 0, protohelper.ConsumeSint[int64], protohelper.ConsumeSint[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapSint64Sint32 == nil {
-				x.MapSint64Sint32 = make(map[int64]int32)
-			}
-			var mapkey int64
-			var mapvalue int32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(protowire.DecodeZigZag(v))
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int32(protowire.DecodeZigZag(v))
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapSint64Sint32[mapkey] = mapvalue
 		case 161:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapFixed32Sfixed64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapFixed32Sfixed64, data, wireType, 5, 1, protohelper.ConsumeFixed32[uint32], protohelper.ConsumeFixed64[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapFixed32Sfixed64 == nil {
-				x.MapFixed32Sfixed64 = make(map[uint32]int64)
-			}
-			var mapkey uint32
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[uint32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = uint32(v)
-				} else if subNum == 2 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[int64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapFixed32Sfixed64[mapkey] = mapvalue
 		case 181:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapSfixed32Fixed64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapSfixed32Fixed64, data, wireType, 5, 1, protohelper.ConsumeFixed32[int32], protohelper.ConsumeFixed64[uint64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapSfixed32Fixed64 == nil {
-				x.MapSfixed32Fixed64 = make(map[int32]uint64)
-			}
-			var mapkey int32
-			var mapvalue uint64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[int32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[uint64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = uint64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapSfixed32Fixed64[mapkey] = mapvalue
 		case 201:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringBool", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringBool, data, wireType, 2, 0, protohelper.ConsumeString, protohelper.ConsumeBool)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringBool == nil {
-				x.MapStringBool = make(map[string]bool)
-			}
-			var mapkey string
-			var mapvalue bool
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = bool(v != 0)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringBool[mapkey] = mapvalue
 		case 202:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringInt32", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringInt32, data, wireType, 2, 0, protohelper.ConsumeString, protohelper.ConsumeVarint[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringInt32 == nil {
-				x.MapStringInt32 = make(map[string]int32)
-			}
-			var mapkey string
-			var mapvalue int32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int32(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringInt32[mapkey] = mapvalue
 		case 203:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringInt64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringInt64, data, wireType, 2, 0, protohelper.ConsumeString, protohelper.ConsumeVarint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringInt64 == nil {
-				x.MapStringInt64 = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringInt64[mapkey] = mapvalue
 		case 204:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringSint64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringSint64, data, wireType, 2, 0, protohelper.ConsumeString, protohelper.ConsumeSint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringSint64 == nil {
-				x.MapStringSint64 = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(protowire.DecodeZigZag(v))
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringSint64[mapkey] = mapvalue
 		case 205:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringSfixed64", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringSfixed64, data, wireType, 2, 1, protohelper.ConsumeString, protohelper.ConsumeFixed64[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringSfixed64 == nil {
-				x.MapStringSfixed64 = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[int64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringSfixed64[mapkey] = mapvalue
 		case 206:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringString", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringString, data, wireType, 2, 2, protohelper.ConsumeString, protohelper.ConsumeString)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringString == nil {
-				x.MapStringString = make(map[string]string)
-			}
-			var mapkey string
-			var mapvalue string
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = string(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringString[mapkey] = mapvalue
 		case 207:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringEnum", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.MapStringEnum, data, wireType, 2, 0, protohelper.ConsumeString, protohelper.ConsumeEnum[TestEnum])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringEnum == nil {
-				x.MapStringEnum = make(map[string]TestEnum)
-			}
-			var mapkey string
-			var mapvalue TestEnum
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = TestEnum(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringEnum[mapkey] = mapvalue
 		case 231:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MActor", wireType)
@@ -1169,155 +391,23 @@ func (x *FullProto) Unmarshal(data []byte) error {
 			}
 			x.ArrActor = append(x.ArrActor, v)
 		case 233:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapStringActor", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMapMessage(&x.MapStringActor, data, wireType, 2, protohelper.ConsumeString)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapStringActor == nil {
-				x.MapStringActor = make(map[string]*OtherMessage)
-			}
-			var mapkey string
-			var mapvalue *OtherMessage
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					mapvalue = &OtherMessage{}
-					n, err := protohelper.ConsumeMessage(data, mapvalue)
-					if err != nil {
-						return err
-					}
-					data, msglen = data[n:], msglen-n
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapStringActor[mapkey] = mapvalue
 		case 234:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt32Actor", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMapMessage(&x.MapInt32Actor, data, wireType, 0, protohelper.ConsumeVarint[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt32Actor == nil {
-				x.MapInt32Actor = make(map[int32]*OtherMessage)
-			}
-			var mapkey int32
-			var mapvalue *OtherMessage
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					mapvalue = &OtherMessage{}
-					n, err := protohelper.ConsumeMessage(data, mapvalue)
-					if err != nil {
-						return err
-					}
-					data, msglen = data[n:], msglen-n
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt32Actor[mapkey] = mapvalue
 		case 235:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MapInt64Actor", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMapMessage(&x.MapInt64Actor, data, wireType, 0, protohelper.ConsumeVarint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.MapInt64Actor == nil {
-				x.MapInt64Actor = make(map[int64]*OtherMessage)
-			}
-			var mapkey int64
-			var mapvalue *OtherMessage
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					mapvalue = &OtherMessage{}
-					n, err := protohelper.ConsumeMessage(data, mapvalue)
-					if err != nil {
-						return err
-					}
-					data, msglen = data[n:], msglen-n
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.MapInt64Actor[mapkey] = mapvalue
 		case 281:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Outer", wireType)
@@ -2115,17 +1205,17 @@ func (x *OtherMessage) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Eid", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Eid = int64(v)
+			x.Eid = v
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OpenId", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -2135,7 +1225,7 @@ func (x *OtherMessage) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -2145,22 +1235,22 @@ func (x *OtherMessage) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Job", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Job = int32(v)
+			x.Job = v
 		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Sex = int32(v)
+			x.Sex = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -2292,17 +1382,17 @@ func (x *LessOtherMessage) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Eid", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Eid = int64(v)
+			x.Eid = v
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OpenId", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -2312,22 +1402,22 @@ func (x *LessOtherMessage) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Job", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Job = int32(v)
+			x.Job = v
 		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Sex = int32(v)
+			x.Sex = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -2449,12 +1539,12 @@ func (x *WithStandardMessage) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Id = uint64(v)
+			x.Id = v
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Nofast", wireType)
@@ -2633,12 +1723,12 @@ func (x *WithAnyMessage) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Id = uint64(v)
+			x.Id = v
 		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AnyMsg", wireType)
@@ -2655,7 +1745,7 @@ func (x *WithAnyMessage) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -2830,12 +1920,12 @@ func (x *Float) Unmarshal(data []byte) error {
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protohelper.ConsumeFixed32[uint32](data)
+			v, n := protohelper.ConsumeFloat32(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = math.Float32frombits(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -2931,12 +2021,12 @@ func (x *Double) Unmarshal(data []byte) error {
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protohelper.ConsumeFixed64[uint64](data)
+			v, n := protohelper.ConsumeFloat64(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = math.Float64frombits(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3032,12 +2122,12 @@ func (x *Int32) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = int32(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3133,12 +2223,12 @@ func (x *Int64) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = int64(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3234,12 +2324,12 @@ func (x *Sint32) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeSint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = int32(protowire.DecodeZigZag(v))
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3335,12 +2425,12 @@ func (x *Sint64) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeSint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = int64(protowire.DecodeZigZag(v))
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3436,12 +2526,12 @@ func (x *Uint32) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = uint32(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3537,12 +2627,12 @@ func (x *Uint64) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = uint64(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3643,7 +2733,7 @@ func (x *Fixed32) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = uint32(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3744,7 +2834,7 @@ func (x *Fixed64) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = uint64(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3845,7 +2935,7 @@ func (x *Sfixed32) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = int32(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -3946,7 +3036,7 @@ func (x *Sfixed64) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = int64(v)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -4042,12 +3132,12 @@ func (x *Bool) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeBool(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = bool(v != 0)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -4143,7 +3233,7 @@ func (x *String) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -4251,7 +3341,7 @@ func (x *Bytes) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = append(x.Val[:0], v...)
+			x.Val = v
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -4362,7 +3452,7 @@ func (x *TestProtoMsg) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val2", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeEnum[TestEnum](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -4475,41 +3565,11 @@ func (x *Floats) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 5 {
-				v, n := protohelper.ConsumeFixed32[uint32](data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				x.Val = append(x.Val, math.Float32frombits(v))
-			} else if wireType == 2 {
-				msglen, n := protohelper.CalcListLength(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				elementCount := msglen / 4
-				if elementCount > 0 {
-					if len(x.Val) == 0 {
-						x.Val = make([]float32, 0, elementCount)
-					} else {
-						ss := make([]float32, 0, elementCount+len(x.Val))
-						ss = append(ss, x.Val...)
-						x.Val = ss
-					}
-					for elementCount > 0 {
-						v, n := protohelper.ConsumeFixed32[uint32](data)
-						if n < 0 {
-							return protowire.ParseError(n)
-						}
-						data = data[n:]
-						elementCount--
-						x.Val = append(x.Val, math.Float32frombits(v))
-					}
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
+			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFloat32, 4)
+			if err != nil {
+				return err
 			}
+			data = data[n:]
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -4606,41 +3666,11 @@ func (x *Doubles) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 1 {
-				v, n := protohelper.ConsumeFixed64[uint64](data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				x.Val = append(x.Val, math.Float64frombits(v))
-			} else if wireType == 2 {
-				msglen, n := protohelper.CalcListLength(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				elementCount := msglen / 8
-				if elementCount > 0 {
-					if len(x.Val) == 0 {
-						x.Val = make([]float64, 0, elementCount)
-					} else {
-						ss := make([]float64, 0, elementCount+len(x.Val))
-						ss = append(ss, x.Val...)
-						x.Val = ss
-					}
-					for elementCount > 0 {
-						v, n := protohelper.ConsumeFixed64[uint64](data)
-						if n < 0 {
-							return protowire.ParseError(n)
-						}
-						data = data[n:]
-						elementCount--
-						x.Val = append(x.Val, math.Float64frombits(v))
-					}
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
+			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFloat64, 8)
+			if err != nil {
+				return err
 			}
+			data = data[n:]
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -4737,7 +3767,7 @@ func (x *Int32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeVarint[int32])
 			if err != nil {
 				return err
 			}
@@ -4838,7 +3868,7 @@ func (x *Int64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeVarint[int64])
 			if err != nil {
 				return err
 			}
@@ -4939,7 +3969,7 @@ func (x *Sint32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeSignedSlice(&x.Val, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeSint[int32])
 			if err != nil {
 				return err
 			}
@@ -5040,7 +4070,7 @@ func (x *Sint64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeSignedSlice(&x.Val, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeSint[int64])
 			if err != nil {
 				return err
 			}
@@ -5141,7 +4171,7 @@ func (x *Uint32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeVarint[uint32])
 			if err != nil {
 				return err
 			}
@@ -5242,7 +4272,7 @@ func (x *Uint64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeVarint[uint64])
 			if err != nil {
 				return err
 			}
@@ -5343,7 +4373,7 @@ func (x *Fixed32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed32, 4)
+			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed32[uint32], 4)
 			if err != nil {
 				return err
 			}
@@ -5444,7 +4474,7 @@ func (x *Fixed64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed64, 8)
+			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed64[uint64], 8)
 			if err != nil {
 				return err
 			}
@@ -5545,7 +4575,7 @@ func (x *Sfixed32S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed32, 4)
+			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed32[int32], 4)
 			if err != nil {
 				return err
 			}
@@ -5646,7 +4676,7 @@ func (x *Sfixed64S) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed64, 8)
+			n, err := protohelper.ConsumeFixedSlice(&x.Val, data, wireType, protohelper.ConsumeFixed64[int64], 8)
 			if err != nil {
 				return err
 			}
@@ -5747,41 +4777,11 @@ func (x *Bools) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
-				v, n := protowire.ConsumeVarint(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				x.Val = append(x.Val, v != 0)
-			} else if wireType == 2 {
-				msglen, n := protohelper.CalcListLength(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				elementCount := msglen
-				if elementCount > 0 {
-					if len(x.Val) == 0 {
-						x.Val = make([]bool, 0, elementCount)
-					} else {
-						ss := make([]bool, 0, elementCount+len(x.Val))
-						ss = append(ss, x.Val...)
-						x.Val = ss
-					}
-					for elementCount > 0 {
-						v, n := protowire.ConsumeVarint(data)
-						if n < 0 {
-							return protowire.ParseError(n)
-						}
-						data = data[n:]
-						elementCount--
-						x.Val = append(x.Val, v != 0)
-					}
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeBool)
+			if err != nil {
+				return err
 			}
+			data = data[n:]
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -5881,7 +4881,7 @@ func (x *Strings) Unmarshal(data []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -5992,7 +4992,7 @@ func (x *Bytess) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.Val = append(x.Val[:], append([]byte{}, v...))
+			x.Val = append(x.Val[:], v)
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -6202,46 +5202,11 @@ func (x *TestEnums) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType == 0 {
-				v, n := protowire.ConsumeVarint(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				x.Val = append(x.Val, TestEnum(v))
-			} else if wireType == 2 {
-				msglen, n := protohelper.CalcListLength(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data = data[n:]
-				elementCount := 0
-				for _, i := range data[:msglen] {
-					if i < 128 {
-						elementCount++
-					}
-				}
-				if elementCount > 0 {
-					if len(x.Val) == 0 {
-						x.Val = make([]TestEnum, 0, elementCount)
-					} else {
-						ss := make([]TestEnum, 0, elementCount+len(x.Val))
-						ss = append(ss, x.Val...)
-						x.Val = ss
-					}
-					for elementCount > 0 {
-						v, n := protowire.ConsumeVarint(data)
-						if n < 0 {
-							return protowire.ParseError(n)
-						}
-						data = data[n:]
-						elementCount--
-						x.Val = append(x.Val, TestEnum(v))
-					}
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
+			n, err := protohelper.ConsumeSlice(&x.Val, data, wireType, 0, protohelper.ConsumeEnum[TestEnum])
+			if err != nil {
+				return err
 			}
+			data = data[n:]
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -6346,55 +5311,11 @@ func (x *Mapint32Fixed64) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 1, protohelper.ConsumeVarint[int32], protohelper.ConsumeFixed64[uint64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int32]uint64)
-			}
-			var mapkey int32
-			var mapvalue uint64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[uint64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = uint64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -6500,55 +5421,11 @@ func (x *Mapint64Fixed32) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 5, protohelper.ConsumeVarint[int64], protohelper.ConsumeFixed32[uint32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64]uint32)
-			}
-			var mapkey int64
-			var mapvalue uint32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[uint32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = uint32(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -6654,55 +5531,11 @@ func (x *Mapuint32Sint64) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 0, protohelper.ConsumeVarint[uint32], protohelper.ConsumeSint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[uint32]int64)
-			}
-			var mapkey uint32
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = uint32(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(protowire.DecodeZigZag(v))
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -6808,55 +5641,11 @@ func (x *Mapuint64Sint32) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 0, protohelper.ConsumeVarint[uint64], protohelper.ConsumeSint[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[uint64]int32)
-			}
-			var mapkey uint64
-			var mapvalue int32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = uint64(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int32(protowire.DecodeZigZag(v))
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -6962,55 +5751,11 @@ func (x *MapSint32Int64) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 0, protohelper.ConsumeSint[int32], protohelper.ConsumeVarint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int32]int64)
-			}
-			var mapkey int32
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(protowire.DecodeZigZag(v))
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -7116,55 +5861,11 @@ func (x *MapSint64Int32) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 0, protohelper.ConsumeSint[int64], protohelper.ConsumeVarint[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64]int32)
-			}
-			var mapkey int64
-			var mapvalue int32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(protowire.DecodeZigZag(v))
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int32(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -7270,55 +5971,11 @@ func (x *MapFixed32Double) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 5, 1, protohelper.ConsumeFixed32[uint32], protohelper.ConsumeFloat64)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[uint32]float64)
-			}
-			var mapkey uint32
-			var mapvalue float64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[uint32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = uint32(v)
-				} else if subNum == 2 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[uint64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = math.Float64frombits(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -7424,55 +6081,11 @@ func (x *MapFixed64Float) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 1, 5, protohelper.ConsumeFixed64[uint64], protohelper.ConsumeFloat32)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[uint64]float32)
-			}
-			var mapkey uint64
-			var mapvalue float32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[uint64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = uint64(v)
-				} else if subNum == 2 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[uint32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = math.Float32frombits(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -7578,55 +6191,11 @@ func (x *Mapsfixed64Uint32) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 1, 0, protohelper.ConsumeFixed64[int64], protohelper.ConsumeVarint[uint32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64]uint32)
-			}
-			var mapkey int64
-			var mapvalue uint32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[int64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = uint32(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -7732,55 +6301,11 @@ func (x *Mapsfixed32Uint64) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 5, 0, protohelper.ConsumeFixed32[int32], protohelper.ConsumeVarint[uint64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int32]uint64)
-			}
-			var mapkey int32
-			var mapvalue uint64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[int32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int32(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = uint64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -7886,55 +6411,11 @@ func (x *Mapstringsfixed32) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 2, 5, protohelper.ConsumeString, protohelper.ConsumeFixed32[int32])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[string]int32)
-			}
-			var mapkey string
-			var mapvalue int32
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 5 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed32[int32](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int32(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -8041,55 +6522,11 @@ func (x *Mapstringsfixed64) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 2, 1, protohelper.ConsumeString, protohelper.ConsumeFixed64[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = string(v)
-				} else if subNum == 2 {
-					if subWireType != 1 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protohelper.ConsumeFixed64[int64](data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -8196,55 +6633,11 @@ func (x *Mapint64String) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 2, protohelper.ConsumeVarint[int64], protohelper.ConsumeString)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64]string)
-			}
-			var mapkey int64
-			var mapvalue string
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = string(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -8351,55 +6744,11 @@ func (x *Mapint64Bytes) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 2, protohelper.ConsumeVarint[int64], protowire.ConsumeBytes)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64][]byte)
-			}
-			var mapkey int64
-			var mapvalue []byte
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeBytes(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = []byte(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -8506,55 +6855,11 @@ func (x *Mapint64Bool) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 0, protohelper.ConsumeVarint[int64], protohelper.ConsumeBool)
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64]bool)
-			}
-			var mapkey int64
-			var mapvalue bool
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = bool(v != 0)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -8660,55 +6965,11 @@ func (x *MapBoolInt64) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMap(&x.Val, data, wireType, 0, 0, protohelper.ConsumeBool, protohelper.ConsumeVarint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[bool]int64)
-			}
-			var mapkey bool
-			var mapvalue int64
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = bool(v != 0)
-				} else if subNum == 2 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapvalue = int64(v)
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {
@@ -8814,55 +7075,11 @@ func (x *Mapint64TestProtoMsg) Unmarshal(data []byte) error {
 		data = data[n:]
 		switch num {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Val", wireType)
-			}
-			msglen, n := protohelper.CalcListLength(data)
-			if n < 0 {
-				return protowire.ParseError(n)
+			n, err := protohelper.ConsumeMapMessage(&x.Val, data, wireType, 0, protohelper.ConsumeVarint[int64])
+			if err != nil {
+				return err
 			}
 			data = data[n:]
-			if x.Val == nil {
-				x.Val = make(map[int64]*OtherMessage)
-			}
-			var mapkey int64
-			var mapvalue *OtherMessage
-			for msglen > 0 {
-				subNum, subWireType, n := protowire.ConsumeTag(data)
-				if n < 0 {
-					return protowire.ParseError(n)
-				}
-				data, msglen = data[n:], msglen-n
-				if subNum == 1 {
-					if subWireType != 0 {
-						return fmt.Errorf("proto: wrong wireType = %d for field key", subWireType)
-					}
-					v, n := protowire.ConsumeVarint(data)
-					if n < 0 {
-						return protowire.ParseError(n)
-					}
-					data, msglen = data[n:], msglen-n
-					mapkey = int64(v)
-				} else if subNum == 2 {
-					if subWireType != 2 {
-						return fmt.Errorf("proto: wrong wireType = %d for field value", subWireType)
-					}
-					mapvalue = &OtherMessage{}
-					n, err := protohelper.ConsumeMessage(data, mapvalue)
-					if err != nil {
-						return err
-					}
-					data, msglen = data[n:], msglen-n
-				} else {
-					if skippy, err := protohelper.Skip(data); err != nil {
-						return err
-					} else {
-						data = data[skippy:]
-						msglen -= skippy
-					}
-				}
-			}
-			x.Val[mapkey] = mapvalue
 		default:
 			n, err := protohelper.Skip(prev[:])
 			if err != nil {

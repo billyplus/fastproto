@@ -46,47 +46,47 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VInt32", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_VInt32{VInt32: int32(v)}
+			x.TestOneof = &OneOfProto_VInt32{VInt32: v}
 		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VInt64", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_VInt64{VInt64: int64(v)}
+			x.TestOneof = &OneOfProto_VInt64{VInt64: v}
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VUint32", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_VUint32{VUint32: uint32(v)}
+			x.TestOneof = &OneOfProto_VUint32{VUint32: v}
 		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VUint64", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeVarint[uint64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_VUint64{VUint64: uint64(v)}
+			x.TestOneof = &OneOfProto_VUint64{VUint64: v}
 		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VString", wireType)
 			}
-			v, n := protowire.ConsumeBytes(data)
+			v, n := protohelper.ConsumeString(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
@@ -101,37 +101,37 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_VBytes{VBytes: append([]byte{}, v...)}
+			x.TestOneof = &OneOfProto_VBytes{VBytes: v}
 		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VBool", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeBool(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_VBool{VBool: bool(v != 0)}
+			x.TestOneof = &OneOfProto_VBool{VBool: v}
 		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SInt32", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeSint[int32](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_SInt32{SInt32: int32(protowire.DecodeZigZag(v))}
+			x.TestOneof = &OneOfProto_SInt32{SInt32: v}
 		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SInt64", wireType)
 			}
-			v, n := protowire.ConsumeVarint(data)
+			v, n := protohelper.ConsumeSint[int64](data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_SInt64{SInt64: int64(protowire.DecodeZigZag(v))}
+			x.TestOneof = &OneOfProto_SInt64{SInt64: v}
 		case 9:
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Fixed32", wireType)
@@ -141,7 +141,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_Fixed32{Fixed32: uint32(v)}
+			x.TestOneof = &OneOfProto_Fixed32{Fixed32: v}
 		case 10:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Fixed64", wireType)
@@ -151,7 +151,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_Fixed64{Fixed64: uint64(v)}
+			x.TestOneof = &OneOfProto_Fixed64{Fixed64: v}
 		case 11:
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sfixed32", wireType)
@@ -161,7 +161,7 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_Sfixed32{Sfixed32: int32(v)}
+			x.TestOneof = &OneOfProto_Sfixed32{Sfixed32: v}
 		case 12:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sfixed64", wireType)
@@ -171,27 +171,27 @@ func (x *OneOfProto) Unmarshal(data []byte) error {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_Sfixed64{Sfixed64: int64(v)}
+			x.TestOneof = &OneOfProto_Sfixed64{Sfixed64: v}
 		case 20:
 			if wireType != 5 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Float32", wireType)
 			}
-			v, n := protohelper.ConsumeFixed32[uint32](data)
+			v, n := protohelper.ConsumeFloat32(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_Float32{Float32: math.Float32frombits(v)}
+			x.TestOneof = &OneOfProto_Float32{Float32: v}
 		case 21:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Float64", wireType)
 			}
-			v, n := protohelper.ConsumeFixed64[uint64](data)
+			v, n := protohelper.ConsumeFloat64(data)
 			if n < 0 {
 				return protowire.ParseError(n)
 			}
 			data = data[n:]
-			x.TestOneof = &OneOfProto_Float64{Float64: math.Float64frombits(v)}
+			x.TestOneof = &OneOfProto_Float64{Float64: v}
 		case 231:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MActor", wireType)
