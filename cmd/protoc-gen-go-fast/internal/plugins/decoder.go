@@ -161,7 +161,7 @@ func (p *decoder) generateField(f *protogen.File, field *protogen.Field) {
 	p.P(fmt.Sprintf(`		case %d:`, fieldNumber))
 	kind := field.Desc.Kind()
 	wireType := protohelper.KindToType(kind)
-	dec := getDecodeFn(field.Desc)
+	dec := p.getDecodeFn(field)
 	switch kind {
 	case protoreflect.StringKind, protoreflect.BytesKind:
 		p.genStringField(f, wireType, field, dec)
@@ -216,7 +216,7 @@ func (p *decoder) genField(f *protogen.File, wireType protowire.Type, field *pro
 			// 	protoreflect.Sint64Kind:
 			// 	p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(", decodeZigZag, "(v))")
 			case protoreflect.EnumKind:
-				p.P(`   	x.`, field.GoName, " = ", protohelper.GoTypeOfField(field.Desc), "(v)")
+				p.P(`   	x.`, field.GoName, " = ", p.QualifiedGoIdent(field.Enum.GoIdent), "(v)")
 			default:
 				p.P(`   	x.`, field.GoName, " = v")
 			}
@@ -269,7 +269,7 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 		protoreflect.Sint64Kind,
 		protoreflect.EnumKind,
 		protoreflect.BoolKind:
-		p.P(`			n, err := `, consumeSlice, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[kind], ",", getDecodeFn(field.Desc), `)`)
+		p.P(`			n, err := `, consumeSlice, `(&x.`, field.GoName, `, data, wireType, `, wireTypeMap[kind], ",", p.getDecodeFn(field), `)`)
 		p.P(`			if err != nil {`)
 		p.P(`				return err`)
 		p.P(`			}`)
@@ -283,14 +283,14 @@ func (p *decoder) genList(f *protogen.File, wireType protowire.Type, field *prot
 	// 	p.P(`   		data = data[n:]`)
 	// 	return
 	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
-		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, getDecodeFn(field.Desc), `, 4)`)
+		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, p.getDecodeFn(field), `, 4)`)
 		p.P(`			if err != nil {`)
 		p.P(`				return err`)
 		p.P(`			}`)
 		p.P(`   		data = data[n:]`)
 		return
 	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
-		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, getDecodeFn(field.Desc), `, 8)`)
+		p.P(`			n, err := `, consumeFixedSlice, `(&x.`, field.GoName, `, data, wireType, `, p.getDecodeFn(field), `, 8)`)
 		p.P(`			if err != nil {`)
 		p.P(`				return err`)
 		p.P(`			}`)
@@ -526,17 +526,18 @@ func (p *decoder) genMap(f *protogen.File, wireType uint64, field *protogen.Fiel
 // 	}
 // }
 
-func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protoreflect.FieldDescriptor) {
-	kind := field.Kind()
-	dec := getDecodeFn(field)
+func (p *decoder) generateEntry(f *protogen.File, fieldName string, field *protogen.Field) {
+	desc := field.Desc
+	kind := desc.Kind()
+	dec := p.getDecodeFn(field)
 	wireType := protohelper.KindToType(kind)
 	p.P(`				if subWireType != `, wireType, ` {`)
-	p.P(`					return fmt.Errorf("proto: wrong wireType = %d for field `, field.Name(), `", subWireType)`)
+	p.P(`					return fmt.Errorf("proto: wrong wireType = %d for field `, desc.Name(), `", subWireType)`)
 	p.P(`				}`)
 
 	switch kind {
 	case protoreflect.MessageKind:
-		p.P(`		        `, fieldName, ` = &`, field.Message().Name(), "{}")
+		p.P(`		        `, fieldName, ` = &`, desc.Message().Name(), "{}")
 		p.P(`				n, err := `, dec, "(data, ", fieldName, ")")
 		p.P(`		  		if err != nil { return err }`)
 	default:
@@ -555,18 +556,19 @@ func (p *decoder) generateEntry(f *protogen.File, fieldName string, field protor
 		p.P(`   	`, fieldName, " = ", float64frombits, "(v)")
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		p.P(`   	`, fieldName, " = ", protohelper.GoTypeOfField(field), "(", decodeZigZag, "(v))")
+		p.P(`   	`, fieldName, " = ", protohelper.GoTypeOfField(desc), "(", decodeZigZag, "(v))")
 	case protoreflect.MessageKind:
 		// skip
 	default:
-		p.P(`   	`, fieldName, " = ", protohelper.GoTypeOfField(field), "(v)")
+		p.P(`   	`, fieldName, " = ", protohelper.GoTypeOfField(desc), "(v)")
 	}
 }
 
-func getDecodeFn(field protoreflect.FieldDescriptor) protogen.GoIdent {
-	kind := field.Kind()
+func (p *decoder) getDecodeFn(field *protogen.Field) protogen.GoIdent {
+	kind := field.Desc.Kind()
 	if kind == protoreflect.EnumKind {
-		return goimport.FastProtoHelperPackage.Ident("ConsumeEnum[" + protohelper.GoTypeOfField(field) + "]")
+		// return goimport.FastProtoHelperPackage.Ident("ConsumeEnum[" + protohelper.GoTypeOfField(field) + "]")
+		return goimport.FastProtoHelperPackage.Ident("ConsumeEnum[" + p.QualifiedGoIdent(field.Enum.GoIdent) + "]")
 	}
 	return valueDecoder[kind]
 }
